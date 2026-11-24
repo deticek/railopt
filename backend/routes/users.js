@@ -10,7 +10,7 @@ function createRouter(deps) {
     const [rows] = await authPool.query(`SELECT id,username,email,role,${active} AS active,${created} AS created_at FROM users ORDER BY username`);
     res.json(rows.map(row => ({ ...row, role: normalizeRole(row.role), active: Boolean(row.active) })));
   }));
-  
+
   router.post('/api/users', requireSession, requireAdmin, asyncRoute(async (req, res) => {
     if (!databaseUsersEnabled) return res.status(503).json({ error: 'Za uporabnike najprej namestite migracijo podatkovne baze.' });
     const username = String(req.body?.username || '').trim();

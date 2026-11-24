@@ -21,12 +21,14 @@ const { validDate, validTime } = require('./lib/validation');
 const app = express();
 app.disable('x-powered-by');
 const allowedWebOrigins = new Set(['http://localhost:4200', 'http://127.0.0.1:4200']);
-app.use(cors({ origin(origin, callback) {
-  // Packaged Electron loads the Angular bundle from file://, whose Origin is
-  // serialized as "null" by Chromium. The API still binds to loopback and
-  // all application routes continue to require an authenticated session.
-  callback(null, !origin || origin === 'null' || allowedWebOrigins.has(origin));
-} }));
+app.use(cors({
+  origin(origin, callback) {
+    // Packaged Electron loads the Angular bundle from file://, whose Origin is
+    // serialized as "null" by Chromium. The API still binds to loopback and
+    // all application routes continue to require an authenticated session.
+    callback(null, !origin || origin === 'null' || allowedWebOrigins.has(origin));
+  }
+}));
 app.use(express.json({ limit: '16kb' }));
 
 const dbConfig = {
@@ -75,7 +77,7 @@ function serializeShipment(row) {
     recipientDeadline: sqlDate(row.recipient_deadline),
     weightKg: row.weight_kg == null ? null : Number(row.weight_kg),
     unitType: row.unit_type,
-    calculatedDeliveryAt: row.result_delivery_date ? `${sqlDate(row.result_delivery_date)}${row.result_delivery_time ? `T${String(row.result_delivery_time).slice(0,8)}` : ''}` : null,
+    calculatedDeliveryAt: row.result_delivery_date ? `${sqlDate(row.result_delivery_date)}${row.result_delivery_time ? `T${String(row.result_delivery_time).slice(0, 8)}` : ''}` : null,
     adr: Boolean(row.adr),
     transportType: row.transport_type || 'ROAD',
     status: row.result_id ? (row.recommended ? 'Optimizirano' : row.feasible ? 'Izvedljivo' : 'Za pregled') : 'V obdelavi',
@@ -150,7 +152,7 @@ async function start() {
     password: names.has('password_hash') ? 'password_hash' : names.has('password') ? 'password' : null,
     hasActive: names.has('active'),
     hasCreatedAt: names.has('created_at'),
-    roleIsText: columns.some(column => (column.COLUMN_NAME || column.column_name) === 'role' && ['char','varchar','text','enum'].includes(String(column.DATA_TYPE || column.data_type).toLowerCase()))
+    roleIsText: columns.some(column => (column.COLUMN_NAME || column.column_name) === 'role' && ['char', 'varchar', 'text', 'enum'].includes(String(column.DATA_TYPE || column.data_type).toLowerCase()))
   };
   databaseUsersEnabled = names.has('id') && names.has('username') && names.has('email') && names.has('role') && Boolean(userSchema.password);
   if (databaseUsersEnabled) {
@@ -161,8 +163,8 @@ async function start() {
       const username = String(process.env.RAILOPT_ADMIN_USERNAME || 'admin').trim().slice(0, 80);
       try {
         const userPassword = await bcrypt.hash(password, 12);
-        const columns = ['id','username','email',userSchema.password,'role'];
-        const values = [crypto.randomUUID(),username,email,userPassword,userSchema.roleIsText ? '1' : 1];
+        const columns = ['id', 'username', 'email', userSchema.password, 'role'];
+        const values = [crypto.randomUUID(), username, email, userPassword, userSchema.roleIsText ? '1' : 1];
         if (userSchema.hasActive) { columns.push('active'); values.push(true); }
         await authPool.execute(`INSERT INTO users (${columns.map(userColumn).join(',')}) VALUES (${values.map(() => '?').join(',')})`, values);
       } catch (error) {

@@ -1,26 +1,102 @@
-<div class="page-heading"><div><span class="eyebrow">CESTNI TRANSPORT · WTW</span><h1>Izračun emisij CO₂e<span class="heading-period">.</span></h1><p class="muted">Izberi kraja na Google Maps ali prilepi naslov oziroma povezavo kraja.</p></div></div>
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">CESTNI TRANSPORT · WTW</span>
+    <h1>Izračun emisij CO₂e<span class="heading-period">.</span></h1>
+    <p class="muted">Izberi kraja na Google Maps ali prilepi naslov oziroma povezavo kraja.</p>
+  </div>
+</div>
 <section class="panel emission-panel">
   <form class="emission-form" (ngSubmit)="calculate()">
     <div class="emission-fields">
       <label for="emission-origin">Kraj A</label>
-      <div class="place-input"><input id="emission-origin" name="origin" [(ngModel)]="origin" placeholder="npr. Koper, Slovenija ali Google Maps povezava" autocomplete="street-address" required><a [href]="mapsUrl(origin)" target="_blank" rel="noopener noreferrer">Odpri Google Maps ↗</a></div>
+      <div class="place-input">
+        <input
+          id="emission-origin"
+          name="origin"
+          [(ngModel)]="origin"
+          placeholder="npr. Koper, Slovenija ali Google Maps povezava"
+          autocomplete="street-address"
+          required
+        /><a [href]="mapsUrl(origin)" target="_blank" rel="noopener noreferrer"
+          >Odpri Google Maps ↗</a
+        >
+      </div>
       <label for="emission-destination">Kraj B</label>
-      <div class="place-input"><input id="emission-destination" name="destination" [(ngModel)]="destination" placeholder="npr. Dunaj, Avstrija ali Google Maps povezava" autocomplete="street-address" required><a [href]="mapsUrl(destination)" target="_blank" rel="noopener noreferrer">Odpri Google Maps ↗</a></div>
+      <div class="place-input">
+        <input
+          id="emission-destination"
+          name="destination"
+          [(ngModel)]="destination"
+          placeholder="npr. Dunaj, Avstrija ali Google Maps povezava"
+          autocomplete="street-address"
+          required
+        /><a [href]="mapsUrl(destination)" target="_blank" rel="noopener noreferrer"
+          >Odpri Google Maps ↗</a
+        >
+      </div>
       <label for="emission-weight">Teža tovora (kg)</label>
-      <input id="emission-weight" name="weightKg" type="number" min="1" max="1000000" step="1" [(ngModel)]="weightKg" required>
+      <input
+        id="emission-weight"
+        name="weightKg"
+        type="number"
+        min="1"
+        max="1000000"
+        step="1"
+        [(ngModel)]="weightKg"
+        required
+      />
     </div>
-    <p class="maps-help">V Google Maps poišči točko, izberi <b>Deli</b> in prilepi povezavo sem. Delujejo tudi naslovi, kraji ter koordinate v obliki 46.239, 14.355.</p>
-    <button class="primary-btn" type="submit" [disabled]="loading()">{{ loading() ? 'Računam…' : 'Izračunaj emisije' }}</button>
+    <p class="maps-help">
+      V Google Maps poišči točko, izberi <b>Deli</b> in prilepi povezavo sem. Delujejo tudi naslovi,
+      kraji ter koordinate v obliki 46.239, 14.355.
+    </p>
+    <button class="primary-btn" type="submit" [disabled]="loading()">
+      {{ loading() ? 'Računam…' : 'Izračunaj emisije' }}
+    </button>
     @if (loading()) {
-      <div class="calculation-status" role="status" aria-live="polite"><span class="status-spinner"></span><div><b>{{ progress() }}</b><span>Preteklo: {{ elapsedSeconds() }} s · samodejna prekinitev po 35 s</span></div></div>
+      <div class="calculation-status" role="status" aria-live="polite">
+        <span class="status-spinner"></span>
+        <div>
+          <b>{{ progress() }}</b
+          ><span>Preteklo: {{ elapsedSeconds() }} s · samodejna prekinitev po 35 s</span>
+        </div>
+      </div>
     }
-    @if (error()) { <div class="notice" role="alert">{{ error() }}</div> }
+    @if (error()) {
+      <div class="notice" role="alert">{{ error() }}</div>
+    }
     @if (result(); as trip) {
-      <div class="emission-result"><div><span class="eyebrow">CESTNA RAZDALJA</span><strong>{{ trip.distanceKm | number:'1.1-1' }} <small>km</small></strong><span class="muted">{{ trip.origin }} → {{ trip.destination }}</span></div><div><span class="eyebrow">OCENJENE EMISIJE VOŽNJE</span><strong>{{ trip.emissionsKgCo2e | number:'1.1-1' }} <small>kg CO₂e</small></strong><span class="muted">{{ trip.weightKg | number:'1.0-0' }} kg · {{ trip.tonKilometers | number:'1.1-1' }} tkm</span></div><div class="emission-intensity"><span class="eyebrow">EMISIJSKA INTENZIVNOST</span><strong>{{ trip.factorKgCo2ePerTkm | number:'1.3-3' }} <small>kg CO₂e/tkm</small></strong><span class="muted">Faktor iz tvojih podatkov</span></div></div>
-      @if (trip.approximate) { <div class="notice" role="status">Usmerjevalnika nista dosegljiva; razdalja in trajanje sta približna ocena. Pred uporabo preveri dejansko cestno pot.</div> }
+      <div class="emission-result">
+        <div>
+          <span class="eyebrow">CESTNA RAZDALJA</span
+          ><strong>{{ trip.distanceKm | number: '1.1-1' }} <small>km</small></strong
+          ><span class="muted">{{ trip.origin }} → {{ trip.destination }}</span>
+        </div>
+        <div>
+          <span class="eyebrow">OCENJENE EMISIJE VOŽNJE</span
+          ><strong>{{ trip.emissionsKgCo2e | number: '1.1-1' }} <small>kg CO₂e</small></strong
+          ><span class="muted"
+            >{{ trip.weightKg | number: '1.0-0' }} kg ·
+            {{ trip.tonKilometers | number: '1.1-1' }} tkm</span
+          >
+        </div>
+        <div class="emission-intensity">
+          <span class="eyebrow">EMISIJSKA INTENZIVNOST</span
+          ><strong
+            >{{ trip.factorKgCo2ePerTkm | number: '1.3-3' }} <small>kg CO₂e/tkm</small></strong
+          ><span class="muted">Faktor iz tvojih podatkov</span>
+        </div>
+      </div>
+      @if (trip.approximate) {
+        <div class="notice" role="status">
+          Usmerjevalnika nista dosegljiva; razdalja in trajanje sta približna ocena. Pred uporabo
+          preveri dejansko cestno pot.
+        </div>
+      }
     }
-    <p class="emission-source">Uporabljen faktor: <b>0,095 kg CO₂e/tkm</b>. Razdalja sledi predlagani cestni poti in ne upošteva omejitev za posamezne tovornjake. © OpenStreetMap contributors.</p>
+    <p class="emission-source">
+      Uporabljen faktor: <b>0,095 kg CO₂e/tkm</b>. Razdalja sledi predlagani cestni poti in ne
+      upošteva omejitev za posamezne tovornjake. © OpenStreetMap contributors.
+    </p>
   </form>
 </section>
-
-

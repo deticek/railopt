@@ -8,7 +8,7 @@ export type DashboardView = 'overview' | 'history' | 'routes' | 'emissions' | 's
   standalone: true,
   imports: [RouterLink, RouterLinkActive],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.scss'
+  styleUrl: './navbar.scss',
 })
 export class NavbarComponent {
   @Input() activeView: DashboardView = 'overview';

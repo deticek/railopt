@@ -1,21 +1,90 @@
-<div class="page-heading"><div><span class="eyebrow">CESTNI IN KOMBINIRANI TRANSPORT</span><h1>Planer dostave<span class="heading-period">.</span></h1><p class="muted">Primerjaj dostavo s tovornjakom in po potrebi še prevoz prek železniških terminalov.</p></div></div>
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">CESTNI IN KOMBINIRANI TRANSPORT</span>
+    <h1>Planer dostave<span class="heading-period">.</span></h1>
+    <p class="muted">
+      Primerjaj dostavo s tovornjakom in po potrebi še prevoz prek železniških terminalov.
+    </p>
+  </div>
+</div>
 
-<nav class="planner-subpages" aria-label="Izračun časovnice"><button type="button" [class.active]="scheduleMode === 'arrival'" (click)="setScheduleMode('arrival')">Vnesi naklad → izračunaj prihod</button><button type="button" [class.active]="scheduleMode === 'latest-loading'" (click)="setScheduleMode('latest-loading')">Vnesi rok prihoda → izračunaj naklad</button></nav>
+<nav class="planner-subpages" aria-label="Izračun časovnice">
+  <button
+    type="button"
+    [class.active]="scheduleMode === 'arrival'"
+    (click)="setScheduleMode('arrival')"
+  >
+    Vnesi naklad → izračunaj prihod</button
+  ><button
+    type="button"
+    [class.active]="scheduleMode === 'latest-loading'"
+    (click)="setScheduleMode('latest-loading')"
+  >
+    Vnesi rok prihoda → izračunaj naklad
+  </button>
+</nav>
 
 <section class="panel form-panel">
   <form (ngSubmit)="calculate()">
     <h2>Relacija in tovor</h2>
     <div class="form-grid places">
-      <label>Nakladna lokacija<app-place-picker title="Izberi kraj naklada" [initial]="origin" (selected)="setOrigin($event)" /></label>
-      <label>Lokacija razklada<app-place-picker title="Izberi kraj razklada" [initial]="destination" (selected)="setDestination($event)" /></label>
+      <label
+        >Nakladna lokacija<app-place-picker
+          title="Izberi kraj naklada"
+          [initial]="origin"
+          (selected)="setOrigin($event)"
+      /></label>
+      <label
+        >Lokacija razklada<app-place-picker
+          title="Izberi kraj razklada"
+          [initial]="destination"
+          (selected)="setDestination($event)"
+      /></label>
     </div>
     <div class="form-grid">
-      @if (scheduleMode === 'arrival') { <label>Datum in ura naklada na izbranem kraju<input type="datetime-local" name="loadingAt" [(ngModel)]="loadingAt" required /><small>Izračunam prihod na cilj in pokažem predviden datum ter uro dostave.</small></label> }
-      @else { <label>Želeni datum in ura prihoda na cilj<input type="datetime-local" name="deliveryDeadlineAt" [(ngModel)]="deliveryDeadlineAt" required /><small>Vnesi rok prihoda; planer poišče najpoznejši izvedljiv naklad.</small></label><label>Najzgodnejši možni začetek naklada<input type="datetime-local" name="loadingAt" [(ngModel)]="loadingAt" required /><small>Ta datum omeji, kako daleč nazaj iščemo začetek poti.</small></label> }
-      <label>Teža tovora (kg)<input type="number" name="weight" min="1" max="24000" [(ngModel)]="weightKg" required /></label>
-      <label>Vrsta prevoza / enote
+      @if (scheduleMode === 'arrival') {
+        <label
+          >Datum in ura naklada na izbranem kraju<input
+            type="datetime-local"
+            name="loadingAt"
+            [(ngModel)]="loadingAt"
+            required
+          /><small
+            >Izračunam prihod na cilj in pokažem predviden datum ter uro dostave.</small
+          ></label
+        >
+      } @else {
+        <label
+          >Želeni datum in ura prihoda na cilj<input
+            type="datetime-local"
+            name="deliveryDeadlineAt"
+            [(ngModel)]="deliveryDeadlineAt"
+            required
+          /><small>Vnesi rok prihoda; planer poišče najpoznejši izvedljiv naklad.</small></label
+        ><label
+          >Najzgodnejši možni začetek naklada<input
+            type="datetime-local"
+            name="loadingAt"
+            [(ngModel)]="loadingAt"
+            required
+          /><small>Ta datum omeji, kako daleč nazaj iščemo začetek poti.</small></label
+        >
+      }
+      <label
+        >Teža tovora (kg)<input
+          type="number"
+          name="weight"
+          min="1"
+          max="24000"
+          [(ngModel)]="weightKg"
+          required
+      /></label>
+      <label
+        >Vrsta prevoza / enote
         <select name="unit" [ngModel]="unitType" (ngModelChange)="setUnitType($event)">
-          <option value="Tovornjak – samo cesta">Tovornjak (cesta ali Ro-La glede na izbrani način)</option>
+          <option value="Tovornjak – samo cesta">
+            Tovornjak (cesta ali Ro-La glede na izbrani način)
+          </option>
           <option value="P400 – dvigljiva prikolica">P400 – dvigljiva prikolica</option>
           <option value="Nedvigljiva prikolica s ponjavo">Nedvigljiva prikolica s ponjavo</option>
           <option value="Izmenljivi zaboj">Izmenljivi zaboj</option>
@@ -25,83 +94,356 @@
     </div>
 
     <div class="mode-row">
-      <label><input type="radio" name="transportMode" value="road" [(ngModel)]="transportMode" /> Samo cesta</label>
-      <label><input type="radio" name="transportMode" value="compare" [(ngModel)]="transportMode" /> Primerjaj cesto z vlakom</label>
-      <span class="mode-hint">Dvigljive enote gredo na vlak; tovornjak ali nedvigljiva prikolica se lahko peljeta kot Ro-La.</span>
+      <label
+        ><input type="radio" name="transportMode" value="road" [(ngModel)]="transportMode" /> Samo
+        cesta</label
+      >
+      <label
+        ><input type="radio" name="transportMode" value="compare" [(ngModel)]="transportMode" />
+        Primerjaj cesto z vlakom</label
+      >
+      <span class="mode-hint"
+        >Dvigljive enote gredo na vlak; tovornjak ali nedvigljiva prikolica se lahko peljeta kot
+        Ro-La.</span
+      >
     </div>
 
-    @if (transportMode === 'compare') { <div class="terminal-fields"><h3>Samodejna izbira tovornih terminalov</h3><p>{{ terminalStatus || 'Ko izbereš kraja, poiščem najbližja terminala iz lokalne baze.' }}</p>@if (terminalOrigin && terminalDestination) { <div class="terminal-picks"><span>Odhodni: <b>{{ terminalOrigin.label }}</b> · približno {{ terminalOriginKm | number:'1.0-1' }} km od naklada</span><span>Prihodni: <b>{{ terminalDestination.label }}</b> · približno {{ terminalDestinationKm | number:'1.0-1' }} km od razklada</span></div> }</div> }
+    @if (transportMode === 'compare') {
+      <div class="terminal-fields">
+        <h3>Samodejna izbira tovornih terminalov</h3>
+        <p>
+          {{ terminalStatus || 'Ko izbereš kraja, poiščem najbližja terminala iz lokalne baze.' }}
+        </p>
+        @if (terminalOrigin && terminalDestination) {
+          <div class="terminal-picks">
+            <span
+              >Odhodni: <b>{{ terminalOrigin.label }}</b> · približno
+              {{ terminalOriginKm | number: '1.0-1' }} km od naklada</span
+            ><span
+              >Prihodni: <b>{{ terminalDestination.label }}</b> · približno
+              {{ terminalDestinationKm | number: '1.0-1' }} km od razklada</span
+            >
+          </div>
+        }
+      </div>
+    }
 
     <h2>Čas poti in primerjava</h2>
     <div class="form-grid speed-grid">
-      <div class="auto-estimate-note"><b>Čas izračunam po cestnih odsekih.</b><small>Uporabljam ocenjene čase poti za naklad–razklad ali do terminala in od terminala.</small></div>
+      <div class="auto-estimate-note">
+        <b>Čas izračunam po cestnih odsekih.</b
+        ><small
+          >Uporabljam ocenjene čase poti za naklad–razklad ali do terminala in od terminala.</small
+        >
+      </div>
       @if (transportMode === 'compare') {
-        <div class="auto-estimate-note"><b>Trajanje vlaka izračunam samodejno.</b><small>Uporabim ocenjeno železniško razdaljo in modelno povprečje; vozni red v živo ni na voljo.</small></div>
-        <label>Način priporočila<select name="preference" [(ngModel)]="preference"><option value="cost">Najnižji strošek</option><option value="emissions">Najmanj emisij</option><option value="time">Najhitrejša dostava</option></select></label>
-        @if (usesRoLa) { <label>Cena vozovnice Ro-La (€)<input type="number" name="rolaTicket" min="0" step="0.01" [(ngModel)]="roLaTicketEur" /><small>Vnesi ceno prevoznika za primerjavo stroškov.</small></label> }
+        <div class="auto-estimate-note">
+          <b>Trajanje vlaka izračunam samodejno.</b
+          ><small
+            >Uporabim ocenjeno železniško razdaljo in modelno povprečje; vozni red v živo ni na
+            voljo.</small
+          >
+        </div>
+        <label
+          >Način priporočila<select name="preference" [(ngModel)]="preference">
+            <option value="cost">Najnižji strošek</option>
+            <option value="emissions">Najmanj emisij</option>
+            <option value="time">Najhitrejša dostava</option>
+          </select></label
+        >
+        @if (usesRoLa) {
+          <label
+            >Cena vozovnice Ro-La (€)<input
+              type="number"
+              name="rolaTicket"
+              min="0"
+              step="0.01"
+              [(ngModel)]="roLaTicketEur"
+            /><small>Vnesi ceno prevoznika za primerjavo stroškov.</small></label
+          >
+        }
       }
     </div>
 
     <h2>Delovni pogoji</h2>
     <div class="form-grid">
-      <div class="duration-inputs"><span>Dodatni čas na poti</span><label>Ure<input type="number" name="extraHours" min="0" max="12" step="1" [(ngModel)]="extraTimeHours" /></label><label>Minute<input type="number" name="extraRemainder" min="0" max="59" step="1" [(ngModel)]="extraTimeRemainderMinutes" /></label><small>Splošni čas za vse relacije: {{ duration(globalExtraTimeMinutes) }}. Dodatek tukaj velja samo za ta izračun.</small></div>
-      <label>Naklad možen od<input type="time" [(ngModel)]="loadingWindowStart" name="lws" /></label>
+      <div class="duration-inputs">
+        <span>Dodatni čas na poti</span
+        ><label
+          >Ure<input
+            type="number"
+            name="extraHours"
+            min="0"
+            max="12"
+            step="1"
+            [(ngModel)]="extraTimeHours" /></label
+        ><label
+          >Minute<input
+            type="number"
+            name="extraRemainder"
+            min="0"
+            max="59"
+            step="1"
+            [(ngModel)]="extraTimeRemainderMinutes" /></label
+        ><small
+          >Splošni čas za vse relacije: {{ duration(globalExtraTimeMinutes) }}. Dodatek tukaj velja
+          samo za ta izračun.</small
+        >
+      </div>
+      <label
+        >Naklad možen od<input type="time" [(ngModel)]="loadingWindowStart" name="lws"
+      /></label>
       <label>Naklad možen do<input type="time" [(ngModel)]="loadingWindowEnd" name="lwe" /></label>
-      <label>Razklad možen od<input type="time" [(ngModel)]="unloadingWindowStart" name="uws" /></label>
-      <label>Razklad možen do<input type="time" [(ngModel)]="unloadingWindowEnd" name="uwe" /></label>
+      <label
+        >Razklad možen od<input type="time" [(ngModel)]="unloadingWindowStart" name="uws"
+      /></label>
+      <label
+        >Razklad možen do<input type="time" [(ngModel)]="unloadingWindowEnd" name="uwe"
+      /></label>
     </div>
     <div class="checks">
       <label><input type="checkbox" [(ngModel)]="adr" name="adr" /> Nevarno blago (ADR/RID)</label>
-      <label><input type="checkbox" [(ngModel)]="weekendBan" name="weekend" /> Upoštevaj Excelov vikend scenarij vožnje</label>
+      <label
+        ><input type="checkbox" [(ngModel)]="weekendBan" name="weekend" /> Upoštevaj Excelov vikend
+        scenarij vožnje</label
+      >
     </div>
 
     <h2>Stroški in emisije</h2>
     <div class="cost-mode">
-      <label><input type="radio" name="mode" value="excel" [(ngModel)]="costMode" /> Excelova ocena <small>Cestni strošek in kombinirani parametri iz tvoje preglednice.</small></label>
-      <label><input type="radio" name="mode" value="detailed" [(ngModel)]="costMode" /> Lastna razčlenitev cestnih stroškov</label>
+      <label
+        ><input type="radio" name="mode" value="excel" [(ngModel)]="costMode" /> Excelova ocena
+        <small>Cestni strošek in kombinirani parametri iz tvoje preglednice.</small></label
+      >
+      <label
+        ><input type="radio" name="mode" value="detailed" [(ngModel)]="costMode" /> Lastna
+        razčlenitev cestnih stroškov</label
+      >
     </div>
     @if (costMode === 'detailed') {
       <div class="form-grid detailed">
-        <label>Cena goriva (€/l)<input type="number" min="0.01" step="0.01" [(ngModel)]="fuelPricePerLitre" name="fuel" /></label>
-        <label>Poraba (l/100 km)<input type="number" min="1" step="0.1" [(ngModel)]="fuelConsumptionLPer100Km" name="consumption" /></label>
-        <label>Strošek voznika (€/h)<input type="number" min="0" step="0.1" [(ngModel)]="driverCostPerHour" name="driver" /></label>
-        <label>Cestnine (€)<input type="number" min="0" step="0.01" [(ngModel)]="tollsEur" name="tolls" /></label>
-        <label>Carina (€)<input type="number" min="0" step="0.01" [(ngModel)]="customsEur" name="customs" /></label>
-        <label>Drugi stroški vozila (€)<input type="number" min="0" step="0.01" [(ngModel)]="otherVehicleEur" name="other" /></label>
+        <label
+          >Cena goriva (€/l)<input
+            type="number"
+            min="0.01"
+            step="0.01"
+            [(ngModel)]="fuelPricePerLitre"
+            name="fuel"
+        /></label>
+        <label
+          >Poraba (l/100 km)<input
+            type="number"
+            min="1"
+            step="0.1"
+            [(ngModel)]="fuelConsumptionLPer100Km"
+            name="consumption"
+        /></label>
+        <label
+          >Strošek voznika (€/h)<input
+            type="number"
+            min="0"
+            step="0.1"
+            [(ngModel)]="driverCostPerHour"
+            name="driver"
+        /></label>
+        <label
+          >Cestnine (€)<input type="number" min="0" step="0.01" [(ngModel)]="tollsEur" name="tolls"
+        /></label>
+        <label
+          >Carina (€)<input
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="customsEur"
+            name="customs"
+        /></label>
+        <label
+          >Drugi stroški vozila (€)<input
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="otherVehicleEur"
+            name="other"
+        /></label>
       </div>
     }
-    <div class="actions"><button class="primary-btn" type="submit" [disabled]="busy()">{{ busy() ? 'Računam…' : 'Izračunaj primerjavo' }}</button>@if (busy()) { <span role="status">{{ progress() }} · {{ elapsed() }} s</span> }</div>
-    @if (error()) { <div class="notice" role="alert">{{ error() }}</div> }
+    <div class="actions">
+      <button class="primary-btn" type="submit" [disabled]="busy()">
+        {{ busy() ? 'Računam…' : 'Izračunaj primerjavo' }}
+      </button>
+      @if (busy()) {
+        <span role="status">{{ progress() }} · {{ elapsed() }} s</span>
+      }
+    </div>
+    @if (error()) {
+      <div class="notice" role="alert">{{ error() }}</div>
+    }
   </form>
 </section>
 
 @if (result(); as r) {
   <section class="panel results">
-    <header><div><span class="eyebrow">{{ scheduleMode === 'arrival' ? 'PREDVIDEN PRIHOD' : 'NAJKASNEJŠI MOŽNI NAKLAD' }}</span><h2>{{ r.origin.label }} → {{ r.destination.label }}</h2><p>{{ r.weightKg | number:'1.0-0' }} kg · {{ r.unitType }} · ocenjena povprečna hitrost na poti {{ r.averageSpeedKmh }} km/h · dodaten čas {{ duration(r.extraTimeMinutes) }}</p></div><div class="status-pill" [class.late]="r.noFeasibleOption">{{ r.noFeasibleOption ? 'Nobena možnost ne dosega pogojev' : 'Priporočilo: ' + (r.preference === 'cost' ? 'cena' : r.preference === 'time' ? 'čas' : 'emisije') }}</div></header>
-    @if (r.comparisonNotice) { <p class="comparison-notice">{{ r.comparisonNotice }}</p> }
+    <header>
+      <div>
+        <span class="eyebrow">{{
+          scheduleMode === 'arrival' ? 'PREDVIDEN PRIHOD' : 'NAJKASNEJŠI MOŽNI NAKLAD'
+        }}</span>
+        <h2>{{ r.origin.label }} → {{ r.destination.label }}</h2>
+        <p>
+          {{ r.weightKg | number: '1.0-0' }} kg · {{ r.unitType }} · ocenjena povprečna hitrost na
+          poti {{ r.averageSpeedKmh }} km/h · dodaten čas {{ duration(r.extraTimeMinutes) }}
+        </p>
+      </div>
+      <div class="status-pill" [class.late]="r.noFeasibleOption">
+        {{
+          r.noFeasibleOption
+            ? 'Nobena možnost ne dosega pogojev'
+            : 'Priporočilo: ' +
+              (r.preference === 'cost' ? 'cena' : r.preference === 'time' ? 'čas' : 'emisije')
+        }}
+      </div>
+    </header>
+    @if (r.comparisonNotice) {
+      <p class="comparison-notice">{{ r.comparisonNotice }}</p>
+    }
     <div class="option-grid">
       @for (option of r.options; track option.id) {
-        <button type="button" class="option-card" [class.recommended]="option.isRecommended" [class.selected]="selectedOptionId() === option.id" (click)="selectOption(option.id)">
-          <span class="option-label">{{ option.title }} @if (option.isRecommended) { <b>PRIPOROČENO</b> }</span>
-          <strong>{{ option.cost.totalEur === null ? 'Cena po ponudbi' : (option.cost.totalEur | number:'1.2-2') + ' €' }}</strong>
-          <span>{{ option.emissionsKgCo2e | number:'1.1-1' }} kg CO₂e</span>
-          <span>{{ option.deliveryAt | date:'d. MMM yyyy, HH:mm' }} · {{ option.totalElapsedHours | number:'1.1-1' }} h</span>
-          <small>{{ option.roadKm | number:'1.0-0' }} km cesta@if (option.railKm) { · {{ option.railKm | number:'1.0-0' }} km železnica }</small>
-          @if (!option.feasible && option.id !== 'road') { <small class="late-note">Ne dosega roka ali Excelove omejitve dveh delovnih dni</small> }
+        <button
+          type="button"
+          class="option-card"
+          [class.recommended]="option.isRecommended"
+          [class.selected]="selectedOptionId() === option.id"
+          (click)="selectOption(option.id)"
+        >
+          <span class="option-label"
+            >{{ option.title }}
+            @if (option.isRecommended) {
+              <b>PRIPOROČENO</b>
+            }
+          </span>
+          <strong>{{
+            option.cost.totalEur === null
+              ? 'Cena po ponudbi'
+              : (option.cost.totalEur | number: '1.2-2') + ' €'
+          }}</strong>
+          <span>{{ option.emissionsKgCo2e | number: '1.1-1' }} kg CO₂e</span>
+          <span
+            >{{ option.deliveryAt | date: 'd. MMM yyyy, HH:mm' }} ·
+            {{ option.totalElapsedHours | number: '1.1-1' }} h</span
+          >
+          <small
+            >{{ option.roadKm | number: '1.0-0' }} km cesta
+            @if (option.railKm) {
+              · {{ option.railKm | number: '1.0-0' }} km železnica
+            }
+          </small>
+          @if (!option.feasible && option.id !== 'road') {
+            <small class="late-note">Ne dosega roka ali Excelove omejitve dveh delovnih dni</small>
+          }
         </button>
       }
     </div>
     @if (currentOption(); as chosen) {
-      <div class="chosen-option"><header><div><span class="eyebrow">IZBRANA MOŽNOST</span><h3>{{ chosen.title }}</h3></div><div class="status-pill" [class.late]="!chosen.onTime">{{ chosen.onTime ? 'Rok dosežen' : 'Po roku' }}</div></header>
-        <div class="metrics"><div><small>Skupni strošek</small><b>{{ chosen.cost.totalEur === null ? 'Zahtevaj ponudbo' : (chosen.cost.totalEur | number:'1.2-2') + ' €' }}</b><small>{{ chosen.cost.mode === 'excel' ? 'Excelova ocena' : 'Lastna razčlenitev' }}</small></div><div><small>Emisije</small><b>{{ chosen.emissionsKgCo2e | number:'1.1-1' }} kg CO₂e</b><small>{{ chosen.roadKm | number:'1.0-0' }} km cesta · {{ chosen.railKm | number:'1.0-0' }} km vlak</small></div><div><small>Prihod v razklad</small><b>{{ chosen.deliveryAt | date:'d. MMM yyyy, HH:mm' }}</b><small>Rok: {{ r.deadlineAt | date:'d. MMM, HH:mm' }}</small></div><div><small>Trajanje poti</small><b>{{ chosen.totalElapsedHours | number:'1.1-1' }} h</b><small>{{ chosen.drivingHours | number:'1.1-1' }} h vožnje · {{ chosen.breakCount }} odmori · {{ chosen.dailyRestCount }} počitki</small></div></div>
-        @if (chosen.cost.includes) { <p class="cost-note">{{ chosen.cost.includes }}</p> }
-        @if (chosen.cost.assumption) { <p class="cost-note">{{ chosen.cost.assumption }}</p> }
-        <div class="result-actions"><button class="primary-btn" type="button" [disabled]="saving()" (click)="save()">{{ saving() ? 'Shranjujem…' : 'Shrani primerjavo v bazo' }}</button><span>{{ saveMessage() }}</span></div>
-        <h3>Časovnica dostave</h3><ol class="timeline">@for (item of chosen.timeline; track trackEvent($index)) { <li [class]="item.type"><span class="dot"></span><div><b>{{ item.title }}</b><small>{{ fmt(item.start) }} – {{ fmt(item.end) }} · {{ duration(item.durationMinutes) }}@if (item.distanceKm) { · {{ item.distanceKm | number:'1.0-0' }} km }</small></div></li> }</ol>
-        @if (chosen.warnings.length || r.warnings.length) { <div class="warnings"><b>Predpostavke in omejitve</b>@for (warning of r.warnings; track warning) { <p>{{ warning }}</p> }@for (warning of chosen.warnings; track warning) { <p>{{ warning }}</p> }</div> }
+      <div class="chosen-option">
+        <header>
+          <div>
+            <span class="eyebrow">IZBRANA MOŽNOST</span>
+            <h3>{{ chosen.title }}</h3>
+          </div>
+          <div class="status-pill" [class.late]="!chosen.onTime">
+            {{ chosen.onTime ? 'Rok dosežen' : 'Po roku' }}
+          </div>
+        </header>
+        <div class="metrics">
+          <div>
+            <small>Skupni strošek</small
+            ><b>{{
+              chosen.cost.totalEur === null
+                ? 'Zahtevaj ponudbo'
+                : (chosen.cost.totalEur | number: '1.2-2') + ' €'
+            }}</b
+            ><small>{{
+              chosen.cost.mode === 'excel' ? 'Excelova ocena' : 'Lastna razčlenitev'
+            }}</small>
+          </div>
+          <div>
+            <small>Emisije</small><b>{{ chosen.emissionsKgCo2e | number: '1.1-1' }} kg CO₂e</b
+            ><small
+              >{{ chosen.roadKm | number: '1.0-0' }} km cesta ·
+              {{ chosen.railKm | number: '1.0-0' }} km vlak</small
+            >
+          </div>
+          <div>
+            <small>Prihod v razklad</small
+            ><b>{{ chosen.deliveryAt | date: 'd. MMM yyyy, HH:mm' }}</b
+            ><small>Rok: {{ r.deadlineAt | date: 'd. MMM, HH:mm' }}</small>
+          </div>
+          <div>
+            <small>Trajanje poti</small><b>{{ chosen.totalElapsedHours | number: '1.1-1' }} h</b
+            ><small
+              >{{ chosen.drivingHours | number: '1.1-1' }} h vožnje · {{ chosen.breakCount }} odmori
+              · {{ chosen.dailyRestCount }} počitki</small
+            >
+          </div>
+        </div>
+        @if (chosen.cost.includes) {
+          <p class="cost-note">{{ chosen.cost.includes }}</p>
+        }
+        @if (chosen.cost.assumption) {
+          <p class="cost-note">{{ chosen.cost.assumption }}</p>
+        }
+        <div class="result-actions">
+          <button class="primary-btn" type="button" [disabled]="saving()" (click)="save()">
+            {{ saving() ? 'Shranjujem…' : 'Shrani primerjavo v bazo' }}</button
+          ><span>{{ saveMessage() }}</span>
+        </div>
+        <h3>Časovnica dostave</h3>
+        <ol class="timeline">
+          @for (item of chosen.timeline; track trackEvent($index)) {
+            <li [class]="item.type">
+              <span class="dot"></span>
+              <div>
+                <b>{{ item.title }}</b
+                ><small
+                  >{{ fmt(item.start) }} – {{ fmt(item.end) }} ·
+                  {{ duration(item.durationMinutes) }}
+                  @if (item.distanceKm) {
+                    · {{ item.distanceKm | number: '1.0-0' }} km
+                  }
+                </small>
+              </div>
+            </li>
+          }
+        </ol>
+        @if (chosen.warnings.length || r.warnings.length) {
+          <div class="warnings">
+            <b>Predpostavke in omejitve</b>
+            @for (warning of r.warnings; track warning) {
+              <p>{{ warning }}</p>
+            }
+            @for (warning of chosen.warnings; track warning) {
+              <p>{{ warning }}</p>
+            }
+          </div>
+        }
         <p class="map-credit">© OpenStreetMap contributors.</p>
       </div>
     }
   </section>
 }
-@if (saved().length) { <section class="panel history"><h2>Nedavni shranjeni izračuni</h2>@for (plan of saved(); track plan.id) { <div><b>{{ plan.origin }} → {{ plan.destination }}</b><span>{{ fmt(plan.createdAt) }} · {{ plan.weightKg | number:'1.0-0' }} kg</span><strong>{{ plan.result.cost.totalEur === null ? 'po ponudbi' : (plan.result.cost.totalEur | number:'1.2-2') + ' €' }}</strong></div> }</section> }
+@if (saved().length) {
+  <section class="panel history">
+    <h2>Nedavni shranjeni izračuni</h2>
+    @for (plan of saved(); track plan.id) {
+      <div>
+        <b>{{ plan.origin }} → {{ plan.destination }}</b
+        ><span>{{ fmt(plan.createdAt) }} · {{ plan.weightKg | number: '1.0-0' }} kg</span
+        ><strong>{{
+          plan.result.cost.totalEur === null
+            ? 'po ponudbi'
+            : (plan.result.cost.totalEur | number: '1.2-2') + ' €'
+        }}</strong>
+      </div>
+    }
+  </section>
+}

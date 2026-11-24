@@ -2,14 +2,21 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { PlacePickerComponent } from '../place-picker/place-picker';
-import { findFreightTerminals, updateSavedDeliveryPlan, type DeliveryOption, type DeliveryPlanInput, type PlaceSelection, type SavedDeliveryPlan } from '../../core/api/delivery-plans-api';
+import {
+  findFreightTerminals,
+  updateSavedDeliveryPlan,
+  type DeliveryOption,
+  type DeliveryPlanInput,
+  type PlaceSelection,
+  type SavedDeliveryPlan,
+} from '../../core/api/delivery-plans-api';
 
 @Component({
   selector: 'app-delivery-plan-details',
   standalone: true,
   imports: [DatePipe, DecimalPipe, FormsModule, PlacePickerComponent],
   templateUrl: './delivery-plan-details.html',
-  styleUrl: './delivery-plan-details.scss'
+  styleUrl: './delivery-plan-details.scss',
 })
 export class DeliveryPlanDetailsComponent {
   @Input({ required: true }) plan!: SavedDeliveryPlan;
@@ -28,7 +35,7 @@ export class DeliveryPlanDetailsComponent {
   }
 
   get hasCombinedOption(): boolean {
-    return this.options.some(option => option.id !== 'road');
+    return this.options.some((option) => option.id !== 'road');
   }
 
   get fastestOption(): DeliveryOption | null {
@@ -38,15 +45,17 @@ export class DeliveryPlanDetailsComponent {
   get selectedOption(): DeliveryOption | null {
     if (this.preferFastest) return this.fastestOption;
     const result = this.plan.result;
-    return this.options.find(option => option.id === result.selectedOptionId)
-      || this.options.find(option => option.id === result.recommendedOptionId)
-      || this.options[0]
-      || null;
+    return (
+      this.options.find((option) => option.id === result.selectedOptionId) ||
+      this.options.find((option) => option.id === result.recommendedOptionId) ||
+      this.options[0] ||
+      null
+    );
   }
 
   get statusOnTime(): boolean {
     return this.preferFastest
-      ? this.selectedOption?.onTime ?? this.plan.result.onTime
+      ? (this.selectedOption?.onTime ?? this.plan.result.onTime)
       : this.plan.result.onTime;
   }
 
@@ -62,7 +71,8 @@ export class DeliveryPlanDetailsComponent {
   setTransportMode(mode: 'road' | 'compare'): void {
     if (!this.editInput) return;
     this.editInput.transportMode = mode;
-    this.preferredOptionId = mode === 'road' ? 'road' : this.combinedOptionId(this.editInput.unitType);
+    this.preferredOptionId =
+      mode === 'road' ? 'road' : this.combinedOptionId(this.editInput.unitType);
   }
 
   async setUnitType(unitType: string): Promise<void> {
@@ -77,7 +87,7 @@ export class DeliveryPlanDetailsComponent {
       const rolaOnly = isRoLaUnit(unitType);
       const [origins, destinations] = await Promise.all([
         findFreightTerminals(input.origin, rolaOnly),
-        findFreightTerminals(input.destination, rolaOnly)
+        findFreightTerminals(input.destination, rolaOnly),
       ]);
       if (this.editInput !== input || input.unitType !== unitType) return;
       input.terminalOrigin = origins[0] ? terminalSelection(origins[0]) : null;
@@ -85,7 +95,8 @@ export class DeliveryPlanDetailsComponent {
     } catch (error) {
       input.terminalOrigin = null;
       input.terminalDestination = null;
-      this.error = error instanceof Error ? error.message : 'Tovornih terminalov ni bilo mogoče poiskati.';
+      this.error =
+        error instanceof Error ? error.message : 'Tovornih terminalov ni bilo mogoče poiskati.';
     } finally {
       this.findingTerminals = false;
     }
@@ -111,10 +122,10 @@ export class DeliveryPlanDetailsComponent {
     const saved = this.plan.input;
     const selectedOptionId = this.selectedOption?.id;
     const unitType = saved?.unitType || this.plan.unitType;
-    const transportMode = saved?.transportMode || (selectedOptionId && selectedOptionId !== 'road' ? 'compare' : 'road');
-    this.preferredOptionId = transportMode === 'compare'
-      ? this.combinedOptionId(unitType)
-      : 'road';
+    const transportMode =
+      saved?.transportMode ||
+      (selectedOptionId && selectedOptionId !== 'road' ? 'compare' : 'road');
+    this.preferredOptionId = transportMode === 'compare' ? this.combinedOptionId(unitType) : 'road';
     this.editInput = {
       ...saved,
       origin: normalizePlace(saved?.origin, this.plan.origin),
@@ -141,8 +152,8 @@ export class DeliveryPlanDetailsComponent {
         driverCostPerHour: Number(saved?.costs?.driverCostPerHour ?? 18),
         tollsEur: Number(saved?.costs?.tollsEur ?? 0),
         customsEur: Number(saved?.costs?.customsEur ?? 0),
-        otherVehicleEur: Number(saved?.costs?.otherVehicleEur ?? 0)
-      }
+        otherVehicleEur: Number(saved?.costs?.otherVehicleEur ?? 0),
+      },
     };
     this.error = '';
     this.editing = true;
@@ -160,13 +171,20 @@ export class DeliveryPlanDetailsComponent {
     this.findingTerminals = true;
     this.error = '';
     try {
-      const terminal = (await findFreightTerminals(place, isRoLaUnit(this.editInput.unitType)))[0] || null;
+      const terminal =
+        (await findFreightTerminals(place, isRoLaUnit(this.editInput.unitType)))[0] || null;
       this.editInput[side === 'origin' ? 'terminalOrigin' : 'terminalDestination'] = terminal
-        ? { label: terminal.label, lat: terminal.lat, lon: terminal.lon, countryCode: terminal.countryCode }
+        ? {
+            label: terminal.label,
+            lat: terminal.lat,
+            lon: terminal.lon,
+            countryCode: terminal.countryCode,
+          }
         : null;
     } catch (error) {
       this.editInput[side === 'origin' ? 'terminalOrigin' : 'terminalDestination'] = null;
-      this.error = error instanceof Error ? error.message : 'Tovornih terminalov ni bilo mogoče poiskati.';
+      this.error =
+        error instanceof Error ? error.message : 'Tovornih terminalov ni bilo mogoče poiskati.';
     } finally {
       this.findingTerminals = false;
     }
@@ -182,23 +200,25 @@ export class DeliveryPlanDetailsComponent {
         try {
           const [origins, destinations] = await Promise.all([
             findFreightTerminals(input.origin, isRoLaUnit(input.unitType)),
-            findFreightTerminals(input.destination, isRoLaUnit(input.unitType))
+            findFreightTerminals(input.destination, isRoLaUnit(input.unitType)),
           ]);
-          input.terminalOrigin = input.terminalOrigin || (origins[0] ? terminalSelection(origins[0]) : null);
-          input.terminalDestination = input.terminalDestination || (destinations[0] ? terminalSelection(destinations[0]) : null);
+          input.terminalOrigin =
+            input.terminalOrigin || (origins[0] ? terminalSelection(origins[0]) : null);
+          input.terminalDestination =
+            input.terminalDestination ||
+            (destinations[0] ? terminalSelection(destinations[0]) : null);
         } catch (error) {
           if (input.transportMode === 'compare') throw error;
         }
       }
-      if (input.transportMode === 'compare' && (!input.terminalOrigin || !input.terminalDestination)) {
+      if (
+        input.transportMode === 'compare' &&
+        (!input.terminalOrigin || !input.terminalDestination)
+      ) {
         throw new Error('Za primerjavo z vlakom ni mogoče najti obeh tovornih terminalov.');
       }
       const selectedOptionId = this.preferredOptionId || this.selectedOption?.id || 'road';
-      const updated = await updateSavedDeliveryPlan(
-        this.plan.id,
-        input,
-        selectedOptionId
-      );
+      const updated = await updateSavedDeliveryPlan(this.plan.id, input, selectedOptionId);
       this.plan = updated;
       this.editing = false;
       this.editInput = null;
@@ -216,7 +236,8 @@ export function fastestDeliveryOption(options: DeliveryOption[]): DeliveryOption
     if (!fastest) return option;
     const arrival = Date.parse(option.deliveryAt);
     const fastestArrival = Date.parse(fastest.deliveryAt);
-    return Number.isFinite(arrival) && (!Number.isFinite(fastestArrival) || arrival < fastestArrival)
+    return Number.isFinite(arrival) &&
+      (!Number.isFinite(fastestArrival) || arrival < fastestArrival)
       ? option
       : fastest;
   }, null);
@@ -228,7 +249,7 @@ function normalizePlace(place: PlaceSelection | null | undefined, label: string)
     lat: place?.lat ?? null,
     lon: place?.lon ?? null,
     countryCode: place?.countryCode || null,
-    state: place?.state || null
+    state: place?.state || null,
   };
 }
 

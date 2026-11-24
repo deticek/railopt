@@ -1,4 +1,76 @@
-<div class="page-heading"><div><span class="eyebrow">DELOVNI PREGLED</span><h1>Pregled poslovanja<span class="heading-period">.</span></h1><p class="muted">Povzetek podatkov iz transportne baze.</p></div></div>
-@if (error) { <div class="notice" role="alert">{{ error }}</div> }
-<section class="metrics-grid"><article class="metric-card"><div class="metric-top"><span>Vse pošiljke</span><span class="metric-icon blue">▤</span></div><div class="metric-value">{{ data?.shipmentCount ?? '…' }}</div><div class="metric-foot">v podatkovni bazi</div></article><article class="metric-card"><div class="metric-top"><span>Relacije</span><span class="metric-icon purple">⌁</span></div><div class="metric-value">{{ data?.routeCount ?? '…' }}</div><div class="metric-foot">uvoženih relacij</div></article><article class="metric-card"><div class="metric-top"><span>Optimizirani prevozi</span><span class="metric-icon green">↗</span></div><div class="metric-value">{{ data?.optimizedCount ?? '…' }}</div><div class="metric-foot">rezultati v bazi</div></article><article class="metric-card"><div class="metric-top"><span>Emisije</span><span class="metric-icon mint">♧</span></div><div class="metric-value">{{ data?.recommendedCo2Kg ?? '…' }} <small>kg CO₂e</small></div><div class="metric-foot">priporočeni prevozi</div></article></section>
-<section class="panel shipments-panel"><div class="panel-heading shipment-heading"><div><h3>Nedavne pošiljke</h3><p>Najnovejši podatki iz baze</p></div></div><div class="table-scroll"><table><thead><tr><th>ŠTEVILKA</th><th>TRANSPORTNA RELACIJA</th><th>STATUS</th><th>NAČIN</th><th>DOSTAVA</th><th>STROŠEK</th><th>CO₂</th></tr></thead><tbody>@for (item of data?.recentShipments ?? []; track item.shipmentNumber) {<tr><td class="shipment-code">#{{ item.shipmentNumber }}</td><td>{{ item.route }}</td><td>{{ item.status }}</td><td>{{ item.transportType }}</td><td>{{ date(item.deliveryDate) }}</td><td>{{ money(item.cost) }}</td><td>{{ item.co2Kg ?? '—' }}</td></tr>} @empty {<tr><td colspan="7" class="empty-row">{{ loading ? 'Nalaganje…' : 'Ni zadnjih pošiljk.' }}</td></tr>}</tbody></table></div></section>
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">DELOVNI PREGLED</span>
+    <h1>Pregled poslovanja<span class="heading-period">.</span></h1>
+    <p class="muted">Povzetek podatkov iz transportne baze.</p>
+  </div>
+</div>
+@if (error) {
+  <div class="notice" role="alert">{{ error }}</div>
+}
+<section class="metrics-grid">
+  <article class="metric-card">
+    <div class="metric-top"><span>Vse pošiljke</span><span class="metric-icon blue">▤</span></div>
+    <div class="metric-value">{{ data?.shipmentCount ?? '…' }}</div>
+    <div class="metric-foot">v podatkovni bazi</div>
+  </article>
+  <article class="metric-card">
+    <div class="metric-top"><span>Relacije</span><span class="metric-icon purple">⌁</span></div>
+    <div class="metric-value">{{ data?.routeCount ?? '…' }}</div>
+    <div class="metric-foot">uvoženih relacij</div>
+  </article>
+  <article class="metric-card">
+    <div class="metric-top">
+      <span>Optimizirani prevozi</span><span class="metric-icon green">↗</span>
+    </div>
+    <div class="metric-value">{{ data?.optimizedCount ?? '…' }}</div>
+    <div class="metric-foot">rezultati v bazi</div>
+  </article>
+  <article class="metric-card">
+    <div class="metric-top"><span>Emisije</span><span class="metric-icon mint">♧</span></div>
+    <div class="metric-value">{{ data?.recommendedCo2Kg ?? '…' }} <small>kg CO₂e</small></div>
+    <div class="metric-foot">priporočeni prevozi</div>
+  </article>
+</section>
+<section class="panel shipments-panel">
+  <div class="panel-heading shipment-heading">
+    <div>
+      <h3>Nedavne pošiljke</h3>
+      <p>Najnovejši podatki iz baze</p>
+    </div>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>ŠTEVILKA</th>
+          <th>TRANSPORTNA RELACIJA</th>
+          <th>STATUS</th>
+          <th>NAČIN</th>
+          <th>DOSTAVA</th>
+          <th>STROŠEK</th>
+          <th>CO₂</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of data?.recentShipments ?? []; track item.shipmentNumber) {
+          <tr>
+            <td class="shipment-code">#{{ item.shipmentNumber }}</td>
+            <td>{{ item.route }}</td>
+            <td>{{ item.status }}</td>
+            <td>{{ item.transportType }}</td>
+            <td>{{ date(item.deliveryDate) }}</td>
+            <td>{{ money(item.cost) }}</td>
+            <td>{{ item.co2Kg ?? '—' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="7" class="empty-row">
+              {{ loading ? 'Nalaganje…' : 'Ni zadnjih pošiljk.' }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

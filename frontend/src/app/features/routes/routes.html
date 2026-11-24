@@ -1,48 +1,429 @@
-<div class="page-heading"><div><span class="eyebrow">MREŽA PREVOZOV</span><h1>Relacije<span class="heading-period">.</span></h1><p class="muted">Uredi relacije in nastavi časovne dodatke za prihodnje ter tekoče prevoze.</p></div></div>
-@if (error) { <div class="notice" role="alert">{{ error }}</div> } @if (message) { <div class="notice success" role="status">{{ message }}</div> }
-<section class="panel full-list" style="margin-top:14px"><div class="list-toolbar"><div><h3>Tekoče in prihajajoče pošiljke</h3><p>{{ currentShipments.length }} v teku · {{ futureShipments.length }} načrtovanih · splošni čas + čas relacije + čas pošiljke</p></div></div><div class="table-scroll"><table><thead><tr><th>ŠTEVILKA</th><th>RELACIJA</th><th>STATUS</th><th>NAKLAD</th><th>PRIČAKOVANA DOSTAVA</th><th>DODATNO ZA POŠILJKO (MIN)</th><th>SHRANI</th><th>STROŠEK</th></tr></thead><tbody>@for (row of [...currentShipments, ...futureShipments]; track row.id) {<tr><td class="shipment-code">{{ row.code }}</td><td>{{ row.route }}</td><td>{{ shipmentStatus(row) }}</td><td>{{ row.loadingDate | date:'d. MMM yyyy' }}</td><td>{{ shipmentArrival(row) | date:'d. MMM yyyy, HH:mm' }}</td><td><input type="number" min="0" max="720" step="15" [name]="'shipment-' + row.id" [(ngModel)]="shipmentEdits[row.id]"></td><td><button class="secondary-btn" type="button" [disabled]="saving === row.id" (click)="saveShipment(row)">{{ saving === row.id ? 'Shranjujem…' : 'Shrani čas' }}</button></td><td>{{ row.cost }}</td></tr>} @empty {<tr><td class="empty-row" colspan="8">{{ loading ? 'Nalaganje…' : shipmentsUnavailable ? 'Pošiljk ni bilo mogoče naložiti. Preveri povezavo z API-jem in podatkovno bazo.' : 'Ni tekočih ali prihodnjih pošiljk.' }}</td></tr>}</tbody></table></div></section>
-<section class="panel full-list" style="margin-top:14px"><div class="list-toolbar"><div><h3>Neizvedene relacije planerja</h3><p>{{ activePlans.length }} aktivnih · {{ historicalPlans.length }} preteklih je v Zgodovini</p></div></div><div class="table-scroll"><table><thead><tr><th>NAKLAD</th><th>RELACIJA</th><th>VRSTA ENOTE</th><th>IZBRANI NAČIN</th><th>PRIČAKOVANI PRIHOD</th><th>DODATNI ČAS</th><th>STROŠEK</th><th></th></tr></thead><tbody>@for (plan of activePlans; track plan.id) {<tr><td>{{ plan.loadingAt | date:'d. MMM yyyy, HH:mm' }}</td><td>{{ plan.origin }} → {{ plan.destination }}</td><td>{{ plan.unitType }}</td><td>{{ plan.result.options.find(option => option.id === plan.result.selectedOptionId)?.title || plan.result.options[0]?.title }}</td><td>{{ plannedArrival(plan) | date:'d. MMM yyyy, HH:mm' }}</td><td>{{ plan.result.extraTimeMinutes + globalExtraTimeMinutes - (plan.input.globalExtraTimeMinutes || 0) }} min</td><td>{{ plan.result.options.find(option => option.id === plan.result.selectedOptionId)?.cost?.totalEur ?? 'Po ponudbi' }} €</td><td><button class="secondary-btn" type="button" (click)="togglePlanDetails(plan.id)">{{ expandedPlanId === plan.id ? 'Skrij' : 'Podrobnosti' }}</button></td></tr>@if (expandedPlanId === plan.id) { <tr><td colspan="8"><app-delivery-plan-details [plan]="plan" (planSaved)="replacePlan($event)" /></td></tr> }} @empty {<tr><td class="empty-row" colspan="8">{{ loading ? 'Nalaganje…' : plansUnavailable ? 'Načrtov ni bilo mogoče naložiti. Preveri povezavo z API-jem in podatkovno bazo.' : historicalPlans.length ? 'Ni neizvedenih načrtov. Pretekli so na voljo v Zgodovini.' : 'V bazi ni načrtovanih relacij.' }}</td></tr>}</tbody></table></div></section>
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">MREŽA PREVOZOV</span>
+    <h1>Relacije<span class="heading-period">.</span></h1>
+    <p class="muted">Uredi relacije in nastavi časovne dodatke za prihodnje ter tekoče prevoze.</p>
+  </div>
+</div>
+
+@if (error) {
+  <div class="notice" role="alert">{{ error }}</div>
+}
+
+@if (message) {
+  <div class="notice success" role="status">{{ message }}</div>
+}
+
+<section class="panel full-list" style="margin-top: 14px">
+  <div class="list-toolbar">
+    <div>
+      <h3>Tekoče in prihajajoče pošiljke</h3>
+      <p>
+        {{ currentShipments.length }} v teku · {{ futureShipments.length }} načrtovanih · splošni
+        čas + čas relacije + čas pošiljke
+      </p>
+    </div>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>ŠTEVILKA</th>
+          <th>RELACIJA</th>
+          <th>STATUS</th>
+          <th>NAKLAD</th>
+          <th>PRIČAKOVANA DOSTAVA</th>
+          <th>DODATNO ZA POŠILJKO (MIN)</th>
+          <th>SHRANI</th>
+          <th>STROŠEK</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of [...currentShipments, ...futureShipments]; track row.id) {
+          <tr>
+            <td class="shipment-code">{{ row.code }}</td>
+            <td>{{ row.route }}</td>
+            <td>{{ shipmentStatus(row) }}</td>
+            <td>{{ row.loadingDate | date: 'd. MMM yyyy' }}</td>
+            <td>{{ shipmentArrival(row) | date: 'd. MMM yyyy, HH:mm' }}</td>
+            <td>
+              <input
+                type="number"
+                min="0"
+                max="720"
+                step="15"
+                [name]="'shipment-' + row.id"
+                [(ngModel)]="shipmentEdits[row.id]"
+              />
+            </td>
+            <td>
+              <button
+                class="secondary-btn"
+                type="button"
+                [disabled]="saving === row.id"
+                (click)="saveShipment(row)"
+              >
+                {{ saving === row.id ? 'Shranjujem…' : 'Shrani čas' }}
+              </button>
+            </td>
+            <td>{{ row.cost }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty-row" colspan="8">
+              {{
+                loading
+                  ? 'Nalaganje…'
+                  : shipmentsUnavailable
+                    ? 'Pošiljk ni bilo mogoče naložiti. Preveri povezavo z API-jem in podatkovno bazo.'
+                    : 'Ni tekočih ali prihodnjih pošiljk.'
+              }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+<section class="panel full-list" style="margin-top: 14px">
+  <div class="list-toolbar">
+    <div>
+      <h3>Neizvedene relacije planerja</h3>
+      <p>
+        {{ activePlans.length }} aktivnih · {{ historicalPlans.length }} preteklih je v Zgodovini
+      </p>
+    </div>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>NAKLAD</th>
+          <th>RELACIJA</th>
+          <th>VRSTA ENOTE</th>
+          <th>IZBRANI NAČIN</th>
+          <th>PRIČAKOVANI PRIHOD</th>
+          <th>DODATNI ČAS</th>
+          <th>STROŠEK</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (plan of activePlans; track plan.id) {
+          <tr>
+            <td>{{ plan.loadingAt | date: 'd. MMM yyyy, HH:mm' }}</td>
+            <td>{{ plan.origin }} → {{ plan.destination }}</td>
+            <td>{{ plan.unitType }}</td>
+            <td>
+              {{
+                plan.result.options.find((option) => option.id === plan.result.selectedOptionId)
+                  ?.title || plan.result.options[0]?.title
+              }}
+            </td>
+            <td>{{ plannedArrival(plan) | date: 'd. MMM yyyy, HH:mm' }}</td>
+            <td>
+              {{
+                plan.result.extraTimeMinutes +
+                  globalExtraTimeMinutes -
+                  (plan.input.globalExtraTimeMinutes || 0)
+              }}
+              min
+            </td>
+            <td>
+              {{
+                plan.result.options.find((option) => option.id === plan.result.selectedOptionId)
+                  ?.cost?.totalEur ?? 'Po ponudbi'
+              }}
+              €
+            </td>
+            <td>
+              <button class="secondary-btn" type="button" (click)="togglePlanDetails(plan.id)">
+                {{ expandedPlanId === plan.id ? 'Skrij' : 'Podrobnosti' }}
+              </button>
+            </td>
+          </tr>
+          @if (expandedPlanId === plan.id) {
+            <tr>
+              <td colspan="8">
+                <app-delivery-plan-details [plan]="plan" (planSaved)="replacePlan($event)" />
+              </td>
+            </tr>
+          }
+        } @empty {
+          <tr>
+            <td class="empty-row" colspan="8">
+              {{
+                loading
+                  ? 'Nalaganje…'
+                  : plansUnavailable
+                    ? 'Načrtov ni bilo mogoče naložiti. Preveri povezavo z API-jem in podatkovno bazo.'
+                    : historicalPlans.length
+                      ? 'Ni neizvedenih načrtov. Pretekli so na voljo v Zgodovini.'
+                      : 'V bazi ni načrtovanih relacij.'
+              }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
 @if (editingPlan && planForm) {
   <section class="panel route-editor-panel plan-editor-panel">
-    <div class="list-toolbar"><div><h3>Uredi načrtovano relacijo</h3><p>Spremeni podatke, izberi cesto ali Ro-La in shrani posodobljen izračun.</p></div><button type="button" class="secondary-btn" (click)="editingPlan = null">Zapri</button></div>
-    <div class="plan-editor-summary"><b>{{ planForm.origin.label }} → {{ planForm.destination.label }}</b><span>{{ planForm.weightKg | number:'1.0-0' }} kg · {{ planForm.unitType }} · prihod {{ editingPlan.result.deliveryAt | date:'d. MMM yyyy, HH:mm' }}</span></div>
+    <div class="list-toolbar">
+      <div>
+        <h3>Uredi načrtovano relacijo</h3>
+        <p>Spremeni podatke, izberi cesto ali Ro-La in shrani posodobljen izračun.</p>
+      </div>
+      <button type="button" class="secondary-btn" (click)="editingPlan = null">Zapri</button>
+    </div>
+    <div class="plan-editor-summary">
+      <b>{{ planForm.origin.label }} → {{ planForm.destination.label }}</b
+      ><span
+        >{{ planForm.weightKg | number: '1.0-0' }} kg · {{ planForm.unitType }} · prihod
+        {{ editingPlan.result.deliveryAt | date: 'd. MMM yyyy, HH:mm' }}</span
+      >
+    </div>
     <form class="route-editor" (ngSubmit)="savePlan()">
-      <label>Nakladna lokacija<app-place-picker title="Izberi kraj naklada" [initial]="planForm.origin" (selected)="setPlanLocation('origin', $event); refreshPlanComparison()" /></label>
-      <label>Lokacija razklada<app-place-picker title="Izberi kraj razklada" [initial]="planForm.destination" (selected)="setPlanLocation('destination', $event); refreshPlanComparison()" /></label>
-      <label>Termin naklada<input type="datetime-local" name="planLoad" [ngModel]="planForm.loadingAt" (ngModelChange)="setPlanInputValue('loadingAt', $event); refreshPlanComparison()" required></label>
-      <label>Rok dostave<input type="datetime-local" name="planDeadline" [ngModel]="planForm.deliveryDeadlineAt" (ngModelChange)="setPlanInputValue('deliveryDeadlineAt', $event); refreshPlanComparison()" required></label>
-      <label>Teža tovora (kg)<input type="number" min="1" max="24000" name="planWeight" [ngModel]="planForm.weightKg" (ngModelChange)="setPlanInputValue('weightKg', $event); refreshPlanComparison()" required></label>
-      <label>Vrsta enote<input name="planUnit" [ngModel]="planForm.unitType" (ngModelChange)="setPlanInputValue('unitType', $event); refreshPlanComparison()" required></label>
-      <label>Dodaten čas – ure<input type="number" min="0" max="12" name="planExtraHours" [ngModel]="planExtraTimeHours" (ngModelChange)="setPlanExtraTime('hours', $event)"></label>
-      <label>Dodaten čas – minute<input type="number" min="0" max="59" name="planExtraMinutes" [ngModel]="planExtraTimeRemainderMinutes" (ngModelChange)="setPlanExtraTime('minutes', $event)"></label>
-      <label>Prednost priporočila<select name="planPreference" [ngModel]="planForm.preference" (ngModelChange)="setPlanInputValue('preference', $event)"><option value="cost">Najnižja cena</option><option value="time">Najkrajši čas</option><option value="emissions">Najmanj emisij</option></select></label>
-      <label>Cena vozovnice Ro-La (€)<input type="number" min="0" step="0.01" name="planRolaPrice" [ngModel]="planForm.roLaTicketEur" (ngModelChange)="setPlanInputValue('roLaTicketEur', $event)"></label>
-      <label>Začetek nakladanja od<input type="time" name="planLoadStart" [ngModel]="planForm.loadingWindowStart" (ngModelChange)="setPlanInputValue('loadingWindowStart', $event)"></label>
-      <label>Začetek nakladanja do<input type="time" name="planLoadEnd" [ngModel]="planForm.loadingWindowEnd" (ngModelChange)="setPlanInputValue('loadingWindowEnd', $event)"></label>
-      <label>Razklad od<input type="time" name="planUnloadStart" [ngModel]="planForm.unloadingWindowStart" (ngModelChange)="setPlanInputValue('unloadingWindowStart', $event)"></label>
-      <label>Razklad do<input type="time" name="planUnloadEnd" [ngModel]="planForm.unloadingWindowEnd" (ngModelChange)="setPlanInputValue('unloadingWindowEnd', $event)"></label>
-      <label class="check-label"><input type="checkbox" name="planAdr" [ngModel]="planForm.adr" (ngModelChange)="setPlanCheckbox('adr', $event)"><span>Nevarno blago (ADR/RID)</span></label>
-      <label class="check-label"><input type="checkbox" name="planWeekend" [ngModel]="planForm.weekendBan" (ngModelChange)="setPlanCheckbox('weekendBan', $event)"><span>Upoštevaj vikend omejitve</span></label>
-      <label>Model stroškov<select name="planCostMode" [ngModel]="planForm.costMode" (ngModelChange)="setPlanInputValue('costMode', $event)"><option value="excel">Excelova ocena</option><option value="detailed">Lastna razčlenitev</option></select></label>
+      <label
+        >Nakladna lokacija<app-place-picker
+          title="Izberi kraj naklada"
+          [initial]="planForm.origin"
+          (selected)="setPlanLocation('origin', $event); refreshPlanComparison()"
+      /></label>
+      <label
+        >Lokacija razklada<app-place-picker
+          title="Izberi kraj razklada"
+          [initial]="planForm.destination"
+          (selected)="setPlanLocation('destination', $event); refreshPlanComparison()"
+      /></label>
+      <label
+        >Termin naklada<input
+          type="datetime-local"
+          name="planLoad"
+          [ngModel]="planForm.loadingAt"
+          (ngModelChange)="setPlanInputValue('loadingAt', $event); refreshPlanComparison()"
+          required
+      /></label>
+      <label
+        >Rok dostave<input
+          type="datetime-local"
+          name="planDeadline"
+          [ngModel]="planForm.deliveryDeadlineAt"
+          (ngModelChange)="setPlanInputValue('deliveryDeadlineAt', $event); refreshPlanComparison()"
+          required
+      /></label>
+      <label
+        >Teža tovora (kg)<input
+          type="number"
+          min="1"
+          max="24000"
+          name="planWeight"
+          [ngModel]="planForm.weightKg"
+          (ngModelChange)="setPlanInputValue('weightKg', $event); refreshPlanComparison()"
+          required
+      /></label>
+      <label
+        >Vrsta enote<input
+          name="planUnit"
+          [ngModel]="planForm.unitType"
+          (ngModelChange)="setPlanInputValue('unitType', $event); refreshPlanComparison()"
+          required
+      /></label>
+      <label
+        >Dodaten čas – ure<input
+          type="number"
+          min="0"
+          max="12"
+          name="planExtraHours"
+          [ngModel]="planExtraTimeHours"
+          (ngModelChange)="setPlanExtraTime('hours', $event)"
+      /></label>
+      <label
+        >Dodaten čas – minute<input
+          type="number"
+          min="0"
+          max="59"
+          name="planExtraMinutes"
+          [ngModel]="planExtraTimeRemainderMinutes"
+          (ngModelChange)="setPlanExtraTime('minutes', $event)"
+      /></label>
+      <label
+        >Prednost priporočila<select
+          name="planPreference"
+          [ngModel]="planForm.preference"
+          (ngModelChange)="setPlanInputValue('preference', $event)"
+        >
+          <option value="cost">Najnižja cena</option>
+          <option value="time">Najkrajši čas</option>
+          <option value="emissions">Najmanj emisij</option>
+        </select></label
+      >
+      <label
+        >Cena vozovnice Ro-La (€)<input
+          type="number"
+          min="0"
+          step="0.01"
+          name="planRolaPrice"
+          [ngModel]="planForm.roLaTicketEur"
+          (ngModelChange)="setPlanInputValue('roLaTicketEur', $event)"
+      /></label>
+      <label
+        >Začetek nakladanja od<input
+          type="time"
+          name="planLoadStart"
+          [ngModel]="planForm.loadingWindowStart"
+          (ngModelChange)="setPlanInputValue('loadingWindowStart', $event)"
+      /></label>
+      <label
+        >Začetek nakladanja do<input
+          type="time"
+          name="planLoadEnd"
+          [ngModel]="planForm.loadingWindowEnd"
+          (ngModelChange)="setPlanInputValue('loadingWindowEnd', $event)"
+      /></label>
+      <label
+        >Razklad od<input
+          type="time"
+          name="planUnloadStart"
+          [ngModel]="planForm.unloadingWindowStart"
+          (ngModelChange)="setPlanInputValue('unloadingWindowStart', $event)"
+      /></label>
+      <label
+        >Razklad do<input
+          type="time"
+          name="planUnloadEnd"
+          [ngModel]="planForm.unloadingWindowEnd"
+          (ngModelChange)="setPlanInputValue('unloadingWindowEnd', $event)"
+      /></label>
+      <label class="check-label"
+        ><input
+          type="checkbox"
+          name="planAdr"
+          [ngModel]="planForm.adr"
+          (ngModelChange)="setPlanCheckbox('adr', $event)"
+        /><span>Nevarno blago (ADR/RID)</span></label
+      >
+      <label class="check-label"
+        ><input
+          type="checkbox"
+          name="planWeekend"
+          [ngModel]="planForm.weekendBan"
+          (ngModelChange)="setPlanCheckbox('weekendBan', $event)"
+        /><span>Upoštevaj vikend omejitve</span></label
+      >
+      <label
+        >Model stroškov<select
+          name="planCostMode"
+          [ngModel]="planForm.costMode"
+          (ngModelChange)="setPlanInputValue('costMode', $event)"
+        >
+          <option value="excel">Excelova ocena</option>
+          <option value="detailed">Lastna razčlenitev</option>
+        </select></label
+      >
       @if (planForm.costMode === 'detailed') {
-        <label>Cena goriva (€/l)<input type="number" min="0.01" step="0.01" name="planFuel" [ngModel]="planForm.costs.fuelPricePerLitre" (ngModelChange)="setPlanCostValue('fuelPricePerLitre', $event)"></label>
-        <label>Poraba (l/100 km)<input type="number" min="1" step="0.1" name="planConsumption" [ngModel]="planForm.costs.fuelConsumptionLPer100Km" (ngModelChange)="setPlanCostValue('fuelConsumptionLPer100Km', $event)"></label>
-        <label>Strošek voznika (€/h)<input type="number" min="0" step="0.1" name="planDriver" [ngModel]="planForm.costs.driverCostPerHour" (ngModelChange)="setPlanCostValue('driverCostPerHour', $event)"></label>
-        <label>Cestnine (€)<input type="number" min="0" step="0.01" name="planTolls" [ngModel]="planForm.costs.tollsEur" (ngModelChange)="setPlanCostValue('tollsEur', $event)"></label>
-        <label>Carina (€)<input type="number" min="0" step="0.01" name="planCustoms" [ngModel]="planForm.costs.customsEur" (ngModelChange)="setPlanCostValue('customsEur', $event)"></label>
-        <label>Drugi stroški (€)<input type="number" min="0" step="0.01" name="planOther" [ngModel]="planForm.costs.otherVehicleEur" (ngModelChange)="setPlanCostValue('otherVehicleEur', $event)"></label>
+        <label
+          >Cena goriva (€/l)<input
+            type="number"
+            min="0.01"
+            step="0.01"
+            name="planFuel"
+            [ngModel]="planForm.costs.fuelPricePerLitre"
+            (ngModelChange)="setPlanCostValue('fuelPricePerLitre', $event)"
+        /></label>
+        <label
+          >Poraba (l/100 km)<input
+            type="number"
+            min="1"
+            step="0.1"
+            name="planConsumption"
+            [ngModel]="planForm.costs.fuelConsumptionLPer100Km"
+            (ngModelChange)="setPlanCostValue('fuelConsumptionLPer100Km', $event)"
+        /></label>
+        <label
+          >Strošek voznika (€/h)<input
+            type="number"
+            min="0"
+            step="0.1"
+            name="planDriver"
+            [ngModel]="planForm.costs.driverCostPerHour"
+            (ngModelChange)="setPlanCostValue('driverCostPerHour', $event)"
+        /></label>
+        <label
+          >Cestnine (€)<input
+            type="number"
+            min="0"
+            step="0.01"
+            name="planTolls"
+            [ngModel]="planForm.costs.tollsEur"
+            (ngModelChange)="setPlanCostValue('tollsEur', $event)"
+        /></label>
+        <label
+          >Carina (€)<input
+            type="number"
+            min="0"
+            step="0.01"
+            name="planCustoms"
+            [ngModel]="planForm.costs.customsEur"
+            (ngModelChange)="setPlanCostValue('customsEur', $event)"
+        /></label>
+        <label
+          >Drugi stroški (€)<input
+            type="number"
+            min="0"
+            step="0.01"
+            name="planOther"
+            [ngModel]="planForm.costs.otherVehicleEur"
+            (ngModelChange)="setPlanCostValue('otherVehicleEur', $event)"
+        /></label>
       }
-      <div class="route-editor-actions"><button class="primary-btn plan-save-button" [disabled]="saving === 'plan' || planComparisonBusy"><span>Shrani in preračunaj</span>@if (saving === 'plan') { <span class="save-state">Shranjujem…</span> }</button><button class="secondary-btn" type="button" (click)="editingPlan = null">Prekliči</button></div>
+      <div class="route-editor-actions">
+        <button
+          class="primary-btn plan-save-button"
+          [disabled]="saving === 'plan' || planComparisonBusy"
+        >
+          <span>Shrani in preračunaj</span>
+          @if (saving === 'plan') {
+            <span class="save-state">Shranjujem…</span>
+          }</button
+        ><button class="secondary-btn" type="button" (click)="editingPlan = null">Prekliči</button>
+      </div>
     </form>
-    @if (planComparisonBusy) { <div class="shipment-preview" role="status">Pripravljam primerjavo ceste in Ro-La…</div> }
+    @if (planComparisonBusy) {
+      <div class="shipment-preview" role="status">Pripravljam primerjavo ceste in Ro-La…</div>
+    }
     <div class="shipment-comparison">
-      <h4>Izberi način prevoza</h4><p>Primerjaj možnosti za to relacijo; ob shranjevanju se vsi rezultati preračunajo po spremenjenih podatkih.</p>
+      <h4>Izberi način prevoza</h4>
+      <p>
+        Primerjaj možnosti za to relacijo; ob shranjevanju se vsi rezultati preračunajo po
+        spremenjenih podatkih.
+      </p>
       <div class="shipment-comparison-cards">
         @for (option of editingPlan.result.options; track option.id) {
-          <button type="button" class="shipment-option" [class.selected]="editingPlan.result.selectedOptionId === option.id" (click)="selectPlanOption(editingPlan, option)">
-            <span>{{ option.title }}</span><strong>{{ option.cost.totalEur === null ? 'Cena po ponudbi' : (option.cost.totalEur | number:'1.2-2') + ' €' }}</strong>
-            <span>{{ option.emissionsKgCo2e | number:'1.1-1' }} kg CO₂e</span><span>{{ option.deliveryAt | date:'d. MMM yyyy, HH:mm' }} · {{ option.totalElapsedHours | number:'1.1-1' }} h</span>
-            <small>{{ option.roadKm | number:'1.0-0' }} km cesta @if (option.railKm) { · {{ option.railKm | number:'1.0-0' }} km vlak }</small>
+          <button
+            type="button"
+            class="shipment-option"
+            [class.selected]="editingPlan.result.selectedOptionId === option.id"
+            (click)="selectPlanOption(editingPlan, option)"
+          >
+            <span>{{ option.title }}</span><strong>{{
+              option.cost.totalEur === null
+                ? 'Cena po ponudbi'
+                : (option.cost.totalEur | number: '1.2-2') + ' €'
+            }}</strong>
+            <span>{{ option.emissionsKgCo2e | number: '1.1-1' }} kg CO₂e</span
+            ><span
+              >{{ option.deliveryAt | date: 'd. MMM yyyy, HH:mm' }} ·
+              {{ option.totalElapsedHours | number: '1.1-1' }} h</span
+            >
+            <small
+              >{{ option.roadKm | number: '1.0-0' }} km cesta
+              @if (option.railKm) {
+                · {{ option.railKm | number: '1.0-0' }} km vlak
+              }
+            </small>
           </button>
         }
       </div>
@@ -52,40 +433,131 @@
 
 @if (editingShipment; as shipment) {
   <section class="panel route-editor-panel">
-    <div class="list-toolbar"><div><h3>Urejanje pošiljke {{ shipment.code }}</h3><p>Uvoženi podatki, način prevoza in teža tovora.</p></div><button type="button" class="secondary-btn" (click)="editingShipment = null">Zapri</button></div>
+    <div class="list-toolbar">
+      <div>
+        <h3>Urejanje pošiljke {{ shipment.code }}</h3>
+        <p>Uvoženi podatki, način prevoza in teža tovora.</p>
+      </div>
+      <button type="button" class="secondary-btn" (click)="editingShipment = null">Zapri</button>
+    </div>
     <form class="route-editor" (ngSubmit)="saveShipmentDetails()">
-      <label>Številka<input name="shipmentNumber" [(ngModel)]="shipment.code" required></label>
-      <label>Relacija<select name="shipmentRoute" [(ngModel)]="shipment.routeId" required>@for (route of rows; track route.id) {<option [ngValue]="route.id">{{ route.code }} · {{ route.from }} → {{ route.to }}</option>}</select></label>
-      <label>Datum naklada<input type="date" name="shipmentLoading" [(ngModel)]="shipment.loadingDate" required></label>
-      <label>Datum dostave<input type="date" name="shipmentDelivery" [(ngModel)]="shipment.deliveryDateRaw" required></label>
-      <label>Rok prejemnika<input type="date" name="shipmentDeadline" [(ngModel)]="shipment.recipientDeadline" required></label>
-      <label>Teža tovora (kg)<input type="number" min="1" name="shipmentWeight" [(ngModel)]="shipment.weightKg" required></label>
-      <label>Vrsta enote<input name="shipmentUnit" [(ngModel)]="shipment.unitType" required></label>
-      <label class="check-label"><input type="checkbox" name="shipmentAdr" [(ngModel)]="shipment.adr"><span>ADR tovor</span></label>
-      <div class="route-editor-actions"><button class="primary-btn" [disabled]="saving === 'shipment-data' || shipmentModePreviewBusy">{{ saving === 'shipment-data' ? 'Shranjujem…' : 'Shrani podatke in izbrani način' }}</button><button class="secondary-btn" type="button" (click)="editingShipment = null">Prekliči</button></div>
+      <label>Številka<input name="shipmentNumber" [(ngModel)]="shipment.code" required /></label>
+      <label
+        >Relacija<select name="shipmentRoute" [(ngModel)]="shipment.routeId" required>
+          @for (route of rows; track route.id) {
+            <option [ngValue]="route.id">
+              {{ route.code }} · {{ route.from }} → {{ route.to }}
+            </option>
+          }
+        </select></label
+      >
+      <label
+        >Datum naklada<input
+          type="date"
+          name="shipmentLoading"
+          [(ngModel)]="shipment.loadingDate"
+          required
+      /></label>
+      <label
+        >Datum dostave<input
+          type="date"
+          name="shipmentDelivery"
+          [(ngModel)]="shipment.deliveryDateRaw"
+          required
+      /></label>
+      <label
+        >Rok prejemnika<input
+          type="date"
+          name="shipmentDeadline"
+          [(ngModel)]="shipment.recipientDeadline"
+          required
+      /></label>
+      <label
+        >Teža tovora (kg)<input
+          type="number"
+          min="1"
+          name="shipmentWeight"
+          [(ngModel)]="shipment.weightKg"
+          required
+      /></label>
+      <label
+        >Vrsta enote<input name="shipmentUnit" [(ngModel)]="shipment.unitType" required
+      /></label>
+      <label class="check-label"
+        ><input type="checkbox" name="shipmentAdr" [(ngModel)]="shipment.adr" /><span
+          >ADR tovor</span
+        ></label
+      >
+      <div class="route-editor-actions">
+        <button
+          class="primary-btn"
+          [disabled]="saving === 'shipment-data' || shipmentModePreviewBusy"
+        >
+          {{
+            saving === 'shipment-data' ? 'Shranjujem…' : 'Shrani podatke in izbrani način'
+          }}</button
+        ><button class="secondary-btn" type="button" (click)="editingShipment = null">
+          Prekliči
+        </button>
+      </div>
     </form>
     @if (shipmentComparison.length > 0) {
-      <label class="shipment-mode-select">Izbrani način prevoza
-        <select name="shipmentModeChoice" [ngModel]="shipmentModes[shipment.id]" (ngModelChange)="chooseShipmentMode($event, shipment)">
+      <label class="shipment-mode-select"
+        >Izbrani način prevoza
+        <select
+          name="shipmentModeChoice"
+          [ngModel]="shipmentModes[shipment.id]"
+          (ngModelChange)="chooseShipmentMode($event, shipment)"
+        >
           @for (option of shipmentComparison; track option.id) {
-            <option [ngValue]="option.id === 'road' ? 'ROAD' : option.id === 'rail' ? 'INTERMODAL' : 'RO_LA'">{{ option.title }}</option>
+            <option
+              [ngValue]="
+                option.id === 'road' ? 'ROAD' : option.id === 'rail' ? 'INTERMODAL' : 'RO_LA'
+              "
+            >
+              {{ option.title }}
+            </option>
           }
         </select>
       </label>
-    }    @if (shipmentModePreviewBusy) { <div class="shipment-preview" role="status">Primerjam cesto in razpoložljive železniške možnosti…</div> }
+    }
+    @if (shipmentModePreviewBusy) {
+      <div class="shipment-preview" role="status">
+        Primerjam cesto in razpoložljive železniške možnosti…
+      </div>
+    }
     @if (shipmentComparison.length > 0) {
       <div class="shipment-comparison">
         <h4>Primerjava možnosti prevoza</h4>
         <p>Izberi možnost; strošek, emisije, trajanje in prihod so izračunani za to pošiljko.</p>
         <div class="shipment-comparison-cards">
           @for (option of shipmentComparison; track option.id) {
-            <button type="button" class="shipment-option" [class.selected]="shipmentOptionSelected(option, shipment)" (click)="selectShipmentOption(option, shipment)">
+            <button
+              type="button"
+              class="shipment-option"
+              [class.selected]="shipmentOptionSelected(option, shipment)"
+              (click)="selectShipmentOption(option, shipment)"
+            >
               <span>{{ option.title }}</span>
-              <strong>{{ option.costEur === null ? 'Cena po ponudbi' : (option.costEur | number:'1.2-2') + ' €' }}</strong>
-              <span>{{ option.emissionsKgCo2e | number:'1.1-1' }} kg CO₂e</span>
-              <span>{{ option.deliveryAt | date:'d. MMM yyyy, HH:mm' }} · {{ option.totalElapsedHours | number:'1.1-1' }} h</span>
-              <small>{{ option.roadKm | number:'1.0-0' }} km cesta @if (option.railKm) { · {{ option.railKm | number:'1.0-0' }} km vlak }</small>
-              @if (!option.feasible) { <small>Ta možnost ne doseže roka</small> }
+              <strong>{{
+                option.costEur === null
+                  ? 'Cena po ponudbi'
+                  : (option.costEur | number: '1.2-2') + ' €'
+              }}</strong>
+              <span>{{ option.emissionsKgCo2e | number: '1.1-1' }} kg CO₂e</span>
+              <span
+                >{{ option.deliveryAt | date: 'd. MMM yyyy, HH:mm' }} ·
+                {{ option.totalElapsedHours | number: '1.1-1' }} h</span
+              >
+              <small
+                >{{ option.roadKm | number: '1.0-0' }} km cesta
+                @if (option.railKm) {
+                  · {{ option.railKm | number: '1.0-0' }} km vlak
+                }
+              </small>
+              @if (!option.feasible) {
+                <small>Ta možnost ne doseže roka</small>
+              }
             </button>
           }
         </div>
@@ -95,37 +567,264 @@
   </section>
 }
 
-<section class="panel full-list" style="margin-top:14px"><div class="list-toolbar"><div><h3>Uvožene pošiljke</h3><p>{{ shipments.length }} zapisov · izračunani stroški, emisije in prihod</p></div></div><div class="table-scroll"><table><thead><tr><th>ŠTEVILKA</th><th>RELACIJA</th><th>NAKLAD</th><th>DOSTAVA</th><th>TEŽA</th><th>ENOTA</th><th>IZRAČUNAN PRIHOD</th><th>STROŠEK</th><th>CO₂</th><th></th></tr></thead><tbody>@for (row of shipments; track row.id) {<tr><td class="shipment-code">{{ row.code }}</td><td>{{ row.route }}</td><td>{{ row.loadingDate | date:'d. MMM yyyy' }}</td><td>{{ row.date }}</td><td>{{ row.weightKg == null ? 'Manjka' : (row.weightKg | number:'1.0-0') + ' kg' }}</td><td>{{ row.unitType }}</td><td>{{ row.calculatedDeliveryAt ? (row.calculatedDeliveryAt | date:"d. MMM yyyy, HH:mm") : "—" }}</td><td>{{ row.cost }}</td><td>{{ row.co2 }}</td><td><button class="secondary-btn" type="button" (click)="editShipment(row)">Uredi podatke</button></td></tr>} @empty {<tr><td class="empty-row" colspan="10">{{ loading ? 'Nalaganje…' : shipmentsUnavailable ? 'Pošiljk ni bilo mogoče naložiti. Preveri povezavo z API-jem in podatkovno bazo.' : 'V bazi ni pošiljk.' }}</td></tr>}</tbody></table></div></section>
+<section class="panel full-list" style="margin-top: 14px">
+  <div class="list-toolbar">
+    <div>
+      <h3>Uvožene pošiljke</h3>
+      <p>{{ shipments.length }} zapisov · izračunani stroški, emisije in prihod</p>
+    </div>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>ŠTEVILKA</th>
+          <th>RELACIJA</th>
+          <th>NAKLAD</th>
+          <th>DOSTAVA</th>
+          <th>TEŽA</th>
+          <th>ENOTA</th>
+          <th>IZRAČUNAN PRIHOD</th>
+          <th>STROŠEK</th>
+          <th>CO₂</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of shipments; track row.id) {
+          <tr>
+            <td class="shipment-code">{{ row.code }}</td>
+            <td>{{ row.route }}</td>
+            <td>{{ row.loadingDate | date: 'd. MMM yyyy' }}</td>
+            <td>{{ row.date }}</td>
+            <td>
+              {{ row.weightKg == null ? 'Manjka' : (row.weightKg | number: '1.0-0') + ' kg' }}
+            </td>
+            <td>{{ row.unitType }}</td>
+            <td>
+              {{
+                row.calculatedDeliveryAt
+                  ? (row.calculatedDeliveryAt | date: 'd. MMM yyyy, HH:mm')
+                  : '—'
+              }}
+            </td>
+            <td>{{ row.cost }}</td>
+            <td>{{ row.co2 }}</td>
+            <td>
+              <button class="secondary-btn" type="button" (click)="editShipment(row)">
+                Uredi podatke
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty-row" colspan="10">
+              {{
+                loading
+                  ? 'Nalaganje…'
+                  : shipmentsUnavailable
+                    ? 'Pošiljk ni bilo mogoče naložiti. Preveri povezavo z API-jem in podatkovno bazo.'
+                    : 'V bazi ni pošiljk.'
+              }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
 
-<section class="panel route-buffer"><div><h3>Splošni dodatni čas</h3><p>Prišteje se planerju in vsem tekočim ali prihodnjim relacijam. Pretekla zgodovina ostane nespremenjena.</p></div><label>Minute<input type="number" min="0" max="720" step="15" name="globalExtraTime" [(ngModel)]="globalExtraTimeMinutes"></label><button class="primary-btn" type="button" [disabled]="saving === 'global'" (click)="saveGlobal()">{{ saving === 'global' ? 'Shranjujem…' : 'Shrani splošni čas' }}</button></section>
+<section class="panel route-buffer">
+  <div>
+    <h3>Splošni dodatni čas</h3>
+    <p>
+      Prišteje se planerju in vsem tekočim ali prihodnjim relacijam. Pretekla zgodovina ostane
+      nespremenjena.
+    </p>
+  </div>
+  <label
+    >Minute<input
+      type="number"
+      min="0"
+      max="720"
+      step="15"
+      name="globalExtraTime"
+      [(ngModel)]="globalExtraTimeMinutes" /></label
+  ><button
+    class="primary-btn"
+    type="button"
+    [disabled]="saving === 'global'"
+    (click)="saveGlobal()"
+  >
+    {{ saving === 'global' ? 'Shranjujem…' : 'Shrani splošni čas' }}
+  </button>
+</section>
 
 @if (editing; as edit) {
-  <section class="panel route-editor-panel"><div class="list-toolbar"><div><h3>Urejanje relacije {{ edit.code }}</h3><p>Spremembe se shranijo v podatkovno bazo.</p></div><button type="button" class="secondary-btn" (click)="editing = null">Zapri</button></div>
+  <section class="panel route-editor-panel">
+    <div class="list-toolbar">
+      <div>
+        <h3>Urejanje relacije {{ edit.code }}</h3>
+        <p>Spremembe se shranijo v podatkovno bazo.</p>
+      </div>
+      <button type="button" class="secondary-btn" (click)="editing = null">Zapri</button>
+    </div>
     <form class="route-editor" (ngSubmit)="saveRoute()">
-      <label>Oznaka<input name="routeCode" maxlength="3" [(ngModel)]="edit.code" required></label>
-      <label>Smer<select name="direction" [(ngModel)]="edit.direction"><option>Izvoz</option><option>Uvoz</option></select></label>
-      <label>Država naklada<input name="loadingCountry" maxlength="2" [(ngModel)]="edit.loadingCountry" required></label>
-      <label>Poštna številka naklada<input name="loadingPostal" maxlength="15" [(ngModel)]="edit.loadingPostalCode" required></label>
-      <label>Kraj naklada<input name="loadingCity" maxlength="100" [(ngModel)]="edit.loadingCity" required></label>
-      <label>Država razklada<input name="unloadingCountry" maxlength="2" [(ngModel)]="edit.unloadingCountry" required></label>
-      <label>Poštna številka razklada<input name="unloadingPostal" maxlength="15" [(ngModel)]="edit.unloadingPostalCode" required></label>
-      <label>Kraj razklada<input name="unloadingCity" maxlength="100" [(ngModel)]="edit.unloadingCity" required></label>
-      <label>Cestna razdalja (km)<input type="number" min="1" name="distance" [(ngModel)]="edit.roadDistanceKm" required></label>
-      <label>Tip enote<input name="unit" maxlength="100" [(ngModel)]="edit.unitType" required></label>
-      <label>Tovornjaki na teden<input type="number" min="0" step="0.01" name="trucks" [(ngModel)]="edit.averageTrucksPerWeek"></label>
-      <label>Število pošiljk<input type="number" min="0" step="1" name="shipments" [(ngModel)]="edit.shipmentsCount"></label>
-      <label>Naklad od<input type="time" name="loadStart" [(ngModel)]="edit.loadingWindowStart"></label>
-      <label>Naklad do<input type="time" name="loadEnd" [(ngModel)]="edit.loadingWindowEnd"></label>
-      <label>Razklad od<input type="time" name="unloadStart" [(ngModel)]="edit.unloadingWindowStart"></label>
-      <label>Razklad do<input type="time" name="unloadEnd" [(ngModel)]="edit.unloadingWindowEnd"></label>
-      <label>Skupina tovora<input name="cargoGroup" maxlength="150" [(ngModel)]="edit.cargoGroup"></label>
-      <label>Dodaten čas za to relacijo (min)<input type="number" min="0" max="720" step="15" name="routeExtra" [(ngModel)]="edit.extraTimeMinutes"></label>
-      <label class="route-note">Opomba<textarea name="note" maxlength="1000" rows="3" [(ngModel)]="edit.note"></textarea></label>
-      <div class="route-editor-actions"><button class="primary-btn" [disabled]="saving === 'route'">{{ saving === 'route' ? 'Shranjujem…' : 'Shrani spremembe' }}</button><button class="secondary-btn" type="button" (click)="editing = null">Prekliči</button></div>
+      <label>Oznaka<input name="routeCode" maxlength="3" [(ngModel)]="edit.code" required /></label>
+      <label
+        >Smer<select name="direction" [(ngModel)]="edit.direction">
+          <option>Izvoz</option>
+          <option>Uvoz</option>
+        </select></label
+      >
+      <label
+        >Država naklada<input
+          name="loadingCountry"
+          maxlength="2"
+          [(ngModel)]="edit.loadingCountry"
+          required
+      /></label>
+      <label
+        >Poštna številka naklada<input
+          name="loadingPostal"
+          maxlength="15"
+          [(ngModel)]="edit.loadingPostalCode"
+          required
+      /></label>
+      <label
+        >Kraj naklada<input
+          name="loadingCity"
+          maxlength="100"
+          [(ngModel)]="edit.loadingCity"
+          required
+      /></label>
+      <label
+        >Država razklada<input
+          name="unloadingCountry"
+          maxlength="2"
+          [(ngModel)]="edit.unloadingCountry"
+          required
+      /></label>
+      <label
+        >Poštna številka razklada<input
+          name="unloadingPostal"
+          maxlength="15"
+          [(ngModel)]="edit.unloadingPostalCode"
+          required
+      /></label>
+      <label
+        >Kraj razklada<input
+          name="unloadingCity"
+          maxlength="100"
+          [(ngModel)]="edit.unloadingCity"
+          required
+      /></label>
+      <label
+        >Cestna razdalja (km)<input
+          type="number"
+          min="1"
+          name="distance"
+          [(ngModel)]="edit.roadDistanceKm"
+          required
+      /></label>
+      <label
+        >Tip enote<input name="unit" maxlength="100" [(ngModel)]="edit.unitType" required
+      /></label>
+      <label
+        >Tovornjaki na teden<input
+          type="number"
+          min="0"
+          step="0.01"
+          name="trucks"
+          [(ngModel)]="edit.averageTrucksPerWeek"
+      /></label>
+      <label
+        >Število pošiljk<input
+          type="number"
+          min="0"
+          step="1"
+          name="shipments"
+          [(ngModel)]="edit.shipmentsCount"
+      /></label>
+      <label
+        >Naklad od<input type="time" name="loadStart" [(ngModel)]="edit.loadingWindowStart"
+      /></label>
+      <label
+        >Naklad do<input type="time" name="loadEnd" [(ngModel)]="edit.loadingWindowEnd"
+      /></label>
+      <label
+        >Razklad od<input type="time" name="unloadStart" [(ngModel)]="edit.unloadingWindowStart"
+      /></label>
+      <label
+        >Razklad do<input type="time" name="unloadEnd" [(ngModel)]="edit.unloadingWindowEnd"
+      /></label>
+      <label
+        >Skupina tovora<input name="cargoGroup" maxlength="150" [(ngModel)]="edit.cargoGroup"
+      /></label>
+      <label
+        >Dodaten čas za to relacijo (min)<input
+          type="number"
+          min="0"
+          max="720"
+          step="15"
+          name="routeExtra"
+          [(ngModel)]="edit.extraTimeMinutes"
+      /></label>
+      <label class="route-note"
+        >Opomba<textarea name="note" maxlength="1000" rows="3" [(ngModel)]="edit.note"></textarea>
+      </label>
+      <div class="route-editor-actions">
+        <button class="primary-btn" [disabled]="saving === 'route'">
+          {{ saving === 'route' ? 'Shranjujem…' : 'Shrani spremembe' }}</button
+        ><button class="secondary-btn" type="button" (click)="editing = null">Prekliči</button>
+      </div>
     </form>
   </section>
 }
 
-<section class="panel full-list"><div class="list-toolbar"><div><h3>Relacije v bazi</h3><p>{{ rows.length }} relacij · dodatni čas velja za vse pošiljke na izbrani relaciji</p></div></div><div class="table-scroll"><table><thead><tr><th>OZNAKA</th><th>SMER</th><th>NAKLAD</th><th>RAZKLAD</th><th>RAZDALJA</th><th>ENOTA</th><th>DODATNI ČAS</th><th></th></tr></thead><tbody>@for (row of rows; track row.id) {<tr><td class="shipment-code">{{ row.code }}</td><td>{{ row.direction }}</td><td>{{ row.from }}</td><td>{{ row.to }}</td><td>{{ row.roadDistanceKm }} km</td><td>{{ row.unitType }}</td><td>{{ row.extraTimeMinutes }} min</td><td><button class="secondary-btn" type="button" (click)="editRoute(row)">Uredi</button></td>} @empty {<tr><td class="empty-row" colspan="8">{{ loading ? 'Nalaganje…' : 'V bazi še ni relacij.' }}</td></tr>}</tbody></table></div></section>
-
-
+<section class="panel full-list">
+  <div class="list-toolbar">
+    <div>
+      <h3>Relacije v bazi</h3>
+      <p>{{ rows.length }} relacij · dodatni čas velja za vse pošiljke na izbrani relaciji</p>
+    </div>
+  </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>OZNAKA</th>
+          <th>SMER</th>
+          <th>NAKLAD</th>
+          <th>RAZKLAD</th>
+          <th>RAZDALJA</th>
+          <th>ENOTA</th>
+          <th>DODATNI ČAS</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows; track row.id) {
+          <tr>
+            <td class="shipment-code">{{ row.code }}</td>
+            <td>{{ row.direction }}</td>
+            <td>{{ row.from }}</td>
+            <td>{{ row.to }}</td>
+            <td>{{ row.roadDistanceKm }} km</td>
+            <td>{{ row.unitType }}</td>
+            <td>{{ row.extraTimeMinutes }} min</td>
+            <td>
+              <button class="secondary-btn" type="button" (click)="editRoute(row)">Uredi</button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td class="empty-row" colspan="8">
+              {{ loading ? 'Nalaganje…' : 'V bazi še ni relacij.' }}
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

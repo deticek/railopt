@@ -1,10 +1,71 @@
 <main class="login-page">
-  <section class="login-story"><div class="brand"><span class="brand-mark">R</span><span>railopt<span class="brand-dot">.</span></span></div><div class="story-copy"><span class="eyebrow light">PAMETNEJŠA POT BLAGA</span><h1>Pravi tovor.<br>Prava pot.</h1><p>Načrtujte, primerjajte in optimizirajte transport na enem mestu.</p></div><div class="story-bottom"><span class="pulse"></span> Vaša logistika, pregledno povezana <span>© 2026 Railopt</span></div></section>
-  <section class="login-panel"><div class="login-form-wrap"><div class="mobile-brand brand"><span class="brand-mark">R</span><span>railopt<span class="brand-dot">.</span></span></div><span class="eyebrow">DOBRODOŠLI NAZAJ</span><h2>Prijava v sistem</h2><p class="muted intro">Vpišite svoje podatke za nadaljevanje.</p>
-    <form (ngSubmit)="signIn()" autocomplete="off"><label for="email">E-poštni naslov</label><input id="email" name="email" type="email" [(ngModel)]="email" placeholder="ime@podjetje.si" autocomplete="username" required><div class="field-head"><label for="password">Geslo</label><a href="mailto:podpora@railopt.local?subject=Ponastavitev%20gesla">Pozabljeno geslo?</a></div><input id="password" name="password" type="password" [(ngModel)]="password" placeholder="Vnesite geslo" autocomplete="current-password" required>
-      @if (loginError) { <div class="login-error" role="alert">{{ loginError }}</div> }<button class="primary-btn login-btn" type="submit" [disabled]="loading">{{ loading ? 'Preverjanje računa …' : 'Prijavi se' }} <span>→</span></button>
-    </form>
-    @if (isDevelopment) { <button class="secondary-btn dev-login-btn" type="button" [disabled]="loading" (click)="skipLogin()">Nadaljuj brez prijave (razvoj)</button> }
-    <div class="security-note"><span>◈</span> Vaši podatki so zaščiteni.</div><div class="login-help">Potrebujete dostop? <a href="mailto:podpora@railopt.local">Obrnite se na skrbnika</a></div>
-  </div><div class="login-footer">Railopt Transport Intelligence <span>Različica 1.0</span></div></section>
+  <section class="login-story">
+    <div class="brand">
+      <span class="brand-mark">R</span><span>railopt<span class="brand-dot">.</span></span>
+    </div>
+    <div class="story-copy">
+      <span class="eyebrow light">PAMETNEJŠA POT BLAGA</span>
+      <h1>Pravi tovor.<br />Prava pot.</h1>
+      <p>Načrtujte, primerjajte in optimizirajte transport na enem mestu.</p>
+    </div>
+    <div class="story-bottom">
+      <span class="pulse"></span> Vaša logistika, pregledno povezana <span>© 2026 Railopt</span>
+    </div>
+  </section>
+  <section class="login-panel">
+    <div class="login-form-wrap">
+      <div class="mobile-brand brand">
+        <span class="brand-mark">R</span><span>railopt<span class="brand-dot">.</span></span>
+      </div>
+      <span class="eyebrow">DOBRODOŠLI NAZAJ</span>
+      <h2>Prijava v sistem</h2>
+      <p class="muted intro">Vpišite svoje podatke za nadaljevanje.</p>
+      <form (ngSubmit)="signIn()" autocomplete="off">
+        <label for="email">E-poštni naslov</label
+        ><input
+          id="email"
+          name="email"
+          type="email"
+          [(ngModel)]="email"
+          placeholder="ime@podjetje.si"
+          autocomplete="username"
+          required
+        />
+        <div class="field-head">
+          <label for="password">Geslo</label
+          ><a href="mailto:podpora@railopt.local?subject=Ponastavitev%20gesla">Pozabljeno geslo?</a>
+        </div>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          [(ngModel)]="password"
+          placeholder="Vnesite geslo"
+          autocomplete="current-password"
+          required
+        />
+        @if (loginError) {
+          <div class="login-error" role="alert">{{ loginError }}</div>
+        }
+        <button class="primary-btn login-btn" type="submit" [disabled]="loading">
+          {{ loading ? 'Preverjanje računa …' : 'Prijavi se' }} <span>→</span>
+        </button>
+      </form>
+      @if (isDevelopment) {
+        <button
+          class="secondary-btn dev-login-btn"
+          type="button"
+          [disabled]="loading"
+          (click)="skipLogin()"
+        >
+          Nadaljuj brez prijave (razvoj)
+        </button>
+      }
+      <div class="security-note"><span>◈</span> Vaši podatki so zaščiteni.</div>
+      <div class="login-help">
+        Potrebujete dostop? <a href="mailto:podpora@railopt.local">Obrnite se na skrbnika</a>
+      </div>
+    </div>
+    <div class="login-footer">Railopt Transport Intelligence <span>Različica 1.0</span></div>
+  </section>
 </main>
