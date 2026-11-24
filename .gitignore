@@ -1,0 +1,11 @@
+node_modules/
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+backend/.env
+release/
+frontend/node_modules/
+frontend/.angular/
+frontend/dist/
+backend/.env
+release/

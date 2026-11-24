@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS delivery_plans (
+    id CHAR(36) NOT NULL PRIMARY KEY,
+    created_by VARCHAR(254) NOT NULL,
+    origin_label VARCHAR(500) NOT NULL,
+    origin_country CHAR(2) NULL,
+    origin_lat DECIMAL(10,7) NULL,
+    origin_lon DECIMAL(10,7) NULL,
+    destination_label VARCHAR(500) NOT NULL,
+    destination_country CHAR(2) NULL,
+    destination_lat DECIMAL(10,7) NULL,
+    destination_lon DECIMAL(10,7) NULL,
+    loading_at DATETIME NOT NULL,
+    delivery_deadline_at DATETIME NOT NULL,
+    weight_kg DECIMAL(10,2) NOT NULL,
+    unit_type VARCHAR(100) NOT NULL,
+    adr BOOLEAN NOT NULL DEFAULT FALSE,
+    cost_mode ENUM('excel','detailed') NOT NULL DEFAULT 'excel',
+    input_json JSON NOT NULL,
+    result_json JSON NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_delivery_plans_created_by (created_by, created_at),
+    INDEX idx_delivery_plans_route (origin_country, destination_country)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

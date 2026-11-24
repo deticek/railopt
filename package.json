@@ -1,0 +1,30 @@
+{
+  "name": "railopt-desktop",
+  "version": "1.0.0",
+  "description": "Railopt transport dashboard",
+  "main": "main.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently -k \"npm run api\" \"npm run ng\" \"wait-on http://127.0.0.1:4200 && electron .\"",
+    "ng": "cd frontend && ng serve --host 127.0.0.1 --port 4200",
+    "api": "cd backend && node server.js",
+    "import:excel": "node backend/import_excel.js",
+    "import:terminals": "node backend/seed_terminals.js",
+    "recalculate:delivery-plans": "node backend/recalculate_delivery_plans.js",
+    "build": "cd frontend && npm run build && cd .. && electron-builder"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7",
+    "electron": "^40.10.6",
+    "electron-builder": "^26.0.0",
+    "wait-on": "^9.5.1"
+  },
+  "build": {
+    "appId": "si.railopt.transport",
+    "productName": "Railopt",
+    "files": ["main.js", "preload.js", "frontend/dist/browser/**/*"],
+    "directories": { "output": "release" },
+    "win": { "target": "nsis" }
+  }
+}
