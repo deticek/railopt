@@ -10,3 +10,4 @@ frontend/dist/
 backend/.env
 release/
 migrations/
+.example
