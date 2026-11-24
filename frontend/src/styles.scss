@@ -1,0 +1,24 @@
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f6f7fb}button,input,select{font-family:inherit}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #596de65c;outline-offset:2px}::selection{background:#dce2ff;color:#202a43}
+
+html[data-theme="dark"],html[data-theme="dark"] body{background:#11151d;color:#e5e9f2;color-scheme:dark}
+html[data-theme="dark"] .app-shell,html[data-theme="dark"] .main-area{background:#11151d;color:#e5e9f2}
+html[data-theme="dark"] .sidebar,html[data-theme="dark"] .topbar,html[data-theme="dark"] .panel,html[data-theme="dark"] .metric-card,html[data-theme="dark"] .login-panel{background:#191f2a;color:#e5e9f2;border-color:#2b3443}
+html[data-theme="dark"] .brand,html[data-theme="dark"] .workspace-card b,html[data-theme="dark"] .profile-name b,html[data-theme="dark"] .metric-value,html[data-theme="dark"] .panel-heading h3,html[data-theme="dark"] .list-toolbar h3,html[data-theme="dark"] .settings-panel h3,html[data-theme="dark"] .page-heading h1,html[data-theme="dark"] .results h2,html[data-theme="dark"] .results h3,html[data-theme="dark"] .chosen-option h3,html[data-theme="dark"] .metrics b,html[data-theme="dark"] .timeline b,html[data-theme="dark"] .history>div b,html[data-theme="dark"] .history>div strong,html[data-theme="dark"] .option-card strong{color:#e5e9f2}
+html[data-theme="dark"] .workspace-card,html[data-theme="dark"] .help-card,html[data-theme="dark"] .mode-row,html[data-theme="dark"] .terminal-fields,html[data-theme="dark"] .metrics>div,html[data-theme="dark"] .option-card,html[data-theme="dark"] .option-card.recommended,html[data-theme="dark"] .secondary-btn,html[data-theme="dark"] .panel-heading select,html[data-theme="dark"] .filters select{background:#202735;color:#d8deea;border-color:#354052}
+html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),html[data-theme="dark"] select,html[data-theme="dark"] textarea,html[data-theme="dark"] .search-input{background:#151b25;color:#e5e9f2;border-color:#3a4557}
+html[data-theme="dark"] input::placeholder,html[data-theme="dark"] .muted,html[data-theme="dark"] .page-heading p,html[data-theme="dark"] .breadcrumb,html[data-theme="dark"] .system-status,html[data-theme="dark"] .option-card,html[data-theme="dark"] .timeline small,html[data-theme="dark"] .cost-note,html[data-theme="dark"] .history>div span,html[data-theme="dark"] .panel-heading p{color:#a6b0c2}
+html[data-theme="dark"] .sidebar nav button,html[data-theme="dark"] .settings-link{color:#aeb8c9}
+html[data-theme="dark"] .sidebar nav button.active{background:#292f4e;color:#aab6ff}
+html[data-theme="dark"] .theme-toggle{border-color:#354052;background:#202735;color:#d8deea}
+html[data-theme="dark"] .shipment-heading,html[data-theme="dark"] thead{background:#202735}
+html[data-theme="dark"] th,html[data-theme="dark"] td{color:#aeb8c9;border-color:#303949}
+html[data-theme="dark"] .metrics>div{background:#202735;border-color:#303949}
+html[data-theme="dark"] .notice,html[data-theme="dark"] .comparison-notice{background:#252c45;border-color:#363f62;color:#bdc6ff}
+html[data-theme="dark"] .warnings{background:#302b21;border-color:#51452c}
+html[data-theme="dark"] .warnings b,html[data-theme="dark"] .warnings p{color:#d5c497}
+html[data-theme="dark"] .option-card.selected{border-color:#7888f5;box-shadow:0 0 0 2px #7888f533}
+html[data-theme="dark"] .results>header p,html[data-theme="dark"] .mode-row label,html[data-theme="dark"] .terminal-fields h3,html[data-theme="dark"] .terminal-fields>p,html[data-theme="dark"] .option-label{color:#d3dbea}
+html[data-theme="dark"] .form-panel h2,html[data-theme="dark"] .history h2,html[data-theme="dark"] .form-grid label,html[data-theme="dark"] .places label,html[data-theme="dark"] .checks label,html[data-theme="dark"] .cost-mode label,html[data-theme="dark"] .terminal-picks,html[data-theme="dark"] .terminal-picks b,html[data-theme="dark"] .auto-estimate-note,html[data-theme="dark"] .auto-estimate-note small,html[data-theme="dark"] .chosen-option h3,html[data-theme="dark"] .metrics b,html[data-theme="dark"] .timeline b,html[data-theme="dark"] .history>div b,html[data-theme="dark"] .history>div strong{color:#d3dbea}
+html[data-theme="dark"] .auto-estimate-note{background:#202735;border-color:#354052}
+html[data-theme="dark"] .login-form-wrap h2,html[data-theme="dark"] .login-form-wrap form label{color:#e5e9f2}
+html[data-theme="dark"] .login-help{border-color:#303949}

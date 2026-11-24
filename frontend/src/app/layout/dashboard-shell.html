@@ -1,0 +1,7 @@
+<div class="app-shell">
+  <app-navbar [activeView]="activeView" [username]="username" (viewSelected)="navigate($event)" (signOut)="signOut()" />
+  <main class="main-area">
+    <header class="topbar"><div class="breadcrumb">Railopt <span>/</span> <b>{{ pageTitle }}</b></div><div class="top-actions"><span class="system-status"><i></i> Sistem povezan</span><div class="top-avatar">{{ username.slice(0, 1).toUpperCase() }}</div></div></header>
+    <div class="content-area"><router-outlet /><footer class="page-footer"><span>© 2026 Railopt · Transport Intelligence</span><span><i></i> Podatki povezani</span></footer></div>
+  </main>
+</div>

@@ -1,0 +1,17 @@
+<aside class="sidebar">
+  <div class="brand sidebar-brand"><span class="brand-mark">R</span><span>railopt<span class="brand-dot">.</span></span></div>
+  <div class="workspace-label">DELOVNI PROSTOR</div>
+  <div class="workspace-card"><span class="workspace-icon">T</span><span><b>TIM Hekaton</b><small>Transportna ekipa</small></span><span class="chevron">⌄</span></div>
+  <div class="nav-label">GLAVNI MENI</div>
+  <nav>
+    <a class="nav-link" routerLink="/overview" routerLinkActive="active"><span class="nav-icon">▦</span> Pregled</a>
+    <a class="nav-link" routerLink="/history" routerLinkActive="active"><span class="nav-icon">◷</span> Zgodovina</a>
+    <a class="nav-link" routerLink="/routes" routerLinkActive="active"><span class="nav-icon">⌁</span> Relacije</a>
+    <a class="nav-link" routerLink="/emissions" routerLinkActive="active"><span class="nav-icon">♧</span> Planer dostave</a>
+  </nav>
+  <div class="sidebar-spacer"></div>
+  <div class="help-card"><span class="help-icon">?</span><b>Potrebujete pomoč?</b><p>Naša ekipa vam je na voljo.</p><a href="mailto:podpora@railopt.local">Kontaktirajte podporo <span>→</span></a></div>
+  <button class="settings-link" (click)="viewSelected.emit('settings')"><span class="nav-icon">⚙</span> Nastavitve</button>
+  <button class="theme-toggle" type="button" (click)="toggleTheme()"><span>{{ darkMode ? '☀' : '☾' }}</span>{{ darkMode ? 'Svetli način' : 'Temni način' }}</button>
+  <div class="profile"><div class="avatar">{{ (username || 'U').slice(0, 1).toUpperCase() }}</div><span class="profile-name"><b>{{ username || 'Uporabnik' }}</b><small>Član ekipe</small></span><button class="logout" title="Odjava" (click)="signOut.emit()">↗</button></div>
+</aside>
