@@ -247,8 +247,10 @@ async function calculateTrip(
   destination,
   weightKg,
   onProgress = () => {},
+  roadDisruptions = [],
 ) {
-  const key = normalizedPlace(origin) + "|" + normalizedPlace(destination);
+  const disruptionKey = roadDisruptions.map(item => item.id).sort().join(',');
+  const key = normalizedPlace(origin) + "|" + normalizedPlace(destination) + `|${disruptionKey}`;
   const entry = routeDistanceCache.get(key);
   let route = entry?.expiresAt > Date.now() ? entry.route : null;
   const cached = Boolean(route);
@@ -256,7 +258,6 @@ async function calculateTrip(
     const from = await parsePlace(origin, "kraja A", onProgress);
     const to = await parsePlace(destination, "kraja B", onProgress);
     onProgress("Računam cestno razdaljo med izbranima krajema…");
-    const coordinates = from.lon + "," + from.lat + ";" + to.lon + "," + to.lat;
     const primaryRouter =
       process.env.OSRM_URL ||
       "https://router.project-osrm.org/route/v1/driving/";
@@ -266,45 +267,46 @@ async function calculateTrip(
         "https://routing.openstreetmap.de/routed-car/route/v1/driving/",
       ]),
     ];
-    let routeData = null;
-    for (const routerUrl of routers) {
-      try {
-        const response = await fetch(
-          routerUrl + coordinates + "?overview=false&steps=true",
-          {
-            headers: {
-              "User-Agent":
-                "RailoptTransportDashboard/1.0 (route distance lookup)",
-            },
+    const requestRoute = async points => {
+      const coordinates = points.map(point => `${point.lon},${point.lat}`).join(';');
+      for (const routerUrl of routers) {
+        try {
+          const response = await fetch(routerUrl + coordinates + "?overview=full&geometries=geojson&steps=true", {
+            headers: { "User-Agent": "RailoptTransportDashboard/1.0 (route distance lookup)" },
             signal: AbortSignal.timeout(8000),
-          },
-        );
-        if (!response.ok) {
-          console.warn(
-            `Road routing provider returned HTTP ${response.status}.`,
-          );
-          continue;
+          });
+          if (!response.ok) continue;
+          const data = await response.json();
+          const candidate = data.routes?.[0];
+          const distanceKm = Number(candidate?.distance) / 1000;
+          if (data.code === "Ok" && candidate && Number.isFinite(distanceKm) && distanceKm > 0) return candidate;
+        } catch (error) {
+          console.warn(`Road routing provider failed: ${error.code || error.name || "Error"}.`);
         }
-        const data = await response.json();
-        const candidate = data.routes?.[0];
-        const distanceKm = Number(candidate?.distance) / 1000;
-        if (
-          data.code !== "Ok" ||
-          !candidate ||
-          !Number.isFinite(distanceKm) ||
-          distanceKm <= 0
-        ) {
-          console.warn(
-            `Road routing provider returned ${String(data.code || "an invalid route").slice(0, 40)}.`,
-          );
-          continue;
-        }
-        routeData = candidate;
-        break;
-      } catch (error) {
-        console.warn(
-          `Road routing provider failed: ${error.code || error.name || "Error"}.`,
-        );
+      }
+      return null;
+    };
+    let routeData = await requestRoute([from, to]);
+    const routeCoordinates = candidate => simplifyCoordinates(candidate?.geometry?.coordinates || [])
+      .map(([lon, lat]) => [Number(lat), Number(lon)]);
+    const closuresOnRoute = candidate => roadDisruptions.filter(item =>
+      routeTouchesLocation(routeCoordinates(candidate), item.location, Number(item.radiusKm || 2)));
+    let detouredDisruptions = [];
+    let unavoidedDisruptions = [];
+    if (routeData) {
+      const affected = closuresOnRoute(routeData);
+      if (affected.length) {
+        const waypoints = [from, ...affected.map(item => ({ lat: Number(item.bypass.lat), lon: Number(item.bypass.lon) })), to];
+        const detour = await requestRoute(waypoints);
+        if (detour) {
+          routeData = detour;
+          detouredDisruptions = affected.map(item => item.name);
+          unavoidedDisruptions = closuresOnRoute(routeData).map(item => item.name);
+        } else unavoidedDisruptions = affected.map(item => item.name);
+    } else {
+      unavoidedDisruptions = roadDisruptions
+        .filter(item => routeTouchesLocation([[from.lat, from.lon], [to.lat, to.lon]], item.location, Number(item.radiusKm || 2)))
+        .map(item => item.name);
       }
     }
     if (!routeData) {
@@ -332,6 +334,9 @@ async function calculateTrip(
         distanceKm,
         durationHours: distanceKm / 65,
         segments: [],
+        routeCoordinates: [[from.lat, from.lon], [to.lat, to.lon]],
+        detouredDisruptions,
+        unavoidedDisruptions,
         approximate: true,
       };
       onProgress(
@@ -360,6 +365,9 @@ async function calculateTrip(
         distanceKm: Math.round(distanceKm * 10) / 10,
         durationHours,
         segments,
+        routeCoordinates: routeCoordinates(routeData),
+        detouredDisruptions,
+        unavoidedDisruptions,
       };
     }
     routeDistanceCache.set(key, { route, expiresAt: Date.now() + 86400000 });
@@ -374,6 +382,9 @@ async function calculateTrip(
     distanceKm: route.distanceKm,
     durationHours: route.durationHours,
     segments: route.segments,
+    routeCoordinates: route.routeCoordinates || [],
+    detouredDisruptions: route.detouredDisruptions || [],
+    unavoidedDisruptions: route.unavoidedDisruptions || [],
     weightKg,
     tonKilometers: Math.round(tonKilometers * 10) / 10,
     factorKgCo2ePerTkm: roadEmissionFactor,
@@ -382,6 +393,30 @@ async function calculateTrip(
     cached,
     approximate: Boolean(route.approximate),
   };
+}
+function routeTouchesLocation(routeCoordinates, place, radiusKm = 2) {
+  if (!place || !Number.isFinite(Number(place.lat)) || !Number.isFinite(Number(place.lon))) return false;
+  const lat = Number(place.lat), lon = Number(place.lon);
+  const distanceTo = (a, b) => {
+    const scaleY = 111.195;
+    const scaleX = 111.195 * Math.cos(lat * Math.PI / 180);
+    const ax = (Number(a[1]) - lon) * scaleX, ay = (Number(a[0]) - lat) * scaleY;
+    const bx = (Number(b[1]) - lon) * scaleX, by = (Number(b[0]) - lat) * scaleY;
+    const dx = bx - ax, dy = by - ay;
+    const t = Math.max(0, Math.min(1, -(ax * dx + ay * dy) / (dx * dx + dy * dy || 1)));
+    return Math.hypot(ax + t * dx, ay + t * dy);
+  };
+  if (routeCoordinates.some(coordinate => distanceTo(coordinate, coordinate) <= radiusKm)) return true;
+  for (let i = 1; i < routeCoordinates.length; i++)
+    if (distanceTo(routeCoordinates[i - 1], routeCoordinates[i]) <= radiusKm) return true;
+  return false;
+}
+function simplifyCoordinates(coordinates, limit = 700) {
+  if (!Array.isArray(coordinates) || coordinates.length < 2) return [];
+  const step = Math.max(1, Math.ceil(coordinates.length / limit));
+  const result = coordinates.filter((_point, index) => index % step === 0);
+  if (result.at(-1) !== coordinates.at(-1)) result.push(coordinates.at(-1));
+  return result;
 }
 function validateInput(body) {
   const origin = String(body?.origin || "").trim();

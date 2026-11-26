@@ -61,30 +61,22 @@
             [(ngModel)]="deliveryDeadlineAt"
             required
           /><small>Vnesi rok prihoda; planer poišče najpoznejši izvedljiv naklad.</small></label
-        ><label
-          >Najzgodnejši možni začetek naklada<input
-            type="datetime-local"
-            name="loadingAt"
-            [(ngModel)]="loadingAt"
-            required
-          /><small>Ta datum omeji, kako daleč nazaj iščemo začetek poti.</small></label
-        >
+        ><p class="field-hint">Začetek iskanja določim samodejno od danes naprej. Rok prihoda ostane točno tak, kot si ga vnesel.</p>
       }
       <label
         >Teža tovora (kg)<input
           type="number"
           name="weight"
           min="1"
-          max="24000"
+          [max]="maxWeightKg"
           [(ngModel)]="weightKg"
           required
       /></label>
+      <small class="field-hint">Največ za izbrano enoto: {{ maxWeightKg | number: '1.0-0' }} kg.</small>
       <label
         >Vrsta prevoza / enote
         <select name="unit" [ngModel]="unitType" (ngModelChange)="setUnitType($event)">
-          <option value="Tovornjak – samo cesta">
-            Tovornjak (cesta ali Ro-La glede na izbrani način)
-          </option>
+          <option value="Tovornjak – samo cesta">Tovornjak (cesta ali Ro-La)</option>
           <option value="P400 – dvigljiva prikolica">P400 – dvigljiva prikolica</option>
           <option value="Nedvigljiva prikolica s ponjavo">Nedvigljiva prikolica s ponjavo</option>
           <option value="Izmenljivi zaboj">Izmenljivi zaboj</option>
@@ -92,41 +84,6 @@
         </select>
       </label>
     </div>
-
-    <div class="mode-row">
-      <label
-        ><input type="radio" name="transportMode" value="road" [(ngModel)]="transportMode" /> Samo
-        cesta</label
-      >
-      <label
-        ><input type="radio" name="transportMode" value="compare" [(ngModel)]="transportMode" />
-        Primerjaj cesto z vlakom</label
-      >
-      <span class="mode-hint"
-        >Dvigljive enote gredo na vlak; tovornjak ali nedvigljiva prikolica se lahko peljeta kot
-        Ro-La.</span
-      >
-    </div>
-
-    @if (transportMode === 'compare') {
-      <div class="terminal-fields">
-        <h3>Samodejna izbira tovornih terminalov</h3>
-        <p>
-          {{ terminalStatus || 'Ko izbereš kraja, poiščem najbližja terminala iz lokalne baze.' }}
-        </p>
-        @if (terminalOrigin && terminalDestination) {
-          <div class="terminal-picks">
-            <span
-              >Odhodni: <b>{{ terminalOrigin.label }}</b> · približno
-              {{ terminalOriginKm | number: '1.0-1' }} km od naklada</span
-            ><span
-              >Prihodni: <b>{{ terminalDestination.label }}</b> · približno
-              {{ terminalDestinationKm | number: '1.0-1' }} km od razklada</span
-            >
-          </div>
-        }
-      </div>
-    }
 
     <h2>Čas poti in primerjava</h2>
     <div class="form-grid speed-grid">
@@ -136,14 +93,12 @@
           >Uporabljam ocenjene čase poti za naklad–razklad ali do terminala in od terminala.</small
         >
       </div>
-      @if (transportMode === 'compare') {
-        <div class="auto-estimate-note">
-          <b>Trajanje vlaka izračunam samodejno.</b
-          ><small
-            >Uporabim ocenjeno železniško razdaljo in modelno povprečje; vozni red v živo ni na
-            voljo.</small
-          >
-        </div>
+      <div class="auto-estimate-note">
+        <b>Primerjam cestni in železniški prevoz samodejno.</b
+        ><small
+          >Pri tovornjaku uporabim obstoječi Ro-La izračun. Za dvigljive enote poiščem pot po lokalnem voznem redu, vključno s prestopi in vnesenimi zaporami.</small
+        >
+      </div>
         <label
           >Način priporočila<select name="preference" [(ngModel)]="preference">
             <option value="cost">Najnižji strošek</option>
@@ -159,10 +114,9 @@
               min="0"
               step="0.01"
               [(ngModel)]="roLaTicketEur"
-            /><small>Vnesi ceno prevoznika za primerjavo stroškov.</small></label
+            /><small>0 uporabi cenik Ro-La 2026 in izračuna ceno samodejno; znesek nad 0 prepiše tarifo.</small></label
           >
         }
-      }
     </div>
 
     <h2>Delovni pogoji</h2>
@@ -306,6 +260,12 @@
     @if (r.comparisonNotice) {
       <p class="comparison-notice">{{ r.comparisonNotice }}</p>
     }
+    @if (scheduleMode === 'latest-loading') {
+      <div class="schedule-summary" aria-label="Izračunan naklad in želeni prihod">
+        <div><small>Najkasnejši začetek naklada</small><b>{{ r.actualLoadingAt | date: 'd. MMM yyyy, HH:mm' }}</b></div>
+        <div><small>Želeni rok prihoda (nespremenjen)</small><b>{{ r.deadlineAt | date: 'd. MMM yyyy, HH:mm' }}</b></div>
+      </div>
+    }
     <div class="option-grid">
       @for (option of r.options; track option.id) {
         <button
@@ -354,6 +314,11 @@
             {{ chosen.onTime ? 'Rok dosežen' : 'Po roku' }}
           </div>
         </header>
+        <app-route-map
+          [title]="chosen.title + ' · ' + (origin?.label || 'Naklad') + ' → ' + (destination?.label || 'Razklad')"
+          [segments]="chosen.routeSegments || []"
+          [points]="chosen.routePoints || []"
+        />
         <div class="metrics">
           <div>
             <small>Skupni strošek</small

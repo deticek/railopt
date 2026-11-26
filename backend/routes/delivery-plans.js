@@ -1,5 +1,7 @@
 const express = require("express");
 const { estimateDeliveryPlan } = require("../services/delivery-planner");
+const {readJson}=require('../lib/parameter-store');
+const { nearestRailTerminals } = require('../services/kombiverkehr-network');
 
 function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
   const router = express.Router();
@@ -42,9 +44,42 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
     };
   }
   async function useDatabaseTerminals(input) {
-    const [terminals] = await pool.execute(
-      "SELECT name,country_code,latitude,longitude FROM terminals WHERE latitude IS NOT NULL AND longitude IS NOT NULL",
-    );
+    const unit = String(input.unitType || '').toLocaleLowerCase('sl');
+    const unitKind = unit.includes('p400') ? 'P400'
+      : unit.includes('zabojnik') || unit.includes('container') || unit.includes('kontejner') || /zaboj\s*45/.test(unit) ? 'CONTAINER'
+      : unit.includes('izmenljivi') || unit.includes('swap') ? 'SWAP_BODY' : null;
+    let terminals;
+    if (unitKind && input.transportMode === 'compare') {
+      try {
+        const [origins, destinations] = await Promise.all([
+          nearestRailTerminals(pool, input.origin),
+          nearestRailTerminals(pool, input.destination),
+        ]);
+        if (origins[0] && destinations[0]) {
+          return {
+            ...input,
+            terminalOrigin: {
+              label: origins[0].name,
+              lat: Number(origins[0].latitude),
+              lon: Number(origins[0].longitude),
+              countryCode: null,
+            },
+            terminalDestination: {
+              label: destinations[0].name,
+              lat: Number(destinations[0].latitude),
+              lon: Number(destinations[0].longitude),
+              countryCode: null,
+            },
+          };
+        }
+      } catch (error) {
+        if (error.code !== 'ER_NO_SUCH_TABLE') throw error;
+      }
+    }
+    if(unitKind){
+      try{[terminals]=await pool.execute("SELECT CONCAT(name,' (',city,')') AS name,country_code,latitude,longitude FROM unit_terminals WHERE unit_type=? AND active=1 AND latitude IS NOT NULL AND longitude IS NOT NULL",[unitKind]);}
+      catch(error){if(error.code!=='ER_NO_SUCH_TABLE')throw error;const rows=await readJson(pool,'app_unit_terminals_catalog')||[];terminals=rows.filter(row=>row.unitType===unitKind&&row.active!==false&&row.latitude!=null&&row.longitude!=null).map(row=>({name:row.name,country_code:row.countryCode,latitude:row.latitude,longitude:row.longitude}));}
+    }else [terminals]=await pool.execute("SELECT name,country_code,latitude,longitude FROM terminals WHERE latitude IS NOT NULL AND longitude IS NOT NULL");
     const terminalOrigin = closestTerminal(input.origin, terminals);
     const terminalDestination = closestTerminal(input.destination, terminals);
     if (
@@ -70,7 +105,6 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
     const weight = Number(body?.weightKg);
     const extraTime = Number(body?.extraTimeMinutes ?? 0);
     const globalExtraTime = Number(body?.globalExtraTimeMinutes ?? 0);
-    const comparing = body?.transportMode === "compare";
     const hasPoint = (place) =>
       place?.lat !== null &&
       place?.lat !== undefined &&
@@ -81,8 +115,10 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
     return (
       label(body?.origin).length >= 2 &&
       label(body?.origin).length <= 500 &&
+      hasPoint(body?.origin) &&
       label(body?.destination).length >= 2 &&
       label(body?.destination).length <= 500 &&
+      hasPoint(body?.destination) &&
       validDateTime(body?.loadingAt) &&
       validDateTime(body?.deliveryDeadlineAt) &&
       new Date(body.deliveryDeadlineAt) > new Date(body.loadingAt) &&
@@ -95,10 +131,23 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
       extraTime <= 720 &&
       Number.isInteger(globalExtraTime) &&
       globalExtraTime >= 0 &&
-      globalExtraTime <= 720 &&
-      (!comparing ||
-        (hasPoint(body?.terminalOrigin) && hasPoint(body?.terminalDestination)))
+      globalExtraTime <= 720
     );
+  }
+  function planValidationMessage(body, fallback) {
+    const unit = String(body?.unitType || "").toLocaleLowerCase("sl-SI");
+    const weight = Number(body?.weightKg);
+    if ((unit.includes("zabojnik 45") || /zaboj\s*45/.test(unit)) && weight > 22000)
+      return "Za zabojnik 45′ je največja teža tovora 22.000 kg.";
+    if (unit.includes("izmenljivi zaboj") && weight > 23000)
+      return "Za izmenljivi zaboj je največja teža tovora 23.000 kg.";
+    return validPlan(body) ? null : fallback;
+  }
+  function localDateTimeInput(value) {
+    const date=new Date(value);
+    if(Number.isNaN(date.getTime()))return String(value||'').slice(0,16);
+    const pad=n=>String(n).padStart(2,'0');
+    return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
   }
   function normalizeRow(row, storage = "normalized") {
     const objectValue = (value) => {
@@ -256,15 +305,16 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
     requireSession,
     async (req, res, next) => {
       try {
-        if (!validPlan(req.body))
+        const validationMessage = planValidationMessage(
+          req.body,
+          req.body?.transportMode === "compare"
+            ? "Samodejno iskanje tovornih terminalov ni uspelo. Preveri izbrani lokaciji, datume in težo."
+            : "Preveri lokaciji, termin, rok, težo in dodatni čas (0–720 minut).",
+        );
+        if (validationMessage)
           return res
             .status(400)
-            .json({
-              error:
-                req.body?.transportMode === "compare"
-                  ? "Samodejno iskanje tovornih terminalov ni uspelo. Preveri izbrani lokaciji, datume in težo."
-                  : "Preveri lokaciji, termin, rok, težo in dodatni čas (0–720 minut).",
-            });
+            .json({ error: validationMessage });
         const input = await useDatabaseTerminals(req.body);
         const result = await estimateDeliveryPlan(input, {
           pool,
@@ -291,12 +341,14 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
     requireSession,
     async (req, res, next) => {
       try {
-        if (!validPlan(req.body))
+        const validationMessage = planValidationMessage(
+          req.body,
+          "Preveri lokaciji, rok dostave, težo in dodatni čas.",
+        );
+        if (validationMessage)
           return res
             .status(400)
-            .json({
-              error: "Preveri lokaciji, rok dostave, težo in dodatni čas.",
-            });
+            .json({ error: validationMessage });
         const earliest = new Date(req.body.loadingAt);
         const deadline = new Date(req.body.deliveryDeadlineAt);
         if (deadline - earliest > 90 * 24 * 60 * 60 * 1000)
@@ -347,6 +399,9 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
             best = candidate;
           } else high = middle - 60000;
         }
+        // Show and save the actual normalized start of loading. The requested
+        // delivery deadline remains unchanged; only this loading time moves.
+        best.input.loadingAt = localDateTimeInput(best.result.actualLoadingAt);
         const estimateId = crypto.randomUUID();
         pending.set(estimateId, {
           owner,
@@ -442,13 +497,15 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
     try {
       const id = String(req.params.id || "");
       const owner = userId(req.user);
-      if (!/^[0-9a-f-]{36}$/i.test(id) || !validPlan(req.body))
+      const isAdmin = Number(req.user?.role) === 1;
+      const validationMessage = planValidationMessage(
+        req.body,
+        "Preveri lokaciji, termin, rok, težo in dodatni čas (0–720 minut).",
+      );
+      if (!/^[0-9a-f-]{36}$/i.test(id) || validationMessage)
         return res
           .status(400)
-          .json({
-            error:
-              "Preveri lokaciji, termin, rok, težo in dodatni čas (0–720 minut).",
-          });
+          .json({ error: validationMessage || "ID relacije ni veljaven." });
       const selectedOptionId = String(req.body?.selectedOptionId || "");
       const input = { ...req.body };
       delete input.selectedOptionId;
@@ -473,15 +530,16 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
       let storage = "normalized";
       try {
         const [rows] = await pool.execute(
-          "SELECT id FROM delivery_plans WHERE id=? AND created_by=? LIMIT 1",
-          [id, owner],
+          "SELECT id,created_by FROM delivery_plans WHERE id=? AND (created_by=? OR ?=1) LIMIT 1",
+          [id, owner, isAdmin ? 1 : 0],
         );
         if (!rows.length)
           return res
             .status(404)
             .json({ error: "Načrtovane relacije ni mogoče najti." });
+        snapshot.createdBy = String(rows[0].created_by || owner);
         await pool.execute(
-          `UPDATE delivery_plans SET origin_label=?,origin_country=?,origin_lat=?,origin_lon=?,destination_label=?,destination_country=?,destination_lat=?,destination_lon=?,loading_at=?,delivery_deadline_at=?,weight_kg=?,unit_type=?,adr=?,cost_mode=?,input_json=?,result_json=? WHERE id=? AND created_by=?`,
+          `UPDATE delivery_plans SET origin_label=?,origin_country=?,origin_lat=?,origin_lon=?,destination_label=?,destination_country=?,destination_lat=?,destination_lon=?,loading_at=?,delivery_deadline_at=?,weight_kg=?,unit_type=?,adr=?,cost_mode=?,input_json=?,result_json=? WHERE id=? AND (created_by=? OR ?=1)`,
           [
             result.origin.label,
             result.origin.countryCode,
@@ -501,6 +559,7 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
             JSON.stringify(savedResult),
             id,
             owner,
+            isAdmin ? 1 : 0,
           ],
         );
       } catch (error) {
@@ -513,13 +572,18 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
         storage = "parameters";
         const code = `delivery_plan_${id.replaceAll("-", "")}`;
         const [rows] = await pool.execute(
-          "SELECT source_note FROM parameters WHERE parameter_code=? LIMIT 1",
+          "SELECT source_note,text_value FROM parameters WHERE parameter_code=? LIMIT 1",
           [code],
         );
-        if (!rows.length || rows[0].source_note !== `created_by:${owner}`)
+        let originalOwner = rows[0]?.source_note?.replace(/^created_by:/, '');
+        if (isAdmin && rows.length) {
+          try { originalOwner = JSON.parse(rows[0].text_value || '{}').createdBy || originalOwner; } catch {}
+        }
+        if (!rows.length || (!isAdmin && originalOwner !== owner))
           return res
             .status(404)
             .json({ error: "Načrtovane relacije ni mogoče najti." });
+        snapshot.createdBy = originalOwner || owner;
         await pool.execute(
           "UPDATE parameters SET parameter_name=?,text_value=? WHERE parameter_code=? AND source_note=?",
           [
@@ -529,7 +593,7 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
             ),
             JSON.stringify(snapshot),
             code,
-            `created_by:${owner}`,
+            rows[0].source_note,
           ],
         );
       }

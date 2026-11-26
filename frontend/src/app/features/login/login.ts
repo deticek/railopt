@@ -60,11 +60,13 @@ export class LoginComponent {
   }
   private saveSession(session: {
     token: string;
-    user: { name?: string; email?: string; role?: number };
+    user: { id?: string|null; name?: string; username?: string; email?: string; role?: number; permissions?: string[] };
   }): void {
     sessionStorage.setItem('railopt-token', session.token);
-    sessionStorage.setItem('railopt-user', session.user.name || session.user.email || 'Uporabnik');
+    sessionStorage.setItem('railopt-user-id', String(session.user.id || ''));
+    sessionStorage.setItem('railopt-user', session.user.name || session.user.username || session.user.email || 'Uporabnik');
     sessionStorage.setItem('railopt-role', String(session.user.role || 0));
+    sessionStorage.setItem('railopt-permissions', (session.user.permissions || []).join(','));
   }
   private goToApp(): void {
     const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');

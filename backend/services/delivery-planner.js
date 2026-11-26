@@ -1,4 +1,6 @@
 const { calculateTrip, resolvePlace } = require("../routes/emissions");
+const roLaTariffs = require("../data/rola-tariffs-2026.json");
+const { findScheduledRailPath, findNearestScheduledRailPath } = require('./kombiverkehr-network');
 const approximateRoadWarning =
   "Usmerjevalnika nista bila dosegljiva; cestna razdalja je približna ocena (zračna razdalja × 1,3, najmanj 1 km, hitrost 65 km/h). Pred uporabo preveri dejansko cestno pot.";
 
@@ -419,6 +421,29 @@ function round2(value) {
   return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
+function normalizedTerminalCity(value) {
+  const label=String(value||'').normalize('NFD').replace(/\p{Diacritic}/gu,'').toLocaleLowerCase('en');
+  return ['maribor','wels','worgl','brenner','trento'].find(city=>label.includes(city))||null;
+}
+function roLaFare(fromLabel,toLabel,weightKg,railKm,trainDeparture,manualFare=0) {
+  const from=normalizedTerminalCity(fromLabel),to=normalizedTerminalCity(toLabel);
+  const classIndex=roLaTariffs.weightClassesKg.findIndex(limit=>weightKg<=limit);
+  const fareIndex=classIndex<0?roLaTariffs.weightClassesKg.length-1:classIndex;
+  const direct=roLaTariffs.fares.find(row=>row.from===from&&row.to===to);
+  const custom=Number(manualFare)>0;
+  const baseFare=custom?Number(manualFare):direct?direct.prices[fareIndex]:round2(Math.max(0,railKm)*roLaTariffs.estimatedEuroPerRailKm[fareIndex]);
+  const order=['Maribor','Wels','Wörgl','Brenner','Trento'];
+  const fromIndex=order.findIndex(city=>normalizedTerminalCity(city)===from);
+  const toIndex=order.findIndex(city=>normalizedTerminalCity(city)===to);
+  const low=Math.min(fromIndex,toIndex),high=Math.max(fromIndex,toIndex);
+  const crossesPricedAustriaItalyLeg=fromIndex>=0&&toIndex>=0&&roLaTariffs.holidaySurchargeAppliesTo.some(key=>{
+    const [a,b]=key.split('-');const aIndex=order.findIndex(city=>normalizedTerminalCity(city)===normalizedTerminalCity(a));const bIndex=order.findIndex(city=>normalizedTerminalCity(city)===normalizedTerminalCity(b));
+    return Math.max(low,Math.min(aIndex,bIndex))<Math.min(high,Math.max(aIndex,bIndex));
+  });
+  const holiday= !custom&&crossesPricedAustriaItalyLeg&&roLaTariffs.holidaySurchargeDates.includes(dateKey(trainDeparture))?roLaTariffs.holidaySurchargeEur:0;
+  return {fareEur:round2(baseFare+holiday),baseFareEur:round2(baseFare),holidaySurchargeEur:holiday,exact:custom||Boolean(direct),weightClassKg:roLaTariffs.weightClassesKg[fareIndex],source:custom?'Vnesena cena':direct?'Cenik Ro‑La 2026':'Ocena iz cenika Ro‑La 2026'};
+}
+
 async function estimateDeliveryPlan(input, { pool, params }) {
   const origin = validatePlace(input.origin, "naklad");
   const destination = validatePlace(input.destination, "razklad");
@@ -442,7 +467,7 @@ async function estimateDeliveryPlan(input, { pool, params }) {
       "Teža mora biti med 1 in 24.000 kg, vrsta enote pa izbrana.",
     );
   const lowerUnit = unitType.toLocaleLowerCase("sl");
-  if (lowerUnit.includes("zabojnik 45") && weightKg > 22000)
+  if ((lowerUnit.includes("zabojnik 45") || /zaboj\s*45/.test(lowerUnit)) && weightKg > 22000)
     throw new Error("Za zabojnik 45′ je največja teža tovora 22.000 kg.");
   if (lowerUnit.includes("izmenljivi zaboj") && weightKg > 23000)
     throw new Error("Za izmenljivi zaboj je največja teža tovora 23.000 kg.");
@@ -473,8 +498,8 @@ async function estimateDeliveryPlan(input, { pool, params }) {
     extraTimeMinutes > 720
   )
     throw new Error("Dodatni čas mora biti med 0 in 720 minutami.");
-  // A timetable/router is not available in the source data; keep a fixed model speed
-  // so users get an automatic duration estimate without having to guess it.
+  // Keep the existing Ro-La duration model; PDF timetable routing is only used
+  // for liftable intermodal units below.
   const trainSpeed = 60;
   const breakAfter = parameterValue(params, "cesta_pravila_voznje", 4.5);
   const roadCosts = parameterPair(params, "cesta_cena_na_posiljko", 250, 1.3);
@@ -488,6 +513,10 @@ async function estimateDeliveryPlan(input, { pool, params }) {
     "emisije_iso_14083_cesta_ter_dovoz_in_odvoz",
     0.095,
   );
+  const { readJson } = require('../lib/parameter-store');
+  const storedRoadDisruptions = await readJson(pool, 'app_road_disruptions') || [];
+  const roadDisruptions = storedRoadDisruptions.filter(item =>
+    item.active !== false && new Date(item.endsAt) >= loadingAt && new Date(item.startsAt) <= deadlineAt);
   const placeRegions = [origin, destination].filter(
     (place) => place.countryCode,
   );
@@ -534,6 +563,8 @@ async function estimateDeliveryPlan(input, { pool, params }) {
     await routeInput(originResolved),
     await routeInput(destinationResolved),
     weightKg,
+    undefined,
+    roadDisruptions,
   );
   const weekendBan = input.weekendBan !== false;
   const drive = simulateDrive(departure, road, {
@@ -618,13 +649,26 @@ async function estimateDeliveryPlan(input, { pool, params }) {
     onTime: deliveryAt <= deadlineAt,
     feasible: deliveryAt <= deadlineAt,
     timeline,
-    warnings: road.approximate ? [approximateRoadWarning] : [],
+    routeSegments: [{
+      mode: "road",
+      label: "Cestna pot",
+      coordinates: road.routeCoordinates?.length ? road.routeCoordinates : [[originResolved.lat, originResolved.lon], [destinationResolved.lat, destinationResolved.lon]],
+    }],
+    routePoints: [
+      { label: origin.label, lat: originResolved.lat, lon: originResolved.lon, kind: "origin" },
+      { label: destination.label, lat: destinationResolved.lat, lon: destinationResolved.lon, kind: "destination" },
+    ],
+    warnings: [
+      ...(road.approximate ? [approximateRoadWarning] : []),
+      ...(road.detouredDisruptions || []).map(name => `Cestni obvoz je upošteval motnjo: ${name}.`),
+      ...(road.unavoidedDisruptions || []).map(name => `Usmerjevalnik ni mogel zanesljivo obvoziti cestne motnje: ${name}.`),
+    ],
   };
   const options = [roadOption];
   let comparisonNotice = null;
   let railRoadsApproximate = false;
   const compareRequested = input.transportMode === "compare";
-  const liftable = /p400|izmenljivi zaboj|zabojnik 45/.test(lowerUnit);
+  const liftable = /p400|izmenljivi zaboj|zabojnik 45|zaboj\s*45/.test(lowerUnit);
   const roLa = /nedvigljiv|ponjav|tovornjak/.test(lowerUnit);
   const hasTerminal = (place) => {
     const label = String(place?.label || "").trim();
@@ -641,10 +685,10 @@ async function estimateDeliveryPlan(input, { pool, params }) {
       Math.abs(lon) <= 180
     );
   };
-  const terminalOrigin = hasTerminal(input.terminalOrigin)
+  let terminalOrigin = hasTerminal(input.terminalOrigin)
     ? validatePlace(input.terminalOrigin, "odhodni terminal")
     : null;
-  const terminalDestination = hasTerminal(input.terminalDestination)
+  let terminalDestination = hasTerminal(input.terminalDestination)
     ? validatePlace(input.terminalDestination, "prihodni terminal")
     : null;
   if (!liftable && !roLa) {
@@ -665,8 +709,8 @@ async function estimateDeliveryPlan(input, { pool, params }) {
     const roLaTicket = Number(input.roLaTicketEur ?? 0);
     if (!Number.isFinite(roLaTicket) || roLaTicket < 0 || roLaTicket > 1000000)
       throw new Error("Cena vozovnice Ro-La mora biti med 0 in 1.000.000 €.");
-    const [toTerminal, betweenTerminals, fromTerminal] = await Promise.all([
-      calculateTrip(routeInput(origin), routeInput(terminalOrigin), weightKg),
+    let [toTerminal, betweenTerminals, fromTerminal] = await Promise.all([
+      calculateTrip(routeInput(origin), routeInput(terminalOrigin), weightKg, undefined, roadDisruptions),
       calculateTrip(
         routeInput(terminalOrigin),
         routeInput(terminalDestination),
@@ -676,13 +720,15 @@ async function estimateDeliveryPlan(input, { pool, params }) {
         routeInput(terminalDestination),
         routeInput(destination),
         weightKg,
+        undefined,
+        roadDisruptions,
       ),
     ]);
     railRoadsApproximate =
       toTerminal.approximate ||
       betweenTerminals.approximate ||
       fromTerminal.approximate;
-    const firstDrive = simulateDrive(departure, toTerminal, {
+    let firstDrive = simulateDrive(departure, toTerminal, {
       weekendBan,
       breakAfterHours: breakAfter,
       breakMinutes: 45,
@@ -702,16 +748,69 @@ async function estimateDeliveryPlan(input, { pool, params }) {
     const pickupHours = pickupMatch
       ? Number(pickupMatch[1].replace(",", "."))
       : 1;
-    const terminalDropEnd = addMinutes(firstDrive.arrival, dropHours * 60);
-    const reserveEnd = addMinutes(
+    let terminalDropEnd = addMinutes(firstDrive.arrival, dropHours * 60);
+    let reserveEnd = addMinutes(
       terminalDropEnd,
       parameterValue(params, "kombinirani_prevoz_rezerva_za_zamudo_vlaka", 3) *
         60,
     );
-    const railDistanceKm =
+    let scheduledRailPath = liftable
+      ? await findScheduledRailPath(
+          pool,
+          terminalOrigin.label,
+          terminalDestination.label,
+          reserveEnd,
+        )
+      : null;
+    if (liftable && !scheduledRailPath) {
+      const alternative = await findNearestScheduledRailPath(
+        pool,
+        originResolved,
+        destinationResolved,
+        reserveEnd,
+        { origin: terminalOrigin.label, destination: terminalDestination.label },
+      );
+      if (alternative?.originTerminalCoordinate && alternative?.destinationTerminalCoordinate) {
+        terminalOrigin = validatePlace({
+          ...terminalOrigin,
+          label: alternative.originTerminal,
+          lat: alternative.originTerminalCoordinate[0],
+          lon: alternative.originTerminalCoordinate[1],
+        }, "nadomestni odhodni terminal");
+        terminalDestination = validatePlace({
+          ...terminalDestination,
+          label: alternative.destinationTerminal,
+          lat: alternative.destinationTerminalCoordinate[0],
+          lon: alternative.destinationTerminalCoordinate[1],
+        }, "nadomestni prihodni terminal");
+        [toTerminal, betweenTerminals, fromTerminal] = await Promise.all([
+          calculateTrip(routeInput(origin), routeInput(terminalOrigin), weightKg, undefined, roadDisruptions),
+          calculateTrip(routeInput(terminalOrigin), routeInput(terminalDestination), weightKg),
+          calculateTrip(routeInput(terminalDestination), routeInput(destination), weightKg, undefined, roadDisruptions),
+        ]);
+        railRoadsApproximate = toTerminal.approximate || betweenTerminals.approximate || fromTerminal.approximate;
+        firstDrive = simulateDrive(departure, toTerminal, {
+          weekendBan, breakAfterHours: breakAfter, breakMinutes: 45,
+          maxDailyHours: 9, dailyRestHours: 11, extraTimeMinutes,
+        });
+        terminalDropEnd = addMinutes(firstDrive.arrival, dropHours * 60);
+        reserveEnd = addMinutes(terminalDropEnd,
+          parameterValue(params, "kombinirani_prevoz_rezerva_za_zamudo_vlaka", 3) * 60);
+        scheduledRailPath = await findScheduledRailPath(
+          pool, terminalOrigin.label, terminalDestination.label, reserveEnd,
+        );
+      }
+    }
+    if (liftable && !scheduledRailPath) {
+      comparisonNotice =
+        "Za izbrani datum ni povezave med najbližjima terminaloma ali alternativnimi terminali v lokalnem voznem redu.";
+    } else {
+    const railDistanceKm = scheduledRailPath?.railKm ||
       betweenTerminals.distanceKm *
       parameterValue(params, "kombinirani_prevoz_dolzina_zelezniske_poti", 1.1);
-    const trainEnd = addMinutes(reserveEnd, (railDistanceKm / trainSpeed) * 60);
+    const trainEnd = scheduledRailPath
+      ? new Date(scheduledRailPath.arrivalAt)
+      : addMinutes(reserveEnd, (railDistanceKm / trainSpeed) * 60);
     const terminalPickupEnd = addMinutes(trainEnd, pickupHours * 60);
     const lastDrive = simulateDrive(terminalPickupEnd, fromTerminal, {
       weekendBan,
@@ -752,11 +851,13 @@ async function estimateDeliveryPlan(input, { pool, params }) {
       280,
       0.5,
     );
-    const ridFee = parameterValue(
-      params,
-      "kombinirani_prevoz_doplacilo_za_nevarno_blago_rid",
-      75,
-    );
+    const ridFee = roLa
+      ? roLaTariffs.adrSurchargeEur
+      : parameterValue(
+          params,
+          "kombinirani_prevoz_doplacilo_za_nevarno_blago_rid",
+          75,
+        );
     const liftFee = parameterValue(
       params,
       "kombinirani_prevoz_pretovor_na_terminalu",
@@ -769,10 +870,18 @@ async function estimateDeliveryPlan(input, { pool, params }) {
     );
     const accessRoadCost =
       2 * pickupCosts.fixed + pickupCosts.perUnit * accessRoadKm;
+    const roLaPrice = roLa
+      ? roLaFare(
+          terminalOrigin.label,
+          terminalDestination.label,
+          weightKg,
+          railKm,
+          reserveEnd,
+          roLaTicket,
+        )
+      : null;
     const railTariff = roLa
-      ? roLaTicket > 0
-        ? roLaTicket
-        : null
+      ? roLaPrice.fareEur
       : railCosts.fixed +
         railCosts.perUnit * railKm +
         2 * liftFee +
@@ -799,11 +908,12 @@ async function estimateDeliveryPlan(input, { pool, params }) {
           deliveryAt: new Date(departure.getTime() + roadHours * hourMs),
         },
         roadCosts,
-        adrFee,
+        roLa ? 0 : adrFee,
       );
       railCost = {
         ...detail,
         mode: "combined",
+        adrEur: input.adr ? ridFee : 0,
         railTicketEur: railTariff,
         accessRoadEur: round2(
           detail.totalEur - detail.customsEur - detail.adrEur,
@@ -816,7 +926,9 @@ async function estimateDeliveryPlan(input, { pool, params }) {
           railTariff === null
             ? null
             : round2(detail.totalEur + railTariff + (input.adr ? ridFee : 0)),
-        quoteRequired: railTariff === null,
+        quoteRequired: false,
+        railFareSource: roLaPrice?.source || null,
+        railHolidaySurchargeEur: roLaPrice?.holidaySurchargeEur || 0,
       };
     } else
       railCost = {
@@ -828,20 +940,62 @@ async function estimateDeliveryPlan(input, { pool, params }) {
         liftableUnitPremiumEur: roLa ? 0 : liftPremium,
         ridEur: input.adr ? ridFee : 0,
         customsEur,
-        quoteRequired: railTariff === null,
+        quoteRequired: false,
+        railFareSource: roLaPrice?.source || null,
+        railHolidaySurchargeEur: roLaPrice?.holidaySurchargeEur || 0,
         includes: roLa
-          ? "Za Ro-La vnesi ceno vozovnice; Excel podaja javni cenik brez zneska."
+          ? `${roLaPrice.source}: vozovnica ${roLaPrice.baseFareEur.toFixed(2)} €${roLaPrice.holidaySurchargeEur ? ` + praznični dodatek ${roLaPrice.holidaySurchargeEur.toFixed(2)} €` : ''}; razred tovora do ${roLaPrice.weightClassKg.toLocaleString('sl-SI')} kg. Dodatek ADR/RID po Excelu: ${input.adr ? `${ridFee.toFixed(2)} €` : 'ni obračunan'}.`
           : "Dovoz/odvoz, vlak, pretovor in pribitek za dvigljivo enoto po Excelovih parametrih.",
       };
     const withinTwoWorkDays =
       railDeliveryAt <= addBusinessDays(deliveryAt, 2, destinationHolidays);
     const onTime = railDeliveryAt <= deadlineAt;
+    const trainEvents = scheduledRailPath
+      ? (() => {
+          const events = [];
+          let cursor = new Date(reserveEnd);
+          for (const [index, leg] of scheduledRailPath.legs.entries()) {
+            const trainDeparture = new Date(leg.departureAt);
+            const trainArrival = new Date(leg.arrivalAt);
+            if (trainDeparture > cursor) {
+              events.push(event(
+                index === 0 ? "waiting" : "transfer",
+                index === 0
+                  ? `Čakanje na vlak · ${leg.from}`
+                  : `Pretovor / čakanje na povezavo · ${leg.from}`,
+                cursor,
+                trainDeparture,
+              ));
+            }
+            const trainLabel = leg.inferredTrainNumber
+              ? "številka ni navedena v viru"
+              : leg.trainNumbers.join(", ");
+            events.push(event(
+              "train",
+              `Vlak ${trainLabel} · ${leg.from} → ${leg.to}`,
+              trainDeparture,
+              trainArrival,
+              { distanceKm: undefined },
+            ));
+            cursor = trainArrival;
+          }
+          return events;
+        })()
+      : [event(
+          "train",
+          "Vožnja Ro-La – ocena",
+          reserveEnd,
+          trainEnd,
+          { distanceKm: Math.round(railKm * 10) / 10 },
+        )];
     const railTimeline = [
       event("loading", "Naklad", loading.start, loading.end),
       ...firstDrive.events,
       event(
         "terminal",
-        "Oddaja enote na terminalu",
+        roLa
+          ? `Ro-La nalaganje · ${terminalOrigin.label}`
+          : `Oddaja enote na terminalu · ${terminalOrigin.label}`,
         firstDrive.arrival,
         terminalDropEnd,
       ),
@@ -851,16 +1005,12 @@ async function estimateDeliveryPlan(input, { pool, params }) {
         terminalDropEnd,
         reserveEnd,
       ),
-      event(
-        "train",
-        roLa ? "Vožnja Ro-La – ocena" : "Vožnja vlaka – ocena",
-        reserveEnd,
-        trainEnd,
-        { distanceKm: Math.round(railKm * 10) / 10 },
-      ),
+      ...trainEvents,
       event(
         "terminal",
-        "Prevzem enote na terminalu",
+        roLa
+          ? `Ro-La razklad · ${terminalDestination.label}`
+          : `Prevzem enote na terminalu · ${terminalDestination.label}`,
         trainEnd,
         terminalPickupEnd,
       ),
@@ -877,14 +1027,78 @@ async function estimateDeliveryPlan(input, { pool, params }) {
         : []),
       event("unloading", "Razklad", railUnload.start, railUnload.end),
     ];
-    const railWarnings = [
-      "Čas vlaka je samodejna približna ocena na podlagi razdalje in modelne povprečne hitrosti 60 km/h; dejanskega voznega reda in odhodov ni v podatkovni bazi. Terminala sta samodejno predlagana po podatkih OpenStreetMap in ju je treba pred rezervacijo potrditi pri prevozniku.",
-      "Čas cestnih odsekov temelji na usmerjevalniku za osebna vozila; preverjene omejitve za tovornjake, promet v živo in prepovedi na posameznih cestah niso na voljo.",
+    const routePoints = [
+      { label: origin.label, lat: originResolved.lat, lon: originResolved.lon, kind: "origin" },
+      { label: terminalOrigin.label, lat: terminalOrigin.lat, lon: terminalOrigin.lon, kind: "terminal" },
+      ...(scheduledRailPath?.legs.slice(1).map(leg => ({
+        label: leg.from,
+        lat: leg.fromCoordinate?.[0],
+        lon: leg.fromCoordinate?.[1],
+        kind: "terminal",
+      })) || []),
+      ...(scheduledRailPath?.blockedLegs || []).flatMap(leg => leg.fromCoordinate && leg.toCoordinate ? [{
+        label: `ZAPORA · ${leg.from}–${leg.to}`,
+        lat: (leg.fromCoordinate[0] + leg.toCoordinate[0]) / 2,
+        lon: (leg.fromCoordinate[1] + leg.toCoordinate[1]) / 2,
+        kind: "disruption",
+      }] : []),
+      { label: terminalDestination.label, lat: terminalDestination.lat, lon: terminalDestination.lon, kind: "terminal" },
+      { label: destination.label, lat: destinationResolved.lat, lon: destinationResolved.lon, kind: "destination" },
+    ].filter(point => Number.isFinite(Number(point.lat)) && Number.isFinite(Number(point.lon)));
+    const routeSegments = [
+      {
+        mode: "road",
+        label: "Tovornjak do terminala",
+        coordinates: toTerminal.routeCoordinates?.length ? toTerminal.routeCoordinates : [[originResolved.lat, originResolved.lon], [terminalOrigin.lat, terminalOrigin.lon]],
+      },
+      ...(scheduledRailPath
+        ? [
+            ...(scheduledRailPath.blockedLegs || []).map(leg => ({
+              mode: "rail",
+              status: "blocked",
+              label: `ZAPRTO · ${leg.from} → ${leg.to}${leg.note ? ` · ${leg.note}` : ""}`,
+              coordinates: [leg.fromCoordinate, leg.toCoordinate].filter(Boolean),
+            })),
+            ...scheduledRailPath.legs.map(leg => ({
+              mode: "rail",
+              status: scheduledRailPath.blockedLegs?.length ? "detour" : "normal",
+              label: `${scheduledRailPath.blockedLegs?.length ? "OBVOZ · " : ""}Vlak ${leg.inferredTrainNumber ? "(številka ni navedena)" : leg.trainNumbers.join(", ")} · ${leg.from} → ${leg.to}`,
+              coordinates: [leg.fromCoordinate, leg.toCoordinate].filter(Boolean),
+            })),
+          ]
+        : [{
+            mode: "rail",
+            label: roLa ? "Ro-La" : "Železniški del (ocena)",
+            coordinates: [[terminalOrigin.lat, terminalOrigin.lon], [terminalDestination.lat, terminalDestination.lon]],
+          }]),
+      {
+        mode: "road",
+        label: "Tovornjak od terminala do cilja",
+        coordinates: fromTerminal.routeCoordinates?.length ? fromTerminal.routeCoordinates : [[terminalDestination.lat, terminalDestination.lon], [destinationResolved.lat, destinationResolved.lon]],
+      },
     ];
+    const railWarnings = scheduledRailPath
+      ? [`Vozni red iz lokalnega PDF-ja pokriva obdobje ${scheduledRailPath.sourcePeriodStart}–${scheduledRailPath.sourcePeriodEnd}. Časi in dnevi se uporabljajo kot tedenski vzorec; pred odpremo preveri aktualno razpoložljivost.`,
+        "Časi prestopov so modelirani z najmanj 3 urami; odseki, ki padejo v vneseno zaporo, so izločeni iz poti.",
+        "Čas cestnih odsekov temelji na usmerjevalniku za osebna vozila; preverjene omejitve za tovornjake in promet v živo niso na voljo."]
+      : [
+          "Ro-La ostaja na svojem obstoječem izračunu in voznem redu.",
+          "Čas cestnih odsekov temelji na usmerjevalniku za osebna vozila; preverjene omejitve za tovornjake in promet v živo niso na voljo.",
+        ];
+    if (scheduledRailPath?.blockedLegs?.length) {
+      railWarnings.push(`Vozni red je obšel ${scheduledRailPath.blockedLegs.map(leg => `${leg.from} → ${leg.to}`).join(", ")}. Oranžne etape so izbrana alternativa; rdeča črta označuje zaprto povezavo.`);
+    }
+    if (scheduledRailPath?.usedNearestAlternative) {
+      railWarnings.push(`Prvotni terminalski par nima povezave v voznem redu; planer je samodejno izbral najbližji povezani par ${terminalOrigin.label} → ${terminalDestination.label}.`);
+    }
     if (railRoadsApproximate) railWarnings.push(approximateRoadWarning);
-    if (roLa && railTariff === null)
+    for (const name of [...new Set([...toTerminal.detouredDisruptions || [], ...fromTerminal.detouredDisruptions || []])])
+      railWarnings.push(`Cestni dovoz ali odvoz upošteva motnjo: ${name}.`);
+    for (const name of [...new Set([...toTerminal.unavoidedDisruptions || [], ...fromTerminal.unavoidedDisruptions || []])])
+      railWarnings.push(`Usmerjevalnik ni mogel zanesljivo obvoziti cestne motnje: ${name}.`);
+    if (roLa && !roLaPrice.exact)
       railWarnings.push(
-        "Za cenovno primerjavo Ro-La vnesi ceno vozovnice prevoznika.",
+        "Za izbrani par terminalov Excel ne vsebuje neposredne vozovnice; prikazana je ocena na podlagi povprečne cene na železniški kilometer iz objavljenih tarif 2026.",
       );
     if (!withinTwoWorkDays)
       railWarnings.push(
@@ -913,8 +1127,11 @@ async function estimateDeliveryPlan(input, { pool, params }) {
       withinTwoWorkDays,
       feasible: onTime && withinTwoWorkDays,
       timeline: railTimeline,
+      routeSegments,
+      routePoints,
       warnings: railWarnings,
     });
+    }
   }
   const preference = ["cost", "emissions", "time"].includes(input.preference)
     ? input.preference
@@ -944,9 +1161,9 @@ async function estimateDeliveryPlan(input, { pool, params }) {
     warnings.push(
       "Za eno ali obe lokaciji ni znane države; lokalnih praznikov tam ni mogoče preveriti.",
     );
-  if (holidayResults.some((row) => row.source === "excel-fallback"))
+  if (holidayResults.some((row) => row.source === "local-database"))
     warnings.push(
-      "Uporabljen je lokalni seznam praznikov iz Excelove baze; morda ni popoln za izbrano leto.",
+      "Uporabljen je lokalni koledar praznikov iz baze; preveri, da so v zavihku Prazniki vnešeni vsi državni in regionalni prosti dnevi.",
     );
   if (holidayResults.some((row) => row.regionalExcluded))
     warnings.push(
@@ -1058,7 +1275,7 @@ async function holidaysForRange(
   rangeEnd = null,
 ) {
   const dates = new Set();
-  let source = "excel-fallback";
+  let source = "local-database";
   const period = `${rangeStart || ""}-${rangeEnd || ""}`;
   for (const year of years) {
     const key = `${country}-${year}-${normalizedRegion(region)}-${period}`;
@@ -1091,47 +1308,7 @@ async function holidaysForRange(
       ) && !region;
     const localDates = applicableRows.map((row) => row.holiday_date);
     let yearDates = localDates;
-    let yearSource = "excel-fallback";
-    try {
-      const response = await fetch(
-        `https://nagerholidays.com/api/v4/Holidays/${encodeURIComponent(country)}/${year}`,
-        {
-          headers: {
-            "User-Agent": "RailoptDesktop/1.0 (public-holiday lookup)",
-          },
-          signal: AbortSignal.timeout(6000),
-        },
-      );
-      if (response.ok) {
-        const payload = await response.json();
-        const national = Array.isArray(payload)
-          ? payload.filter(
-              (row) =>
-                row.nationalHoliday === true &&
-                /^\d{4}-\d{2}-\d{2}$/.test(row.date),
-            )
-          : [];
-        const known = new Set(localRows.map((row) => row.holiday_date));
-        for (const holiday of national)
-          if (!known.has(holiday.date)) {
-            await pool.execute(
-              "INSERT INTO holidays (country_code,holiday_date,holiday_name,note) VALUES (?,?,?,?)",
-              [
-                country,
-                holiday.date,
-                String(holiday.name || "Praznik").slice(0, 200),
-                "Uvoz iz Nager.Date API v4",
-              ],
-            );
-          }
-        yearDates = [
-          ...new Set([...localDates, ...national.map((row) => row.date)]),
-        ];
-        yearSource = "Nager.Date API v4 + Excel baza";
-      }
-    } catch {
-      /* Use the locally imported holiday list when the public calendar is unavailable. */
-    }
+    const yearSource = "local-database";
     holidayCache.set(key, {
       dates: yearDates,
       source: yearSource,
@@ -1156,4 +1333,8 @@ module.exports = {
   normalizeLoading,
   planUnload,
   holidaysForRange,
+  invalidateHolidayCache(country) {
+    if (!country) holidayCache.clear();
+    else for (const key of holidayCache.keys()) if (key.startsWith(`${String(country).toUpperCase()}-`)) holidayCache.delete(key);
+  },
 };

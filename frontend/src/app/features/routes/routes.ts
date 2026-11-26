@@ -9,6 +9,8 @@ import {
   getShipments,
   saveGlobalExtraTime,
   saveShipmentExtraTime,
+  getShipmentCalculationProgress,
+  startShipmentCalculations,
   updateRoute,
   updateShipment,
   type ShipmentComparisonOption,
@@ -32,6 +34,7 @@ import {
 } from '../../core/api/delivery-plan-status';
 import { PlacePickerComponent } from '../../components/place-picker/place-picker';
 import { DeliveryPlanDetailsComponent } from '../../components/delivery-plan-details/delivery-plan-details';
+import { exportRecordsCsv, exportRecordsPdf, makePlanExportRecord, makeRouteExportRecord, makeShipmentExportRecord, type ExportRecord } from '../../core/export-data';
 
 @Component({
   selector: 'app-routes',
@@ -69,6 +72,10 @@ export class RoutesComponent implements OnInit {
   shipmentEdits: Record<string, number> = {};
   shipmentModes: Record<string, 'AUTO' | 'ROAD' | 'INTERMODAL' | 'RO_LA'> = {};
   calculatingShipment = '';
+  exportBusy = '';
+  exportMessage = '';
+  readonly role=Number(sessionStorage.getItem('railopt-role')||0);
+  readonly permissions=new Set((sessionStorage.getItem('railopt-permissions')||'').split(',').filter(Boolean));
   constructor(private readonly changeDetector: ChangeDetectorRef) {}
 
   get currentShipments(): Shipment[] {
@@ -104,20 +111,65 @@ export class RoutesComponent implements OnInit {
       : 'Načrtovano';
   }
   shipmentArrival(row: Shipment): Date {
-    const minutes =
-      this.globalExtraTimeMinutes +
-      row.routeExtraTimeMinutes +
-      Number(this.shipmentEdits[row.id] ?? row.extraTimeMinutes);
-    return new Date(new Date(`${row.deliveryDateRaw}T12:00:00`).getTime() + minutes * 60000);
+    const editedShipmentExtra=Number(this.shipmentEdits[row.id]??row.extraTimeMinutes);
+    if(row.calculatedDeliveryAt){
+      const calculated=new Date(row.calculatedDeliveryAt);
+      if(!Number.isNaN(calculated.getTime()))return new Date(calculated.getTime()+(editedShipmentExtra-row.extraTimeMinutes)*60000);
+    }
+    const minutes=this.globalExtraTimeMinutes+row.routeExtraTimeMinutes+editedShipmentExtra;
+    return new Date(new Date(`${row.deliveryDateRaw}T12:00:00`).getTime()+minutes*60000);
   }
   isLiftable(row: Shipment): boolean {
-    return /p400|izmenljivi zaboj|zabojnik 45/i.test(row.unitType);
+    return /p400|izmenljivi zaboj|zabojnik 45|zaboj\s*45/i.test(row.unitType);
   }
   isNonLiftable(row: Shipment): boolean {
     return !this.isLiftable(row) && !/samo cesta|tovornjak/i.test(row.unitType);
   }
   shipmentBusy(row: Shipment): boolean {
     return this.calculatingShipment === String(row.id);
+  }
+  private safeFilename(value: string): string { return value.replace(/[^a-z0-9_-]+/gi, '_').replace(/^_+|_+$/g, '').slice(0, 80) || 'izvoz'; }
+  private writeExport(name: string, title: string, records: ExportRecord[], format: 'csv' | 'pdf'): void {
+    if (format === 'csv') exportRecordsCsv(`${this.safeFilename(name)}.csv`, records);
+    else exportRecordsPdf(title, records);
+    this.exportMessage = format === 'csv' ? 'CSV datoteka je prenesena in jo lahko odpreš v Excelu.' : 'Odprlo se je tiskanje; izberi »Shrani kot PDF«.';
+  }
+  async exportShipment(row: Shipment, format: 'csv' | 'pdf'): Promise<void> {
+    this.exportBusy = String(row.id); this.exportMessage = '';
+    try {
+      const comparison = await compareShipment(row.id);
+      this.writeExport(`posiljka_${row.code}`, `Pošiljka ${row.code}`, [makeShipmentExportRecord(row, comparison)], format);
+    } catch (error) { this.exportMessage = error instanceof Error ? error.message : 'Pošiljke ni bilo mogoče izvoziti.'; }
+    finally { this.exportBusy = ''; this.changeDetector.markForCheck(); }
+  }
+  exportPlan(plan: SavedDeliveryPlan, format: 'csv' | 'pdf'): void {
+    try { this.writeExport(`relacija_${plan.id}`, `Relacija ${plan.origin} → ${plan.destination}`, [makePlanExportRecord(plan)], format); }
+    catch (error) { this.exportMessage = error instanceof Error ? error.message : 'Relacije ni bilo mogoče izvoziti.'; }
+  }
+  exportRoute(route: Route, format: 'csv' | 'pdf'): void {
+    try { this.writeExport(`relacija_${route.code}`, `Relacija ${route.from} → ${route.to}`, [makeRouteExportRecord(route)], format); }
+    catch (error) { this.exportMessage = error instanceof Error ? error.message : 'Relacije ni bilo mogoče izvoziti.'; }
+  }
+  async exportAllRoutes(format: 'csv' | 'pdf'): Promise<void> {
+    if (this.exportBusy) return;
+    this.exportBusy = 'all'; this.exportMessage = '';
+    const records: ExportRecord[] = this.rows.map(makeRouteExportRecord);
+    const batchSize = 5;
+    try {
+      for (let start = 0; start < this.shipments.length; start += batchSize) {
+        const batch = this.shipments.slice(start, start + batchSize);
+        const results = await Promise.allSettled(batch.map(row => compareShipment(row.id)));
+        results.forEach((result, index) => records.push(result.status === 'fulfilled'
+          ? makeShipmentExportRecord(batch[index], result.value)
+          : makeShipmentExportRecord(batch[index], undefined, result.reason instanceof Error ? result.reason.message : 'Izračun ni na voljo')));
+        this.exportMessage = `Pripravljam izvoz pošiljk ${Math.min(start + batch.length, this.shipments.length)}/${this.shipments.length}…`;
+        this.changeDetector.markForCheck();
+      }
+      records.push(...this.plans.map(makePlanExportRecord));
+      if (!records.length) throw new Error('Za izvoz ni zapisov.');
+      this.writeExport('railopt_vse_relacije', 'Vse relacije, pošiljke in izračuni', records, format);
+    } catch (error) { this.exportMessage = error instanceof Error ? error.message : 'Podatkov ni bilo mogoče izvoziti.'; }
+    finally { this.exportBusy = ''; this.changeDetector.markForCheck(); }
   }
   plannedArrival(plan: SavedDeliveryPlan): Date {
     const change = this.globalExtraTimeMinutes - Number(plan.input.globalExtraTimeMinutes || 0);
@@ -353,8 +405,8 @@ export class RoutesComponent implements OnInit {
       const rolaOnly = /tovornjak|nedvigljiv|ponjav/i.test(input.unitType);
       if (!truckOnly && (!input.terminalOrigin || !input.terminalDestination)) {
         const [originTerminals, destinationTerminals] = await Promise.all([
-          findFreightTerminals(input.origin, rolaOnly),
-          findFreightTerminals(input.destination, rolaOnly),
+          findFreightTerminals(input.origin, rolaOnly, input.unitType),
+          findFreightTerminals(input.destination, rolaOnly, input.unitType),
         ]);
         input.terminalOrigin = originTerminals[0]
           ? {
@@ -487,7 +539,7 @@ export class RoutesComponent implements OnInit {
     try {
       const terminal =
         (
-          await findFreightTerminals(place, /tovornjak|nedvigljiv|ponjav/i.test(input.unitType))
+          await findFreightTerminals(place, /tovornjak|nedvigljiv|ponjav/i.test(input.unitType), input.unitType)
         )[0] || null;
       input[side === 'origin' ? 'terminalOrigin' : 'terminalDestination'] = terminal
         ? {
@@ -507,8 +559,8 @@ export class RoutesComponent implements OnInit {
     try {
       const rolaOnly = /tovornjak|nedvigljiv|ponjav/i.test(input.unitType);
       const [origins, destinations] = await Promise.all([
-        findFreightTerminals(input.origin, rolaOnly),
-        findFreightTerminals(input.destination, rolaOnly),
+        findFreightTerminals(input.origin, rolaOnly, input.unitType),
+        findFreightTerminals(input.destination, rolaOnly, input.unitType),
       ]);
       input.terminalOrigin = origins[0]
         ? {
@@ -576,10 +628,12 @@ export class RoutesComponent implements OnInit {
     this.error = '';
     this.message = '';
     try {
+      const changedRouteId=this.editing.id;
       await updateRoute(this.editing);
       this.message = `Relacija ${this.editing.code} je shranjena.`;
       this.editing = null;
       this.rows = await getRoutes();
+      await this.recalculateSavedShipments({routeId:changedRouteId});
     } catch (error) {
       this.error = error instanceof Error ? error.message : 'Relacije ni bilo mogoče shraniti.';
     } finally {
@@ -595,6 +649,7 @@ export class RoutesComponent implements OnInit {
       this.globalExtraTimeMinutes = await saveGlobalExtraTime(Number(this.globalExtraTimeMinutes));
       this.message =
         'Splošni dodatni čas je shranjen in velja za planer ter tekoče/prihajajoče relacije.';
+      await this.recalculateSavedShipments({upcomingOnly:true});
     } catch (error) {
       this.error =
         error instanceof Error ? error.message : 'Splošnega časa ni bilo mogoče shraniti.';
@@ -613,6 +668,7 @@ export class RoutesComponent implements OnInit {
         Number(this.shipmentEdits[row.id]),
       );
       this.message = `Dodaten čas za ${row.code} je shranjen.`;
+      await calculateShipment(row.id, this.shipmentModes[row.id] || 'AUTO');
       this.shipments = await getShipments();
     } catch (error) {
       this.error =
@@ -621,6 +677,23 @@ export class RoutesComponent implements OnInit {
       this.saving = '';
       this.changeDetector.markForCheck();
     }
+  }
+  private async recalculateSavedShipments(options:{routeId?:string|number;upcomingOnly?:boolean}={}): Promise<void> {
+    if (this.role !== 1 && !this.permissions.has('shipments.write')) return;
+    this.message = 'Posodabljam izračune shranjenih pošiljk…';
+    const { taskId,total } = await startShipmentCalculations(options);
+    if(!total){this.message='Ni prihodnjih pošiljk za ponovni izračun.';return;}
+    let complete=false;
+    for (let attempt=0; attempt<900; attempt++) {
+      await new Promise(resolve=>setTimeout(resolve,1000));
+      const state=await getShipmentCalculationProgress(taskId);
+      this.message=`Posodobljeni izračuni: ${state.completed}/${state.total}${state.failed?` · napake: ${state.failed}`:''}`;
+      this.changeDetector.markForCheck();
+      if(state.status==='complete'){complete=true;break;}
+      if(state.status==='failed')throw new Error(state.fatalError||'Ponovni izračun pošiljk ni uspel.');
+    }
+    if(!complete)throw new Error('Ponovni izračun še teče v ozadju. Osveži relacije čez nekaj minut.');
+    this.shipments=await getShipments();
   }
   async ngOnInit(): Promise<void> {
     const results = await Promise.allSettled([

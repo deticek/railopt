@@ -1,0 +1,23 @@
+#
+
+izboljšaj css za dostave pa to pa podrobnosti
+
+dodaj dejanske role manager
+dodaj za costum ime
+dodaj dejansko varnost za role kaj lahko kera rola počne
+dodaj zavihek za upravljanje računov
+dodaj opcijo da pišeš sporočilo administratorju
+izboljšaj dashboard
+
+dodajanje prikolic
+kje se lahko kakšna prikolica nalaga
+urejanje terminalov glede na lokaciji
+spreminjanje ozz preračunavanje poti ko pride do kakšnih sprememb
+logs
+zemljivid terminalov
+shranjevanje za strank
+grafi dashboard
+
+popravi dejanski čaz dostave
+
+popravi čas prihoda ker se trenutno premika nazaj čeprav se nebi smeloker bi se moralo u bistvu spremenidi čas naklada.

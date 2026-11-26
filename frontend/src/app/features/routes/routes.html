@@ -13,6 +13,11 @@
 @if (message) {
   <div class="notice success" role="status">{{ message }}</div>
 }
+<section class="panel route-export-panel" style="margin-top: 14px">
+  <div><h3>Izvoz relacij in podatkov</h3><p>Skupni izvoz vključuje relacije iz baze, pošiljke ter shranjene izračune planerja z vsemi podrobnostmi.</p></div>
+  <div class="history-actions"><button class="primary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllRoutes('csv')">Izvozi vse v Excel (CSV)</button><button class="secondary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllRoutes('pdf')">Izvozi vse v PDF</button></div>
+  @if (exportMessage) { <p class="muted" role="status">{{ exportMessage }}</p> }
+</section>
 
 <section class="panel full-list" style="margin-top: 14px">
   <div class="list-toolbar">
@@ -36,6 +41,7 @@
           <th>DODATNO ZA POŠILJKO (MIN)</th>
           <th>SHRANI</th>
           <th>STROŠEK</th>
+          <th>IZVOZ</th>
         </tr>
       </thead>
       <tbody>
@@ -67,10 +73,11 @@
               </button>
             </td>
             <td>{{ row.cost }}</td>
+            <td><button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'csv')">CSV</button> <button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'pdf')">PDF</button></td>
           </tr>
         } @empty {
           <tr>
-            <td class="empty-row" colspan="8">
+            <td class="empty-row" colspan="9">
               {{
                 loading
                   ? 'Nalaganje…'
@@ -140,6 +147,8 @@
               <button class="secondary-btn" type="button" (click)="togglePlanDetails(plan.id)">
                 {{ expandedPlanId === plan.id ? 'Skrij' : 'Podrobnosti' }}
               </button>
+              <button class="secondary-btn" type="button" (click)="exportPlan(plan, 'csv')">CSV</button>
+              <button class="secondary-btn" type="button" (click)="exportPlan(plan, 'pdf')">PDF</button>
             </td>
           </tr>
           @if (expandedPlanId === plan.id) {
@@ -268,7 +277,7 @@
           name="planRolaPrice"
           [ngModel]="planForm.roLaTicketEur"
           (ngModelChange)="setPlanInputValue('roLaTicketEur', $event)"
-      /></label>
+      /><small>0 uporabi cenik Ro-La 2026 samodejno; znesek nad 0 prepiše tarifo.</small></label>
       <label
         >Začetek nakladanja od<input
           type="time"
@@ -614,6 +623,8 @@
               <button class="secondary-btn" type="button" (click)="editShipment(row)">
                 Uredi podatke
               </button>
+              <button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'csv')">CSV</button>
+              <button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'pdf')">PDF</button>
             </td>
           </tr>
         } @empty {
@@ -815,6 +826,8 @@
             <td>{{ row.extraTimeMinutes }} min</td>
             <td>
               <button class="secondary-btn" type="button" (click)="editRoute(row)">Uredi</button>
+              <button class="secondary-btn" type="button" (click)="exportRoute(row, 'csv')">CSV</button>
+              <button class="secondary-btn" type="button" (click)="exportRoute(row, 'pdf')">PDF</button>
             </td>
           </tr>
         } @empty {

@@ -3,6 +3,7 @@ const { validDate } = require("../lib/validation");
 const { estimateDeliveryPlan } = require("../services/delivery-planner");
 const { resolvePlace } = require("./emissions");
 const crypto = require("node:crypto");
+const { nearestRailTerminals } = require("../services/kombiverkehr-network");
 function createRouter(deps) {
   const router = express.Router();
   const { pool, requireSession, asyncRoute, serializeShipment, validDate } =
@@ -79,7 +80,7 @@ function createRouter(deps) {
     ]);
     const mode = String(requestedMode || "AUTO").toUpperCase();
     const sourceUnit = String(row.unit_type || "");
-    const liftable = /p400|izmenljivi zaboj|zabojnik 45|dvigljiv/i.test(
+    const liftable = /p400|izmenljivi zaboj|zabojnik\s*45|zaboj\s*45|dvigljiv/i.test(
       sourceUnit,
     );
     const roadOnly = /samo cesta|tovornjak/i.test(sourceUnit);
@@ -97,12 +98,20 @@ function createRouter(deps) {
         : mode === "RO_LA" && liftable
           ? "Nedvigljiva prikolica s ponjavo"
           : sourceUnit;
-    const terminalOrigin = useCompare
-      ? await closestTerminals(originGeo, terminals)
-      : null;
-    const terminalDestination = useCompare
-      ? await closestTerminals(destinationGeo, terminals)
-      : null;
+    const closestForUnit = async (place) => {
+      if (liftable) {
+        const [terminal] = await nearestRailTerminals(pool, place);
+        return terminal ? {
+          label: terminal.name,
+          lat: Number(terminal.latitude),
+          lon: Number(terminal.longitude),
+          countryCode: null,
+        } : null;
+      }
+      return closestTerminals(place, terminals);
+    };
+    const terminalOrigin = useCompare ? await closestForUnit(originGeo) : null;
+    const terminalDestination = useCompare ? await closestForUnit(destinationGeo) : null;
     if (useCompare && (!terminalOrigin || !terminalDestination))
       throw new Error(
         "Za samodejno primerjavo v lokalni bazi ni terminala blizu ene od lokacij.",
@@ -349,9 +358,14 @@ function createRouter(deps) {
     "/api/shipments/calculate-all",
     requireSession,
     asyncRoute(async (req, res) => {
-      const [[count]] = await pool.query(
-        "SELECT COUNT(*) AS total FROM shipments",
-      );
+      const routeId=req.body?.routeId==null?'':String(req.body.routeId);
+      const upcomingOnly=req.body?.upcomingOnly===true;
+      if(routeId&&!validId(routeId))return res.status(400).json({error:'Relacija za ponovni izračun ni veljavna.'});
+      const filters=[],values=[];
+      if(routeId){filters.push('route_id=?');values.push(routeId);}
+      if(upcomingOnly)filters.push('recipient_deadline>=CURDATE()');
+      const where=filters.length?` WHERE ${filters.join(' AND ')}`:'';
+      const [[count]] = await pool.execute(`SELECT COUNT(*) AS total FROM shipments${where}`,values);
       const taskId = crypto.randomUUID();
       const task = {
         status: "running",
@@ -369,8 +383,8 @@ function createRouter(deps) {
           const [terminals] = await pool.query(
             "SELECT id,name,country_code,latitude,longitude,note FROM terminals WHERE latitude IS NOT NULL AND longitude IS NOT NULL",
           );
-          const [rows] = await pool.query(
-            "SELECT id FROM shipments ORDER BY shipment_number",
+          const [rows] = await pool.execute(
+            `SELECT id FROM shipments${where} ORDER BY shipment_number`,values,
           );
           for (const shipment of rows) {
             try {

@@ -8,7 +8,10 @@ export interface DashboardData {
   routeCount: number;
   optimizedCount: number;
   recommendedCo2Kg: number;
-  recentShipments: Array<{ shipmentNumber: number; route: string; status: string; transportType: string; deliveryDate: string; cost: number | null; co2Kg: number | null }>;
+  recommendedCost: number;
+  monthlyShipments: Array<{period:string;count:number}>;
+  transportBreakdown: Array<{mode:string;count:number;co2Kg:number;unfinishedCount:number}>;
+  recentShipments: Array<{ shipmentNumber: number; route: string; status: string; transportType: string; deliveryDate: string; calculatedDeliveryAt:string|null; cost: number | null; co2Kg: number | null }>;
 }
 
 export async function getDashboard(): Promise<DashboardData> {
@@ -36,7 +39,7 @@ export async function calculateShipment(id:string|number,transportMode:'AUTO'|'R
 export interface ShipmentComparisonOption {id:'road'|'rail'|'rola';title:string;mode:string;costEur:number|null;emissionsKgCo2e:number;deliveryAt:string;totalElapsedHours:number;roadKm:number;railKm:number;feasible:boolean;warnings:string[]}
 export interface ShipmentComparisonPreview { options:ShipmentComparisonOption[]; recommendedOptionId:string|null; input?:DeliveryPlanInput; result?:DeliveryPlanResult }
 export async function compareShipment(id:string|number):Promise<ShipmentComparisonPreview>{const response=await apiRequest(`/shipments/${encodeURIComponent(String(id))}/compare`,{signal:AbortSignal.timeout(45000)});if(!response.ok)throw new Error(await readApiError(response,'Primerjave prevozov ni bilo mogoče izračunati.'));return response.json();}
-export async function startShipmentCalculations():Promise<{taskId:string;total:number}>{const response=await apiRequest('/shipments/calculate-all',{method:'POST'});if(!response.ok)throw new Error(await readApiError(response,'Izračuna pošiljk ni bilo mogoče zagnati.'));return response.json();}
+export async function startShipmentCalculations(options:{routeId?:string|number;upcomingOnly?:boolean}={}):Promise<{taskId:string;total:number}>{const response=await apiRequest('/shipments/calculate-all',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(options)});if(!response.ok)throw new Error(await readApiError(response,'Izračuna pošiljk ni bilo mogoče zagnati.'));return response.json();}
 export async function getShipmentCalculationProgress(taskId:string):Promise<{status:'running'|'complete'|'failed';total:number;completed:number;failed:number;errors:Array<{shipmentId:string|number;message:string}>;fatalError?:string}>{const response=await apiRequest(`/shipments/calculations/${encodeURIComponent(taskId)}`);if(!response.ok)throw new Error(await readApiError(response,'Stanja izračuna ni mogoče prebrati.'));return response.json();}
 
 export async function updateShipment(shipment: Shipment): Promise<void> {

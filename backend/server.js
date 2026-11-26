@@ -8,6 +8,8 @@ const bcrypt = require('bcryptjs');
 const { createEmissionsRouter } = require('./routes/emissions');
 const { createPlacesRouter } = require('./routes/places');
 const createDeliveryPlansRouter = require('./routes/delivery-plans');
+const createRailNetworkRouter = require('./routes/rail-network');
+const createRoadDisruptionsRouter = require('./routes/road-disruptions');
 const createAuthRouter = require('./routes/auth');
 const createHealthRouter = require('./routes/health');
 const createUsersRouter = require('./routes/users');
@@ -16,7 +18,9 @@ const createShipmentsRouter = require('./routes/shipments');
 const createTransportRoutesRouter = require('./routes/transport-routes');
 const createParametersRouter = require('./routes/parameters');
 const createHolidaysRouter = require('./routes/holidays');
+const { createAdminToolsRouter } = require('./routes/admin-tools');
 const { validDate, validTime } = require('./lib/validation');
+const { readJson, writeJson } = require('./lib/parameter-store');
 
 const app = express();
 app.disable('x-powered-by');
@@ -132,6 +136,79 @@ function requireAdmin(req, res, next) {
   if (Number(req.user?.role) !== 1) return res.status(403).json({ error: 'Za to dejanje potrebujete skrbniško vlogo.' });
   return next();
 }
+const permissionCache = new Map();
+const legacyUserPermissions = ['dashboard.read','shipments.read','routes.read','planner.use','messages.send'];
+async function getRolePermissions(role) {
+  const roleId = Number(role);
+  if (roleId === 1) return ['*'];
+  const cached = permissionCache.get(roleId);
+  if (cached && cached.expiresAt > Date.now()) return cached.permissions;
+  let permissions;
+  try {
+    const [rows] = await authPool.execute('SELECT permissions FROM roles WHERE role_id=? LIMIT 1', [roleId]);
+    const value = rows[0]?.permissions;
+    permissions = typeof value === 'string' ? JSON.parse(value) : value;
+    if (!Array.isArray(permissions)) permissions = [];
+  } catch (error) {
+    if (error.code !== 'ER_NO_SUCH_TABLE') throw error;
+    const storedRole=await readJson(pool,`app_role_${roleId}`);
+    permissions=Array.isArray(storedRole?.permissions)?storedRole.permissions:(roleId===2?legacyUserPermissions:[]);
+  }
+  permissionCache.set(roleId, { permissions, expiresAt: Date.now() + 15_000 });
+  return permissions;
+}
+function clearRolePermissionCache(roleId) { permissionCache.delete(Number(roleId)); }
+function permissionForRequest(req) {
+  const path = req.path.replace(/\/$/, '') || '/';
+  const method = req.method.toUpperCase();
+  if (path === '/users' || path.startsWith('/users/')) return 'accounts.manage';
+  if (path === '/roles' || path.startsWith('/roles/')) return 'roles.manage';
+  if (path === '/admin-messages') return method === 'POST' ? 'messages.send' : 'messages.manage';
+  if (path === '/audit-logs') return 'audit.read';
+  if (path === '/unit-terminals') return method === 'GET' ? ['routes.read','terminals.manage'] : 'terminals.manage';
+  if (path.startsWith('/unit-terminals/')) return 'terminals.manage';
+  if (path === '/trailers' || path.startsWith('/trailers/')) return 'trailers.manage';
+  if (path === '/customers' || path.startsWith('/customers/')) return method === 'GET' ? 'customers.read' : 'customers.write';
+  if (path === '/dashboard') return 'dashboard.read';
+  if (path.startsWith('/delivery-plans') || path.startsWith('/places') || path.startsWith('/emissions') || path.startsWith('/rail-network') || path.startsWith('/road-disruptions')) return 'planner.use';
+  if (path.startsWith('/shipments')) return method === 'GET' ? 'shipments.read' : 'shipments.write';
+  if (path.startsWith('/routes')) return method === 'GET' ? 'routes.read' : 'routes.write';
+  if (path.startsWith('/transport-routes') || path.startsWith('/parameters') || path.startsWith('/holidays')) return method === 'GET' ? 'routes.read' : 'routes.write';
+  return 'dashboard.read';
+}
+function hasPermission(permissions, needed) {
+  if (permissions.includes('*')) return true;
+  const requirements=Array.isArray(needed)?needed:[needed];
+  return requirements.some(code=>permissions.includes(code)||
+    (code==='shipments.read'&&permissions.includes('shipments.write'))||
+    (code==='routes.read'&&permissions.includes('routes.write'))||
+    (code==='customers.read'&&permissions.includes('customers.write')));
+}
+async function authorizeApiAccess(req, res, next) {
+  try {
+    const permissions = await getRolePermissions(req.user?.role);
+    const needed = permissionForRequest(req);
+    if (!hasPermission(permissions,needed)) return res.status(403).json({ error: 'Vaša uporabniška vloga nima dovoljenja za to dejanje.' });
+    return next();
+  } catch (error) { return next(error); }
+}
+function requirePermission(code) {
+  return async (req, res, next) => {
+    try {
+      const permissions = await getRolePermissions(req.user?.role);
+      if (!hasPermission(permissions,code)) return res.status(403).json({ error: 'Vaša uporabniška vloga nima dovoljenja za to dejanje.' });
+      return next();
+    } catch (error) { return next(error); }
+  };
+}
+function auditApiWrites(req, res, next) {
+  res.on('finish', () => {
+    if (!['POST','PUT','PATCH','DELETE'].includes(req.method) || res.statusCode >= 400) return;
+    const entity = req.path.split('/').filter(Boolean).slice(0, 2).join('/').slice(0,120) || 'api';
+    pool.execute('INSERT INTO audit_logs(user_id,username,action,entity,http_status) VALUES(?,?,?,?,?)', [req.user?.id || null, req.user?.username || req.user?.name || null, req.method, entity, res.statusCode]).catch(async error=>{if(error.code==='ER_NO_SUCH_TABLE')await writeJson(pool,`audit_${Date.now()}_${crypto.randomBytes(3).toString('hex')}`,'Revizijski dnevnik','API dejanje',{userId:req.user?.id||null,username:req.user?.username||req.user?.name||null,action:req.method,entity,status:res.statusCode,createdAt:new Date().toISOString()}).catch(()=>{});});
+  });
+  next();
+}
 function normalizeRole(value) {
   const role = String(value ?? '').trim().toUpperCase();
   if (role === 'ADMIN' || role === 'ADMINISTRATOR') return 1;
@@ -178,11 +255,16 @@ async function start() {
     throw new Error('The configured MySQL auth database does not contain a compatible users table.');
   }
   app.use('/api', createHealthRouter({ pool, authPool, asyncRoute }));
-  app.use(createAuthRouter({ authPool, sessions, administrator, databaseUsersEnabled, userSchema, userColumn, normalizeRole, bcryptRounds, bcrypt, crypto, requireSession, asyncRoute }));
+  app.use(createAuthRouter({ pool, authPool, sessions, administrator, databaseUsersEnabled, userSchema, userColumn, normalizeRole, getRolePermissions, bcryptRounds, bcrypt, crypto, requireSession, asyncRoute }));
+  app.use('/api', (req,res,next) => requireSession(req,res,() => authorizeApiAccess(req,res,next)));
+  app.use('/api', auditApiWrites);
+  app.use('/api', createAdminToolsRouter({ pool, authPool, requireSession, requireAdmin, requirePermission, clearRolePermissionCache, crypto }).router);
   app.use('/api', createEmissionsRouter({ requireSession, asyncRoute }));
   app.use('/api', createPlacesRouter({ pool, requireSession, asyncRoute }));
   app.use('/api', createDeliveryPlansRouter({ pool, requireSession, crypto }));
-  app.use(createUsersRouter({ authPool, requireSession, requireAdmin, asyncRoute, databaseUsersEnabled, userSchema, userColumn, normalizeRole, bcryptRounds, crypto }));
+  app.use('/api', createRailNetworkRouter({ pool, requireSession, crypto }));
+  app.use('/api', createRoadDisruptionsRouter({ pool, requireSession, crypto }));
+  app.use(createUsersRouter({ pool, authPool, requireSession, requireAdmin, asyncRoute, databaseUsersEnabled, userSchema, userColumn, normalizeRole, bcryptRounds, crypto }));
   app.use(createDashboardRouter({ pool, requireSession, asyncRoute, serializeShipment }));
   app.use(createShipmentsRouter({ pool, requireSession, asyncRoute, serializeShipment, validDate }));
   app.use(createTransportRoutesRouter({ pool, requireSession, asyncRoute, serializeRoute, validTime }));

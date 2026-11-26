@@ -1,15 +1,18 @@
 const express = require("express");
+const {readJson}=require('../lib/parameter-store');
 
 function createAuthRouter(deps) {
   const router = express.Router();
   const {
     authPool,
+    pool,
     sessions,
     administrator,
     databaseUsersEnabled,
     userSchema,
     userColumn,
     normalizeRole,
+    getRolePermissions,
     bcryptRounds,
     bcrypt,
     crypto,
@@ -49,6 +52,7 @@ function createAuthRouter(deps) {
             }
           : null;
       }
+      if(account&&databaseUsersEnabled&&!userSchema.hasActive){const state=await readJson(pool,`app_user_${account.id}`);if(state&&state.active===false)account.active=false;}
       if (!account || (!account.active && databaseUsersEnabled)) {
         return res
           .status(401)
@@ -81,6 +85,8 @@ function createAuthRouter(deps) {
         name: account.name || account.username,
         role: Number(account.role || 1),
       };
+      user.permissions=await getRolePermissions(user.role);
+      if(user.role===1)user.permissions=['*'];
       sessions.set(crypto.createHash("sha256").update(token).digest("hex"), {
         expiresAt: Date.now() + 12 * 60 * 60 * 1000,
         user,

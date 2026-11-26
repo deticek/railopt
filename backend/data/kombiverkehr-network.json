@@ -1,0 +1,6021 @@
+{
+  "source": "Kombiverkehr_povezave_terminali.pdf",
+  "sourceTitle": "Kombiverkehr - vse povezave med terminali",
+  "periodStart": "2026-11-27",
+  "periodEnd": "2026-12-03",
+  "extractedAt": "2026-11-26",
+  "terminals": [
+    "Alnabru (Oslo)",
+    "Göteborg Älvsborgshamnen",
+    "Madrid Abroñigal",
+    "Rotterdam Europoort P+O NSF",
+    "Antwerpen Combinant",
+    "Hallsberg",
+    "Malmö Kombi",
+    "Rotterdam RSC",
+    "Barcelona Morrot",
+    "Hamburg-Billwerder Ubf",
+    "Malmö Kombiterminal CMP",
+    "Sajoszentpeter",
+    "Bari Ferruccio",
+    "Haniska",
+    "Malmö Norra Hamnen (Finnlines)",
+    "San Roque",
+    "Bari Giovinazzo",
+    "Hannover Lehrte MegaHub",
+    "Melnik RCO",
+    "Segrate",
+    "Basel-Weil a. R. Ubf",
+    "Hendaye",
+    "Mersin Port",
+    "Sevilla Majarabique",
+    "Bludenz CCT",
+    "Irún",
+    "Milano Smistamento FS",
+    "Silla (Valencia)",
+    "Bologna Cogefrin",
+    "Kiel Schwedenkai KV",
+    "Mortara KT",
+    "St. Michael CCT",
+    "Bologna Interporto",
+    "Koper Luka",
+    "Murcia",
+    "Stockholm Norra Rosersberg",
+    "Bratislava ÚNS",
+    "Köln-Eifeltor Ubf",
+    "München-Riem Ubf",
+    "Szeged Ct",
+    "Brno hl. n.",
+    "La Llagosta",
+    "Neratovice",
+    "Trelleborg Hamnbana",
+    "Budapest BILK Kombiterminal",
+    "Leipzig-Wahren Ubf",
+    "Neuss-Hessentor Ubf Trimodal",
+    "Trieste PLT Terminal",
+    "Budapest Mahart",
+    "Liberec",
+    "Nola Interporto",
+    "Trieste Samer",
+    "CTR - Container Terminal Regensburg",
+    "Linz OMV - Chemiepark",
+    "Nürnberg Hafen Ubf",
+    "Umea Kombi",
+    "Catania-Bicocca",
+    "Ljubljana KT",
+    "Obrnice u Mostu",
+    "Verona Interterminal",
+    "Cesme",
+    "Lovosice CD - DUSS",
+    "Ostrava Mosnov",
+    "Verona Quadrante Europa",
+    "Cierna nad Tisou",
+    "Ludwigshafen (Rh) BASF Ubf",
+    "Ostrava Paskov",
+    "Villach Süd CCT",
+    "Constanti (Tarragona)",
+    "Lulea Kombiterminal",
+    "Patras Hafen DFDS",
+    "Wels Vbf CCT",
+    "Curtici FN (Arad)",
+    "Lyon Vénissieux Naviland",
+    "Pendik",
+    "Wien Süd CCT",
+    "Dörpen Ubf",
+    "Lübeck-Dänischburg CTL",
+    "Pomezia S. Palomba",
+    "Wolfurt CCT",
+    "Gent Interface Terminal",
+    "Lübeck-Lehmannkai",
+    "Poznan-CLIP",
+    "Yalova",
+    "Graz Süd CCT",
+    "Lübeck-Schlutup",
+    "Prerov",
+    "Zaragoza Plaza",
+    "Gummern Ubf",
+    "Lübeck-Seelandkai",
+    "Rail-Hub Duisburg",
+    "Zilina RCG-Terminal",
+    "Gävle Containerterterminal",
+    "Lübeck-Skandinavienkai Ubf",
+    "Rijeka Brajdica",
+    "Göteborg Majnabbe",
+    "Maddaloni Marcianise",
+    "Rostock Seehafen Ubf",
+    "Agognate",
+    "Bremen Roland Ubf",
+    "Duisburg Rheinhausen DKT",
+    "Hamm (Westf) Hafen",
+    "Lonato Sp.a",
+    "Padova Interporto",
+    "Poggio Rusco",
+    "Rheine c/o Vega International",
+    "Villa Opicina Fernetti",
+    "Wörth (Rhein) Ubf",
+    "Zeitz"
+  ],
+  "inactiveTerminals": [
+    "Agognate",
+    "Bremen Roland Ubf",
+    "Duisburg Rheinhausen DKT",
+    "Hamm (Westf) Hafen",
+    "Lonato Sp.a",
+    "Padova Interporto",
+    "Poggio Rusco",
+    "Rheine c/o Vega International",
+    "Villa Opicina Fernetti",
+    "Wörth (Rhein) Ubf",
+    "Zeitz"
+  ],
+  "connections": [
+    {
+      "from": "Alnabru (Oslo)",
+      "to": "Trelleborg Hamnbana",
+      "trains": "CN101",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "12:00, 17:00",
+      "runsPerWeek": 7.0,
+      "duration": "13h 00m",
+      "note": "",
+      "trainNumbers": [
+        "CN101"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "12:00",
+        "17:00"
+      ],
+      "durationMinutes": 780,
+      "inferred": false
+    },
+    {
+      "from": "Antwerpen Combinant",
+      "to": "Irún",
+      "trains": "47190",
+      "days": "Tor Čet Pet",
+      "times": "03:00, 19:00",
+      "runsPerWeek": 3.0,
+      "duration": "31h 50m",
+      "note": "",
+      "trainNumbers": [
+        "47190"
+      ],
+      "departureDays": [
+        1,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "03:00",
+        "19:00"
+      ],
+      "durationMinutes": 1910,
+      "inferred": false
+    },
+    {
+      "from": "Antwerpen Combinant",
+      "to": "Rail-Hub Duisburg",
+      "trains": "41539",
+      "days": "Pon Sre Pet",
+      "times": "15:00, 19:30",
+      "runsPerWeek": 3.0,
+      "duration": "9h 20m",
+      "note": "",
+      "trainNumbers": [
+        "41539"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "15:00",
+        "19:30"
+      ],
+      "durationMinutes": 560,
+      "inferred": false
+    },
+    {
+      "from": "Barcelona Morrot",
+      "to": "Constanti (Tarragona)",
+      "trains": "55505, 55507",
+      "days": "Pon Sre Pet",
+      "times": "02:52, 07:26",
+      "runsPerWeek": 3.0,
+      "duration": "4h 08m",
+      "note": "",
+      "trainNumbers": [
+        "55505",
+        "55507"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "02:52",
+        "07:26"
+      ],
+      "durationMinutes": 248,
+      "inferred": false
+    },
+    {
+      "from": "Barcelona Morrot",
+      "to": "Ludwigshafen (Rh) BASF Ubf",
+      "trains": "42251, 42265, 42267",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "00:01, 10:00, 11:00",
+      "runsPerWeek": 9.0,
+      "duration": "32h 29m",
+      "note": "",
+      "trainNumbers": [
+        "42251",
+        "42265",
+        "42267"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "00:01",
+        "10:00",
+        "11:00"
+      ],
+      "durationMinutes": 1949,
+      "inferred": false
+    },
+    {
+      "from": "Barcelona Morrot",
+      "to": "Madrid Abroñigal",
+      "trains": "99999",
+      "days": "Tor Čet Sob",
+      "times": "03:00",
+      "runsPerWeek": 3.0,
+      "duration": "15h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "03:00"
+      ],
+      "durationMinutes": 900,
+      "inferred": true
+    },
+    {
+      "from": "Barcelona Morrot",
+      "to": "Neuss-Hessentor Ubf Trimodal",
+      "trains": "42181, 48861",
+      "days": "Pon Sre Pet",
+      "times": "11:00, 11:20",
+      "runsPerWeek": 3.0,
+      "duration": "42h 30m",
+      "note": "",
+      "trainNumbers": [
+        "42181",
+        "48861"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "11:00",
+        "11:20"
+      ],
+      "durationMinutes": 2550,
+      "inferred": false
+    },
+    {
+      "from": "Bari Ferruccio",
+      "to": "Verona Quadrante Europa",
+      "trains": "58134, 58138",
+      "days": "Tor Čet Sob",
+      "times": "14:00",
+      "runsPerWeek": 3.0,
+      "duration": "17h 00m",
+      "note": "",
+      "trainNumbers": [
+        "58134",
+        "58138"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "14:00"
+      ],
+      "durationMinutes": 1020,
+      "inferred": false
+    },
+    {
+      "from": "Bari Giovinazzo",
+      "to": "Mortara KT",
+      "trains": "50451",
+      "days": "Pon Sre Pet",
+      "times": "16:00",
+      "runsPerWeek": 3.0,
+      "duration": "18h 30m",
+      "note": "",
+      "trainNumbers": [
+        "50451"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "16:00"
+      ],
+      "durationMinutes": 1110,
+      "inferred": false
+    },
+    {
+      "from": "Bari Giovinazzo",
+      "to": "Verona Quadrante Europa",
+      "trains": "58700",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "13:00, 14:30, 17:30",
+      "runsPerWeek": 6.0,
+      "duration": "19h 00m",
+      "note": "",
+      "trainNumbers": [
+        "58700"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "13:00",
+        "14:30",
+        "17:30"
+      ],
+      "durationMinutes": 1140,
+      "inferred": false
+    },
+    {
+      "from": "Basel-Weil a. R. Ubf",
+      "to": "Köln-Eifeltor Ubf",
+      "trains": "88196, 88198, 91294",
+      "days": "Pon Tor Čet Pet",
+      "times": "18:45",
+      "runsPerWeek": 4.0,
+      "duration": "11h 25m",
+      "note": "",
+      "trainNumbers": [
+        "88196",
+        "88198",
+        "91294"
+      ],
+      "departureDays": [
+        0,
+        1,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:45"
+      ],
+      "durationMinutes": 685,
+      "inferred": false
+    },
+    {
+      "from": "Bludenz CCT",
+      "to": "Wels Vbf CCT",
+      "trains": "52002, 99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "18:00, 18:30",
+      "runsPerWeek": 10.0,
+      "duration": "38h 00m",
+      "note": "",
+      "trainNumbers": [
+        "52002",
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:00",
+        "18:30"
+      ],
+      "durationMinutes": 2280,
+      "inferred": false
+    },
+    {
+      "from": "Bologna Cogefrin",
+      "to": "Nola Interporto",
+      "trains": "55555",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "18:00",
+      "runsPerWeek": 5.0,
+      "duration": "16h 00m",
+      "note": "",
+      "trainNumbers": [
+        "55555"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:00"
+      ],
+      "durationMinutes": 960,
+      "inferred": false
+    },
+    {
+      "from": "Bologna Interporto",
+      "to": "Nola Interporto",
+      "trains": "55555",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "01:00",
+      "runsPerWeek": 7.0,
+      "duration": "16h 00m",
+      "note": "",
+      "trainNumbers": [
+        "55555"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "01:00"
+      ],
+      "durationMinutes": 960,
+      "inferred": false
+    },
+    {
+      "from": "Bratislava ÚNS",
+      "to": "Lovosice CD - DUSS",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "19:00",
+      "runsPerWeek": 6.0,
+      "duration": "41h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "19:00"
+      ],
+      "durationMinutes": 2460,
+      "inferred": true
+    },
+    {
+      "from": "Brno hl. n.",
+      "to": "Curtici FN (Arad)",
+      "trains": "40723, 40725",
+      "days": "Sre Sob",
+      "times": "17:00, 19:00",
+      "runsPerWeek": 2.0,
+      "duration": "25h 00m",
+      "note": "",
+      "trainNumbers": [
+        "40723",
+        "40725"
+      ],
+      "departureDays": [
+        2,
+        5
+      ],
+      "departureTimes": [
+        "17:00",
+        "19:00"
+      ],
+      "durationMinutes": 1500,
+      "inferred": false
+    },
+    {
+      "from": "Brno hl. n.",
+      "to": "Lovosice CD - DUSS",
+      "trains": "45306, 62130",
+      "days": "Sre Sob",
+      "times": "05:00, 15:00",
+      "runsPerWeek": 2.0,
+      "duration": "24h 00m",
+      "note": "",
+      "trainNumbers": [
+        "45306",
+        "62130"
+      ],
+      "departureDays": [
+        2,
+        5
+      ],
+      "departureTimes": [
+        "05:00",
+        "15:00"
+      ],
+      "durationMinutes": 1440,
+      "inferred": false
+    },
+    {
+      "from": "Budapest BILK Kombiterminal",
+      "to": "Sajoszentpeter",
+      "trains": "91413",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "18:00",
+      "runsPerWeek": 7.0,
+      "duration": "39h 00m",
+      "note": "",
+      "trainNumbers": [
+        "91413"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "18:00"
+      ],
+      "durationMinutes": 2340,
+      "inferred": false
+    },
+    {
+      "from": "Budapest BILK Kombiterminal",
+      "to": "Szeged Ct",
+      "trains": "91411",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "18:00",
+      "runsPerWeek": 7.0,
+      "duration": "39h 00m",
+      "note": "",
+      "trainNumbers": [
+        "91411"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "18:00"
+      ],
+      "durationMinutes": 2340,
+      "inferred": false
+    },
+    {
+      "from": "Budapest BILK Kombiterminal",
+      "to": "Wels Vbf CCT",
+      "trains": "42338",
+      "days": "Pon Pet",
+      "times": "13:00",
+      "runsPerWeek": 2.0,
+      "duration": "19h 15m",
+      "note": "",
+      "trainNumbers": [
+        "42338"
+      ],
+      "departureDays": [
+        0,
+        4
+      ],
+      "departureTimes": [
+        "13:00"
+      ],
+      "durationMinutes": 1155,
+      "inferred": false
+    },
+    {
+      "from": "Budapest BILK Kombiterminal",
+      "to": "Wien Süd CCT",
+      "trains": "42338",
+      "days": "Pon Pet",
+      "times": "13:00",
+      "runsPerWeek": 2.0,
+      "duration": "65h 00m",
+      "note": "",
+      "trainNumbers": [
+        "42338"
+      ],
+      "departureDays": [
+        0,
+        4
+      ],
+      "departureTimes": [
+        "13:00"
+      ],
+      "durationMinutes": 3900,
+      "inferred": false
+    },
+    {
+      "from": "CTR - Container Terminal Regensburg",
+      "to": "Verona Quadrante Europa",
+      "trains": "42117, 42119",
+      "days": "Pon Čet",
+      "times": "15:45",
+      "runsPerWeek": 2.0,
+      "duration": "17h 15m",
+      "note": "",
+      "trainNumbers": [
+        "42117",
+        "42119"
+      ],
+      "departureDays": [
+        0,
+        3
+      ],
+      "departureTimes": [
+        "15:45"
+      ],
+      "durationMinutes": 1035,
+      "inferred": false
+    },
+    {
+      "from": "Catania-Bicocca",
+      "to": "Maddaloni Marcianise",
+      "trains": "59252, 59254",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "08:30, 14:30",
+      "runsPerWeek": 8.0,
+      "duration": "16h 20m",
+      "note": "",
+      "trainNumbers": [
+        "59252",
+        "59254"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "08:30",
+        "14:30"
+      ],
+      "durationMinutes": 980,
+      "inferred": false
+    },
+    {
+      "from": "Catania-Bicocca",
+      "to": "Milano Smistamento FS",
+      "trains": "59002, 59018",
+      "days": "Pon Tor Sre Čet Sob",
+      "times": "12:00, 18:00",
+      "runsPerWeek": 5.0,
+      "duration": "37h 00m",
+      "note": "",
+      "trainNumbers": [
+        "59002",
+        "59018"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "12:00",
+        "18:00"
+      ],
+      "durationMinutes": 2220,
+      "inferred": false
+    },
+    {
+      "from": "Cesme",
+      "to": "Trieste Samer",
+      "trains": "10030, 10031, 10033, 10035",
+      "days": "Tor Sre Pet Ned",
+      "times": "17:00, 18:00, 22:00",
+      "runsPerWeek": 4.0,
+      "duration": "70h 00m",
+      "note": "",
+      "trainNumbers": [
+        "10030",
+        "10031",
+        "10033",
+        "10035"
+      ],
+      "departureDays": [
+        1,
+        2,
+        4,
+        6
+      ],
+      "departureTimes": [
+        "17:00",
+        "18:00",
+        "22:00"
+      ],
+      "durationMinutes": 4200,
+      "inferred": false
+    },
+    {
+      "from": "Cierna nad Tisou",
+      "to": "Lovosice CD - DUSS",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "16:00",
+      "runsPerWeek": 5.0,
+      "duration": "42h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:00"
+      ],
+      "durationMinutes": 2520,
+      "inferred": true
+    },
+    {
+      "from": "Constanti (Tarragona)",
+      "to": "Barcelona Morrot",
+      "trains": "55501",
+      "days": "Pon Sre Pet",
+      "times": "16:40",
+      "runsPerWeek": 3.0,
+      "duration": "4h 58m",
+      "note": "",
+      "trainNumbers": [
+        "55501"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "16:40"
+      ],
+      "durationMinutes": 298,
+      "inferred": false
+    },
+    {
+      "from": "Curtici FN (Arad)",
+      "to": "Brno hl. n.",
+      "trains": "40722, 40724",
+      "days": "Pon Pet",
+      "times": "12:00, 16:00",
+      "runsPerWeek": 2.0,
+      "duration": "26h 00m",
+      "note": "",
+      "trainNumbers": [
+        "40722",
+        "40724"
+      ],
+      "departureDays": [
+        0,
+        4
+      ],
+      "departureTimes": [
+        "12:00",
+        "16:00"
+      ],
+      "durationMinutes": 1560,
+      "inferred": false
+    },
+    {
+      "from": "Curtici FN (Arad)",
+      "to": "Lovosice CD - DUSS",
+      "trains": "40722, 40724",
+      "days": "Tor Čet",
+      "times": "19:00",
+      "runsPerWeek": 2.0,
+      "duration": "44h 00m",
+      "note": "",
+      "trainNumbers": [
+        "40722",
+        "40724"
+      ],
+      "departureDays": [
+        1,
+        3
+      ],
+      "departureTimes": [
+        "19:00"
+      ],
+      "durationMinutes": 2640,
+      "inferred": false
+    },
+    {
+      "from": "Dörpen Ubf",
+      "to": "Ludwigshafen (Rh) BASF Ubf",
+      "trains": "77584",
+      "days": "Pon Sre Pet",
+      "times": "17:00",
+      "runsPerWeek": 3.0,
+      "duration": "17h 15m",
+      "note": "",
+      "trainNumbers": [
+        "77584"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 1035,
+      "inferred": false
+    },
+    {
+      "from": "Gent Interface Terminal",
+      "to": "Mortara KT",
+      "trains": "41460",
+      "days": "Tor Sre Pet",
+      "times": "16:30",
+      "runsPerWeek": 3.0,
+      "duration": "37h 30m",
+      "note": "",
+      "trainNumbers": [
+        "41460"
+      ],
+      "departureDays": [
+        1,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "16:30"
+      ],
+      "durationMinutes": 2250,
+      "inferred": false
+    },
+    {
+      "from": "Graz Süd CCT",
+      "to": "Wels Vbf CCT",
+      "trains": "52002, 65758",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "16:00, 17:00",
+      "runsPerWeek": 9.0,
+      "duration": "62h 00m",
+      "note": "",
+      "trainNumbers": [
+        "52002",
+        "65758"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:00",
+        "17:00"
+      ],
+      "durationMinutes": 3720,
+      "inferred": false
+    },
+    {
+      "from": "Gummern Ubf",
+      "to": "Wels Vbf CCT",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "14:00",
+      "runsPerWeek": 5.0,
+      "duration": "16h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "14:00"
+      ],
+      "durationMinutes": 960,
+      "inferred": true
+    },
+    {
+      "from": "Gävle Containerterterminal",
+      "to": "Stockholm Norra Rosersberg",
+      "trains": "51998",
+      "days": "Tor Sre Pet Sob",
+      "times": "07:00",
+      "runsPerWeek": 4.0,
+      "duration": "7h 00m",
+      "note": "",
+      "trainNumbers": [
+        "51998"
+      ],
+      "departureDays": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "07:00"
+      ],
+      "durationMinutes": 420,
+      "inferred": false
+    },
+    {
+      "from": "Göteborg Majnabbe",
+      "to": "Kiel Schwedenkai KV",
+      "trains": "ST010",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "15:45",
+      "runsPerWeek": 7.0,
+      "duration": "17h 30m",
+      "note": "",
+      "trainNumbers": [
+        "ST010"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "15:45"
+      ],
+      "durationMinutes": 1050,
+      "inferred": false
+    },
+    {
+      "from": "Göteborg Älvsborgshamnen",
+      "to": "Trelleborg Hamnbana",
+      "trains": "4151",
+      "days": "Pon Tor Sre Čet Ned",
+      "times": "15:00, 18:30",
+      "runsPerWeek": 5.0,
+      "duration": "12h 40m",
+      "note": "",
+      "trainNumbers": [
+        "4151"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        6
+      ],
+      "departureTimes": [
+        "15:00",
+        "18:30"
+      ],
+      "durationMinutes": 760,
+      "inferred": false
+    },
+    {
+      "from": "Hallsberg",
+      "to": "Lübeck-Dänischburg CTL",
+      "trains": "41755, 44707",
+      "days": "Pon Pet",
+      "times": "15:15, 18:30",
+      "runsPerWeek": 2.0,
+      "duration": "37h 10m",
+      "note": "",
+      "trainNumbers": [
+        "41755",
+        "44707"
+      ],
+      "departureDays": [
+        0,
+        4
+      ],
+      "departureTimes": [
+        "15:15",
+        "18:30"
+      ],
+      "durationMinutes": 2230,
+      "inferred": false
+    },
+    {
+      "from": "Hallsberg",
+      "to": "Malmö Kombiterminal CMP",
+      "trains": "59281",
+      "days": "Tor Čet",
+      "times": "11:15, 18:00",
+      "runsPerWeek": 2.0,
+      "duration": "19h 15m",
+      "note": "",
+      "trainNumbers": [
+        "59281"
+      ],
+      "departureDays": [
+        1,
+        3
+      ],
+      "departureTimes": [
+        "11:15",
+        "18:00"
+      ],
+      "durationMinutes": 1155,
+      "inferred": false
+    },
+    {
+      "from": "Hamburg-Billwerder Ubf",
+      "to": "Hannover Lehrte MegaHub",
+      "trains": "63119, 63121",
+      "days": "Pon Tor Sre Čet Sob",
+      "times": "07:00, 19:45",
+      "runsPerWeek": 5.0,
+      "duration": "5h 25m",
+      "note": "",
+      "trainNumbers": [
+        "63119",
+        "63121"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "07:00",
+        "19:45"
+      ],
+      "durationMinutes": 325,
+      "inferred": false
+    },
+    {
+      "from": "Hamburg-Billwerder Ubf",
+      "to": "Kiel Schwedenkai KV",
+      "trains": "69675",
+      "days": "Pon Sre Pet",
+      "times": "07:00",
+      "runsPerWeek": 3.0,
+      "duration": "8h 00m",
+      "note": "",
+      "trainNumbers": [
+        "69675"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "07:00"
+      ],
+      "durationMinutes": 480,
+      "inferred": false
+    },
+    {
+      "from": "Hamburg-Billwerder Ubf",
+      "to": "Köln-Eifeltor Ubf",
+      "trains": "60935",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "19:40, 21:00",
+      "runsPerWeek": 5.0,
+      "duration": "9h 35m",
+      "note": "",
+      "trainNumbers": [
+        "60935"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "19:40",
+        "21:00"
+      ],
+      "durationMinutes": 575,
+      "inferred": false
+    },
+    {
+      "from": "Hamburg-Billwerder Ubf",
+      "to": "Ludwigshafen (Rh) BASF Ubf",
+      "trains": "60949, 77060",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "19:50",
+      "runsPerWeek": 5.0,
+      "duration": "11h 55m",
+      "note": "",
+      "trainNumbers": [
+        "60949",
+        "77060"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "19:50"
+      ],
+      "durationMinutes": 715,
+      "inferred": false
+    },
+    {
+      "from": "Hamburg-Billwerder Ubf",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "69665, 69677",
+      "days": "Pon Tor Čet",
+      "times": "03:00, 08:45",
+      "runsPerWeek": 3.0,
+      "duration": "4h 00m",
+      "note": "",
+      "trainNumbers": [
+        "69665",
+        "69677"
+      ],
+      "departureDays": [
+        0,
+        1,
+        3
+      ],
+      "departureTimes": [
+        "03:00",
+        "08:45"
+      ],
+      "durationMinutes": 240,
+      "inferred": false
+    },
+    {
+      "from": "Hamburg-Billwerder Ubf",
+      "to": "Rail-Hub Duisburg",
+      "trains": "83015",
+      "days": "Pon Tor Sre Čet",
+      "times": "21:00",
+      "runsPerWeek": 4.0,
+      "duration": "7h 50m",
+      "note": "",
+      "trainNumbers": [
+        "83015"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "departureTimes": [
+        "21:00"
+      ],
+      "durationMinutes": 470,
+      "inferred": false
+    },
+    {
+      "from": "Haniska",
+      "to": "Lovosice CD - DUSS",
+      "trains": "88921",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "14:00",
+      "runsPerWeek": 6.0,
+      "duration": "44h 00m",
+      "note": "",
+      "trainNumbers": [
+        "88921"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "14:00"
+      ],
+      "durationMinutes": 2640,
+      "inferred": false
+    },
+    {
+      "from": "Hannover Lehrte MegaHub",
+      "to": "Hamburg-Billwerder Ubf",
+      "trains": "63120, 63122",
+      "days": "Pon Sre Čet Pet Sob",
+      "times": "02:00",
+      "runsPerWeek": 5.0,
+      "duration": "4h 45m",
+      "note": "",
+      "trainNumbers": [
+        "63120",
+        "63122"
+      ],
+      "departureDays": [
+        0,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "02:00"
+      ],
+      "durationMinutes": 285,
+      "inferred": false
+    },
+    {
+      "from": "Hannover Lehrte MegaHub",
+      "to": "Lovosice CD - DUSS",
+      "trains": "41337, 41339",
+      "days": "Tor Čet Pet Ned",
+      "times": "05:00, 22:30",
+      "runsPerWeek": 4.0,
+      "duration": "15h 00m",
+      "note": "",
+      "trainNumbers": [
+        "41337",
+        "41339"
+      ],
+      "departureDays": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "departureTimes": [
+        "05:00",
+        "22:30"
+      ],
+      "durationMinutes": 900,
+      "inferred": false
+    },
+    {
+      "from": "Hannover Lehrte MegaHub",
+      "to": "Rotterdam Europoort P+O NSF",
+      "trains": "43370, 43374",
+      "days": "Tor Sre Pet Sob",
+      "times": "19:05, 23:20",
+      "runsPerWeek": 4.0,
+      "duration": "11h 55m",
+      "note": "",
+      "trainNumbers": [
+        "43370",
+        "43374"
+      ],
+      "departureDays": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "19:05",
+        "23:20"
+      ],
+      "durationMinutes": 715,
+      "inferred": false
+    },
+    {
+      "from": "Hannover Lehrte MegaHub",
+      "to": "Verona Quadrante Europa",
+      "trains": "63119, 63121",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "03:15, 22:20",
+      "runsPerWeek": 5.0,
+      "duration": "30h 15m",
+      "note": "",
+      "trainNumbers": [
+        "63119",
+        "63121"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "03:15",
+        "22:20"
+      ],
+      "durationMinutes": 1815,
+      "inferred": false
+    },
+    {
+      "from": "Irún",
+      "to": "Antwerpen Combinant",
+      "trains": "47193",
+      "days": "Tor Čet Sob",
+      "times": "06:40, 10:53",
+      "runsPerWeek": 3.0,
+      "duration": "43h 07m",
+      "note": "",
+      "trainNumbers": [
+        "47193"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "06:40",
+        "10:53"
+      ],
+      "durationMinutes": 2587,
+      "inferred": false
+    },
+    {
+      "from": "Irún",
+      "to": "Madrid Abroñigal",
+      "trains": "82222",
+      "days": "Pon Sre Pet",
+      "times": "21:10",
+      "runsPerWeek": 3.0,
+      "duration": "13h 50m",
+      "note": "",
+      "trainNumbers": [
+        "82222"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "21:10"
+      ],
+      "durationMinutes": 830,
+      "inferred": false
+    },
+    {
+      "from": "Kiel Schwedenkai KV",
+      "to": "Göteborg Majnabbe",
+      "trains": "ST011",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "15:45",
+      "runsPerWeek": 7.0,
+      "duration": "19h 15m",
+      "note": "",
+      "trainNumbers": [
+        "ST011"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "15:45"
+      ],
+      "durationMinutes": 1155,
+      "inferred": false
+    },
+    {
+      "from": "Kiel Schwedenkai KV",
+      "to": "Hamburg-Billwerder Ubf",
+      "trains": "69679",
+      "days": "Pon Sre Pet",
+      "times": "19:00",
+      "runsPerWeek": 3.0,
+      "duration": "6h 10m",
+      "note": "",
+      "trainNumbers": [
+        "69679"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "19:00"
+      ],
+      "durationMinutes": 370,
+      "inferred": false
+    },
+    {
+      "from": "Koper Luka",
+      "to": "Ljubljana KT",
+      "trains": "50353",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "04:20",
+      "runsPerWeek": 6.0,
+      "duration": "2h 40m",
+      "note": "",
+      "trainNumbers": [
+        "50353"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "04:20"
+      ],
+      "durationMinutes": 160,
+      "inferred": false
+    },
+    {
+      "from": "Köln-Eifeltor Ubf",
+      "to": "Basel-Weil a. R. Ubf",
+      "trains": "88197, 91295, 91297",
+      "days": "Pon Tor Čet Sob",
+      "times": "12:10, 19:05, 20:05",
+      "runsPerWeek": 4.0,
+      "duration": "10h 55m",
+      "note": "",
+      "trainNumbers": [
+        "88197",
+        "91295",
+        "91297"
+      ],
+      "departureDays": [
+        0,
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "12:10",
+        "19:05",
+        "20:05"
+      ],
+      "durationMinutes": 655,
+      "inferred": false
+    },
+    {
+      "from": "Köln-Eifeltor Ubf",
+      "to": "Hamburg-Billwerder Ubf",
+      "trains": "60936",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "16:35, 17:25, 18:05, 18:20",
+      "runsPerWeek": 5.0,
+      "duration": "10h 25m",
+      "note": "",
+      "trainNumbers": [
+        "60936"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:35",
+        "17:25",
+        "18:05",
+        "18:20"
+      ],
+      "durationMinutes": 625,
+      "inferred": false
+    },
+    {
+      "from": "Köln-Eifeltor Ubf",
+      "to": "Ludwigshafen (Rh) BASF Ubf",
+      "trains": "50115, 50155, 83028",
+      "days": "Tor Sre Pet",
+      "times": "08:00, 14:30",
+      "runsPerWeek": 4.0,
+      "duration": "9h 10m",
+      "note": "",
+      "trainNumbers": [
+        "50115",
+        "50155",
+        "83028"
+      ],
+      "departureDays": [
+        1,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "08:00",
+        "14:30"
+      ],
+      "durationMinutes": 550,
+      "inferred": false
+    },
+    {
+      "from": "Köln-Eifeltor Ubf",
+      "to": "Mortara KT",
+      "trains": "40027, 41051",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "03:00",
+      "runsPerWeek": 5.0,
+      "duration": "27h 00m",
+      "note": "",
+      "trainNumbers": [
+        "40027",
+        "41051"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "03:00"
+      ],
+      "durationMinutes": 1620,
+      "inferred": false
+    },
+    {
+      "from": "Köln-Eifeltor Ubf",
+      "to": "München-Riem Ubf",
+      "trains": "60940",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "19:00",
+      "runsPerWeek": 5.0,
+      "duration": "10h 50m",
+      "note": "",
+      "trainNumbers": [
+        "60940"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "19:00"
+      ],
+      "durationMinutes": 650,
+      "inferred": false
+    },
+    {
+      "from": "Köln-Eifeltor Ubf",
+      "to": "Rotterdam RSC",
+      "trains": "41758, 47754",
+      "days": "Tor Čet Pet Sob",
+      "times": "05:00, 11:50",
+      "runsPerWeek": 4.0,
+      "duration": "8h 10m",
+      "note": "",
+      "trainNumbers": [
+        "41758",
+        "47754"
+      ],
+      "departureDays": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "05:00",
+        "11:50"
+      ],
+      "durationMinutes": 490,
+      "inferred": false
+    },
+    {
+      "from": "Köln-Eifeltor Ubf",
+      "to": "Verona Quadrante Europa",
+      "trains": "63101, 63103, 63105, 63107",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "11:20, 12:00, 17:00, 21:10",
+      "runsPerWeek": 13.0,
+      "duration": "26h 30m",
+      "note": "",
+      "trainNumbers": [
+        "63101",
+        "63103",
+        "63105",
+        "63107"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "11:20",
+        "12:00",
+        "17:00",
+        "21:10"
+      ],
+      "durationMinutes": 1590,
+      "inferred": false
+    },
+    {
+      "from": "La Llagosta",
+      "to": "Rail-Hub Duisburg",
+      "trains": "43142",
+      "days": "Pon Sre",
+      "times": "21:00",
+      "runsPerWeek": 2.0,
+      "duration": "44h 35m",
+      "note": "",
+      "trainNumbers": [
+        "43142"
+      ],
+      "departureDays": [
+        0,
+        2
+      ],
+      "departureTimes": [
+        "21:00"
+      ],
+      "durationMinutes": 2675,
+      "inferred": false
+    },
+    {
+      "from": "Leipzig-Wahren Ubf",
+      "to": "München-Riem Ubf",
+      "trains": "60934",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "21:00",
+      "runsPerWeek": 5.0,
+      "duration": "10h 40m",
+      "note": "",
+      "trainNumbers": [
+        "60934"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "21:00"
+      ],
+      "durationMinutes": 640,
+      "inferred": false
+    },
+    {
+      "from": "Leipzig-Wahren Ubf",
+      "to": "Rail-Hub Duisburg",
+      "trains": "60939",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "18:10",
+      "runsPerWeek": 5.0,
+      "duration": "10h 05m",
+      "note": "",
+      "trainNumbers": [
+        "60939"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:10"
+      ],
+      "durationMinutes": 605,
+      "inferred": false
+    },
+    {
+      "from": "Linz OMV - Chemiepark",
+      "to": "Wels Vbf CCT",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "17:00",
+      "runsPerWeek": 5.0,
+      "duration": "13h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 780,
+      "inferred": true
+    },
+    {
+      "from": "Ljubljana KT",
+      "to": "Koper Luka",
+      "trains": "50352",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "12:30",
+      "runsPerWeek": 6.0,
+      "duration": "4h 00m",
+      "note": "",
+      "trainNumbers": [
+        "50352"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "12:30"
+      ],
+      "durationMinutes": 240,
+      "inferred": false
+    },
+    {
+      "from": "Ljubljana KT",
+      "to": "München-Riem Ubf",
+      "trains": "41860",
+      "days": "Pon Sre",
+      "times": "15:30",
+      "runsPerWeek": 2.0,
+      "duration": "14h 30m",
+      "note": "",
+      "trainNumbers": [
+        "41860"
+      ],
+      "departureDays": [
+        0,
+        2
+      ],
+      "departureTimes": [
+        "15:30"
+      ],
+      "durationMinutes": 870,
+      "inferred": false
+    },
+    {
+      "from": "Ljubljana KT",
+      "to": "Rijeka Brajdica",
+      "trains": "56201",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "19:00",
+      "runsPerWeek": 6.0,
+      "duration": "19h 00m",
+      "note": "",
+      "trainNumbers": [
+        "56201"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "19:00"
+      ],
+      "durationMinutes": 1140,
+      "inferred": false
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Bratislava ÚNS",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "19:00",
+      "runsPerWeek": 6.0,
+      "duration": "17h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "19:00"
+      ],
+      "durationMinutes": 1020,
+      "inferred": true
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Brno hl. n.",
+      "trains": "60101",
+      "days": "Tor Pet",
+      "times": "19:00",
+      "runsPerWeek": 2.0,
+      "duration": "11h 45m",
+      "note": "",
+      "trainNumbers": [
+        "60101"
+      ],
+      "departureDays": [
+        1,
+        4
+      ],
+      "departureTimes": [
+        "19:00"
+      ],
+      "durationMinutes": 705,
+      "inferred": false
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Budapest Mahart",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "08:03",
+      "runsPerWeek": 7.0,
+      "duration": "82h 04m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "08:03"
+      ],
+      "durationMinutes": 4924,
+      "inferred": true
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Cierna nad Tisou",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "19:00",
+      "runsPerWeek": 6.0,
+      "duration": "17h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "19:00"
+      ],
+      "durationMinutes": 1020,
+      "inferred": true
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Curtici FN (Arad)",
+      "trains": "40723, 40725",
+      "days": "Tor Sob",
+      "times": "12:00",
+      "runsPerWeek": 2.0,
+      "duration": "42h 00m",
+      "note": "",
+      "trainNumbers": [
+        "40723",
+        "40725"
+      ],
+      "departureDays": [
+        1,
+        5
+      ],
+      "departureTimes": [
+        "12:00"
+      ],
+      "durationMinutes": 2520,
+      "inferred": false
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Haniska",
+      "trains": "89921",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "17:00",
+      "runsPerWeek": 6.0,
+      "duration": "60h 00m",
+      "note": "",
+      "trainNumbers": [
+        "89921"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 3600,
+      "inferred": false
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Hannover Lehrte MegaHub",
+      "trains": "41336, 41338",
+      "days": "Pon Tor Čet Sob",
+      "times": "07:45, 21:30",
+      "runsPerWeek": 4.0,
+      "duration": "15h 50m",
+      "note": "",
+      "trainNumbers": [
+        "41336",
+        "41338"
+      ],
+      "departureDays": [
+        0,
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "07:45",
+        "21:30"
+      ],
+      "durationMinutes": 950,
+      "inferred": false
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Melnik RCO",
+      "trains": "60202",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "19:39",
+      "runsPerWeek": 6.0,
+      "duration": "27h 24m",
+      "note": "",
+      "trainNumbers": [
+        "60202"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "19:39"
+      ],
+      "durationMinutes": 1644,
+      "inferred": false
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Neratovice",
+      "trains": "60133, 60137, 60161",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "13:01, 20:48, 20:56",
+      "runsPerWeek": 21.0,
+      "duration": "12h 36m",
+      "note": "",
+      "trainNumbers": [
+        "60133",
+        "60137",
+        "60161"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "13:01",
+        "20:48",
+        "20:56"
+      ],
+      "durationMinutes": 756,
+      "inferred": false
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Obrnice u Mostu",
+      "trains": "60130",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "08:00, 09:00",
+      "runsPerWeek": 5.0,
+      "duration": "33h 00m",
+      "note": "",
+      "trainNumbers": [
+        "60130"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "08:00",
+        "09:00"
+      ],
+      "durationMinutes": 1980,
+      "inferred": false
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Ostrava Mosnov",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "09:30, 17:00",
+      "runsPerWeek": 6.0,
+      "duration": "43h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "09:30",
+        "17:00"
+      ],
+      "durationMinutes": 2580,
+      "inferred": true
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Ostrava Paskov",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet",
+      "times": "16:00",
+      "runsPerWeek": 4.0,
+      "duration": "21h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "departureTimes": [
+        "16:00"
+      ],
+      "durationMinutes": 1260,
+      "inferred": true
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Prerov",
+      "trains": "60105",
+      "days": "Pon Tor Sre Čet Pet Ned",
+      "times": "17:00",
+      "runsPerWeek": 6.0,
+      "duration": "12h 40m",
+      "note": "",
+      "trainNumbers": [
+        "60105"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 760,
+      "inferred": false
+    },
+    {
+      "from": "Lovosice CD - DUSS",
+      "to": "Zilina RCG-Terminal",
+      "trains": "89922",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "17:00",
+      "runsPerWeek": 6.0,
+      "duration": "36h 00m",
+      "note": "",
+      "trainNumbers": [
+        "89922"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 2160,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "Barcelona Morrot",
+      "trains": "42252, 42254, 42256, 42262",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "10:35, 14:00, 19:15, 19:45, 23:45",
+      "runsPerWeek": 9.0,
+      "duration": "35h 15m",
+      "note": "",
+      "trainNumbers": [
+        "42252",
+        "42254",
+        "42256",
+        "42262"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "10:35",
+        "14:00",
+        "19:15",
+        "19:45",
+        "23:45"
+      ],
+      "durationMinutes": 2115,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "Dörpen Ubf",
+      "trains": "77585, 93502",
+      "days": "Tor Čet Sob",
+      "times": "15:45, 18:50",
+      "runsPerWeek": 3.0,
+      "duration": "14h 10m",
+      "note": "",
+      "trainNumbers": [
+        "77585",
+        "93502"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "15:45",
+        "18:50"
+      ],
+      "durationMinutes": 850,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "Hamburg-Billwerder Ubf",
+      "trains": "60948",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "17:35",
+      "runsPerWeek": 5.0,
+      "duration": "11h 40m",
+      "note": "",
+      "trainNumbers": [
+        "60948"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "17:35"
+      ],
+      "durationMinutes": 700,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "Hendaye",
+      "trains": "41214",
+      "days": "Čet",
+      "times": "23:45",
+      "runsPerWeek": 1.0,
+      "duration": "80h 15m",
+      "note": "",
+      "trainNumbers": [
+        "41214"
+      ],
+      "departureDays": [
+        3
+      ],
+      "departureTimes": [
+        "23:45"
+      ],
+      "durationMinutes": 4815,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "Köln-Eifeltor Ubf",
+      "trains": "50156",
+      "days": "Tor Sre Pet",
+      "times": "04:00",
+      "runsPerWeek": 3.0,
+      "duration": "10h 00m",
+      "note": "",
+      "trainNumbers": [
+        "50156"
+      ],
+      "departureDays": [
+        1,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "04:00"
+      ],
+      "durationMinutes": 600,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "69674, 83027",
+      "days": "Pon Tor Sre Čet Sob",
+      "times": "11:45, 19:15",
+      "runsPerWeek": 5.0,
+      "duration": "13h 00m",
+      "note": "",
+      "trainNumbers": [
+        "69674",
+        "83027"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "11:45",
+        "19:15"
+      ],
+      "durationMinutes": 780,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "München-Riem Ubf",
+      "trains": "42869, 83022, 83024",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "06:00, 16:00, 20:00",
+      "runsPerWeek": 5.0,
+      "duration": "23h 30m",
+      "note": "",
+      "trainNumbers": [
+        "42869",
+        "83022",
+        "83024"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "06:00",
+        "16:00",
+        "20:00"
+      ],
+      "durationMinutes": 1410,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "Rail-Hub Duisburg",
+      "trains": "83026",
+      "days": "Sre",
+      "times": "03:05",
+      "runsPerWeek": 1.0,
+      "duration": "7h 55m",
+      "note": "",
+      "trainNumbers": [
+        "83026"
+      ],
+      "departureDays": [
+        2
+      ],
+      "departureTimes": [
+        "03:05"
+      ],
+      "durationMinutes": 475,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "Verona Quadrante Europa",
+      "trains": "42137, 42139",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "12:30, 13:30, 22:15",
+      "runsPerWeek": 10.0,
+      "duration": "19h 30m",
+      "note": "",
+      "trainNumbers": [
+        "42137",
+        "42139"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "12:30",
+        "13:30",
+        "22:15"
+      ],
+      "durationMinutes": 1170,
+      "inferred": false
+    },
+    {
+      "from": "Ludwigshafen (Rh) BASF Ubf",
+      "to": "Wels Vbf CCT",
+      "trains": "42869",
+      "days": "Sre Pet",
+      "times": "20:00",
+      "runsPerWeek": 2.0,
+      "duration": "12h 00m",
+      "note": "",
+      "trainNumbers": [
+        "42869"
+      ],
+      "departureDays": [
+        2,
+        4
+      ],
+      "departureTimes": [
+        "20:00"
+      ],
+      "durationMinutes": 720,
+      "inferred": false
+    },
+    {
+      "from": "Lulea Kombiterminal",
+      "to": "Malmö Kombiterminal CMP",
+      "trains": "S0023",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "13:50",
+      "runsPerWeek": 5.0,
+      "duration": "41h 50m",
+      "note": "",
+      "trainNumbers": [
+        "S0023"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "13:50"
+      ],
+      "durationMinutes": 2510,
+      "inferred": false
+    },
+    {
+      "from": "Lyon Vénissieux Naviland",
+      "to": "Rail-Hub Duisburg",
+      "trains": "41243, 41263",
+      "days": "Tor Pet",
+      "times": "17:15",
+      "runsPerWeek": 2.0,
+      "duration": "23h 15m",
+      "note": "",
+      "trainNumbers": [
+        "41243",
+        "41263"
+      ],
+      "departureDays": [
+        1,
+        4
+      ],
+      "departureTimes": [
+        "17:15"
+      ],
+      "durationMinutes": 1395,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Dänischburg CTL",
+      "to": "Hallsberg",
+      "trains": "41752",
+      "days": "Sre Pet",
+      "times": "17:30",
+      "runsPerWeek": 2.0,
+      "duration": "60h 00m",
+      "note": "",
+      "trainNumbers": [
+        "41752"
+      ],
+      "departureDays": [
+        2,
+        4
+      ],
+      "departureTimes": [
+        "17:30"
+      ],
+      "durationMinutes": 3600,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Dänischburg CTL",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "LKW01, LKW02",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "09:00, 14:00",
+      "runsPerWeek": 13.0,
+      "duration": "1h 00m",
+      "note": "",
+      "trainNumbers": [
+        "LKW01",
+        "LKW02"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "09:00",
+        "14:00"
+      ],
+      "durationMinutes": 60,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Dänischburg CTL",
+      "to": "Stockholm Norra Rosersberg",
+      "trains": "41752",
+      "days": "Sre Pet",
+      "times": "17:30",
+      "runsPerWeek": 2.0,
+      "duration": "42h 30m",
+      "note": "",
+      "trainNumbers": [
+        "41752"
+      ],
+      "departureDays": [
+        2,
+        4
+      ],
+      "departureTimes": [
+        "17:30"
+      ],
+      "durationMinutes": 2550,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Lehmannkai",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "LKW01",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "09:00",
+      "runsPerWeek": 6.0,
+      "duration": "1h 00m",
+      "note": "",
+      "trainNumbers": [
+        "LKW01"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "09:00"
+      ],
+      "durationMinutes": 60,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Schlutup",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "LKW02",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "09:00",
+      "runsPerWeek": 6.0,
+      "duration": "1h 00m",
+      "note": "",
+      "trainNumbers": [
+        "LKW02"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "09:00"
+      ],
+      "durationMinutes": 60,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Seelandkai",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "LKW02",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "09:00",
+      "runsPerWeek": 6.0,
+      "duration": "1h 00m",
+      "note": "",
+      "trainNumbers": [
+        "LKW02"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "09:00"
+      ],
+      "durationMinutes": 60,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Hamburg-Billwerder Ubf",
+      "trains": "69676, 69678",
+      "days": "Tor Čet Sob",
+      "times": "20:00, 21:20",
+      "runsPerWeek": 3.0,
+      "duration": "4h 10m",
+      "note": "",
+      "trainNumbers": [
+        "69676",
+        "69678"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "20:00",
+        "21:20"
+      ],
+      "durationMinutes": 250,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Ludwigshafen (Rh) BASF Ubf",
+      "trains": "77082, 83029",
+      "days": "Pon Tor Sre Čet Ned",
+      "times": "15:00, 18:55, 21:00",
+      "runsPerWeek": 5.0,
+      "duration": "13h 30m",
+      "note": "",
+      "trainNumbers": [
+        "77082",
+        "83029"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        6
+      ],
+      "departureTimes": [
+        "15:00",
+        "18:55",
+        "21:00"
+      ],
+      "durationMinutes": 810,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Lübeck-Dänischburg CTL",
+      "trains": "LKW01, LKW02, LKW03",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "09:00, 12:30",
+      "runsPerWeek": 13.0,
+      "duration": "4h 00m",
+      "note": "",
+      "trainNumbers": [
+        "LKW01",
+        "LKW02",
+        "LKW03"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "09:00",
+        "12:30"
+      ],
+      "durationMinutes": 240,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Lübeck-Lehmannkai",
+      "trains": "LKW02, LKW03",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "09:00, 15:30",
+      "runsPerWeek": 6.0,
+      "duration": "2h 30m",
+      "note": "",
+      "trainNumbers": [
+        "LKW02",
+        "LKW03"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "09:00",
+        "15:30"
+      ],
+      "durationMinutes": 150,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Lübeck-Schlutup",
+      "trains": "LKW02, LKW03",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "09:00, 15:30",
+      "runsPerWeek": 6.0,
+      "duration": "2h 30m",
+      "note": "",
+      "trainNumbers": [
+        "LKW02",
+        "LKW03"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "09:00",
+        "15:30"
+      ],
+      "durationMinutes": 150,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Lübeck-Seelandkai",
+      "trains": "LKW03, LKW04",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "15:45",
+      "runsPerWeek": 6.0,
+      "duration": "2h 15m",
+      "note": "",
+      "trainNumbers": [
+        "LKW03",
+        "LKW04"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "15:45"
+      ],
+      "durationMinutes": 135,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Malmö Norra Hamnen (Finnlines)",
+      "trains": "NOR02, NOR04, NOR06, NOR08, NOR10, NOR12, NOR14, NOR16, NOR18",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "01:00, 02:30, 03:00, 10:00, 11:0 21:45, 22:00",
+      "runsPerWeek": null,
+      "duration": "9h 15m",
+      "note": "",
+      "trainNumbers": [
+        "NOR02",
+        "NOR04",
+        "NOR06",
+        "NOR08",
+        "NOR10",
+        "NOR12",
+        "NOR14",
+        "NOR16",
+        "NOR18"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "01:00",
+        "02:30",
+        "03:00",
+        "10:00",
+        "21:45",
+        "22:00"
+      ],
+      "durationMinutes": 555,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Neuss-Hessentor Ubf Trimodal",
+      "trains": "91182",
+      "days": "Sob",
+      "times": "22:00",
+      "runsPerWeek": 1.0,
+      "duration": "34h 00m",
+      "note": "",
+      "trainNumbers": [
+        "91182"
+      ],
+      "departureDays": [
+        5
+      ],
+      "departureTimes": [
+        "22:00"
+      ],
+      "durationMinutes": 2040,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Rail-Hub Duisburg",
+      "trains": "60943, 60945, 83017",
+      "days": "Pon Tor Sre Čet Pet Ned",
+      "times": "11:15, 14:30, 15:30, 23:30",
+      "runsPerWeek": 9.0,
+      "duration": "9h 45m",
+      "note": "",
+      "trainNumbers": [
+        "60943",
+        "60945",
+        "83017"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "departureTimes": [
+        "11:15",
+        "14:30",
+        "15:30",
+        "23:30"
+      ],
+      "durationMinutes": 585,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Trelleborg Hamnbana",
+      "trains": "TT002, TT004, TT006, TT008, TT010, TT012, TT014",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "00:00, 01:30, 09:00, 14:30, 20:3 21:00, 21:30",
+      "runsPerWeek": null,
+      "duration": "10h 15m",
+      "note": "",
+      "trainNumbers": [
+        "TT002",
+        "TT004",
+        "TT006",
+        "TT008",
+        "TT010",
+        "TT012",
+        "TT014"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "00:00",
+        "01:30",
+        "09:00",
+        "14:30",
+        "21:00",
+        "21:30"
+      ],
+      "durationMinutes": 615,
+      "inferred": false
+    },
+    {
+      "from": "Lübeck-Skandinavienkai Ubf",
+      "to": "Verona Interterminal",
+      "trains": "63111, 63113, 63129",
+      "days": "Pon Sre Čet Pet Ned",
+      "times": "22:30",
+      "runsPerWeek": 5.0,
+      "duration": "31h 30m",
+      "note": "",
+      "trainNumbers": [
+        "63111",
+        "63113",
+        "63129"
+      ],
+      "departureDays": [
+        0,
+        2,
+        3,
+        4,
+        6
+      ],
+      "departureTimes": [
+        "22:30"
+      ],
+      "durationMinutes": 1890,
+      "inferred": false
+    },
+    {
+      "from": "Maddaloni Marcianise",
+      "to": "Catania-Bicocca",
+      "trains": "57157, 57161, 57163",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "04:00, 13:00",
+      "runsPerWeek": 8.0,
+      "duration": "22h 30m",
+      "note": "",
+      "trainNumbers": [
+        "57157",
+        "57161",
+        "57163"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "04:00",
+        "13:00"
+      ],
+      "durationMinutes": 1350,
+      "inferred": false
+    },
+    {
+      "from": "Maddaloni Marcianise",
+      "to": "Milano Smistamento FS",
+      "trains": "51998",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "16:25",
+      "runsPerWeek": 5.0,
+      "duration": "15h 25m",
+      "note": "",
+      "trainNumbers": [
+        "51998"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:25"
+      ],
+      "durationMinutes": 925,
+      "inferred": false
+    },
+    {
+      "from": "Maddaloni Marcianise",
+      "to": "Segrate",
+      "trains": "57078",
+      "days": "Pon Tor Sre Pet",
+      "times": "14:30",
+      "runsPerWeek": 4.0,
+      "duration": "17h 00m",
+      "note": "",
+      "trainNumbers": [
+        "57078"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "14:30"
+      ],
+      "durationMinutes": 1020,
+      "inferred": false
+    },
+    {
+      "from": "Maddaloni Marcianise",
+      "to": "Verona Quadrante Europa",
+      "trains": "57068",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "14:50",
+      "runsPerWeek": 5.0,
+      "duration": "19h 40m",
+      "note": "",
+      "trainNumbers": [
+        "57068"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "14:50"
+      ],
+      "durationMinutes": 1180,
+      "inferred": false
+    },
+    {
+      "from": "Madrid Abroñigal",
+      "to": "Barcelona Morrot",
+      "trains": "99999",
+      "days": "Tor Čet Pet",
+      "times": "19:00, 20:00",
+      "runsPerWeek": 3.0,
+      "duration": "19h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        1,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "19:00",
+        "20:00"
+      ],
+      "durationMinutes": 1140,
+      "inferred": true
+    },
+    {
+      "from": "Madrid Abroñigal",
+      "to": "Irún",
+      "trains": "41611, 82162",
+      "days": "Tor Čet Pet",
+      "times": "20:00",
+      "runsPerWeek": 3.0,
+      "duration": "15h 15m",
+      "note": "",
+      "trainNumbers": [
+        "41611",
+        "82162"
+      ],
+      "departureDays": [
+        1,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "20:00"
+      ],
+      "durationMinutes": 915,
+      "inferred": false
+    },
+    {
+      "from": "Madrid Abroñigal",
+      "to": "Murcia",
+      "trains": "91005",
+      "days": "Tor",
+      "times": "22:00",
+      "runsPerWeek": 1.0,
+      "duration": "12h 37m",
+      "note": "",
+      "trainNumbers": [
+        "91005"
+      ],
+      "departureDays": [
+        1
+      ],
+      "departureTimes": [
+        "22:00"
+      ],
+      "durationMinutes": 757,
+      "inferred": false
+    },
+    {
+      "from": "Madrid Abroñigal",
+      "to": "San Roque",
+      "trains": "91009",
+      "days": "Pon Tor Sre Čet",
+      "times": "14:44",
+      "runsPerWeek": 4.0,
+      "duration": "18h 18m",
+      "note": "",
+      "trainNumbers": [
+        "91009"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "departureTimes": [
+        "14:44"
+      ],
+      "durationMinutes": 1098,
+      "inferred": false
+    },
+    {
+      "from": "Madrid Abroñigal",
+      "to": "Sevilla Majarabique",
+      "trains": "84314, 84384",
+      "days": "Tor Sre Ned",
+      "times": "13:00, 15:00",
+      "runsPerWeek": 3.0,
+      "duration": "27h 00m",
+      "note": "",
+      "trainNumbers": [
+        "84314",
+        "84384"
+      ],
+      "departureDays": [
+        1,
+        2,
+        6
+      ],
+      "departureTimes": [
+        "13:00",
+        "15:00"
+      ],
+      "durationMinutes": 1620,
+      "inferred": false
+    },
+    {
+      "from": "Madrid Abroñigal",
+      "to": "Silla (Valencia)",
+      "trains": "91007",
+      "days": "Sre",
+      "times": "20:00",
+      "runsPerWeek": 1.0,
+      "duration": "16h 20m",
+      "note": "",
+      "trainNumbers": [
+        "91007"
+      ],
+      "departureDays": [
+        2
+      ],
+      "departureTimes": [
+        "20:00"
+      ],
+      "durationMinutes": 980,
+      "inferred": false
+    },
+    {
+      "from": "Madrid Abroñigal",
+      "to": "Zaragoza Plaza",
+      "trains": "91013",
+      "days": "Pon Tor Čet",
+      "times": "16:00",
+      "runsPerWeek": 3.0,
+      "duration": "16h 00m",
+      "note": "",
+      "trainNumbers": [
+        "91013"
+      ],
+      "departureDays": [
+        0,
+        1,
+        3
+      ],
+      "departureTimes": [
+        "16:00"
+      ],
+      "durationMinutes": 960,
+      "inferred": false
+    },
+    {
+      "from": "Malmö Kombi",
+      "to": "Lulea Kombiterminal",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "15:00",
+      "runsPerWeek": 7.0,
+      "duration": "65h 10m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "15:00"
+      ],
+      "durationMinutes": 3910,
+      "inferred": true
+    },
+    {
+      "from": "Malmö Kombiterminal CMP",
+      "to": "Hallsberg",
+      "trains": "59280",
+      "days": "Sre Ned",
+      "times": "22:30",
+      "runsPerWeek": 2.0,
+      "duration": "31h 30m",
+      "note": "",
+      "trainNumbers": [
+        "59280"
+      ],
+      "departureDays": [
+        2,
+        6
+      ],
+      "departureTimes": [
+        "22:30"
+      ],
+      "durationMinutes": 1890,
+      "inferred": false
+    },
+    {
+      "from": "Malmö Kombiterminal CMP",
+      "to": "Lulea Kombiterminal",
+      "trains": "S0039",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "15:00",
+      "runsPerWeek": 5.0,
+      "duration": "39h 40m",
+      "note": "",
+      "trainNumbers": [
+        "S0039"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "15:00"
+      ],
+      "durationMinutes": 2380,
+      "inferred": false
+    },
+    {
+      "from": "Malmö Kombiterminal CMP",
+      "to": "Stockholm Norra Rosersberg",
+      "trains": "59280",
+      "days": "Sre Ned",
+      "times": "22:30",
+      "runsPerWeek": 2.0,
+      "duration": "10h 30m",
+      "note": "",
+      "trainNumbers": [
+        "59280"
+      ],
+      "departureDays": [
+        2,
+        6
+      ],
+      "departureTimes": [
+        "22:30"
+      ],
+      "durationMinutes": 630,
+      "inferred": false
+    },
+    {
+      "from": "Malmö Kombiterminal CMP",
+      "to": "Umea Kombi",
+      "trains": "S0039",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "17:30",
+      "runsPerWeek": 5.0,
+      "duration": "39h 00m",
+      "note": "",
+      "trainNumbers": [
+        "S0039"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "17:30"
+      ],
+      "durationMinutes": 2340,
+      "inferred": false
+    },
+    {
+      "from": "Malmö Norra Hamnen (Finnlines)",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "NOR01, NOR03, NOR05, NOR07, NOR09, NOR11, NOR13, NOR15",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "10:00, 13:30, 16:00, 22:00, 22:3",
+      "runsPerWeek": null,
+      "duration": "9h 00m",
+      "note": "",
+      "trainNumbers": [
+        "NOR01",
+        "NOR03",
+        "NOR05",
+        "NOR07",
+        "NOR09",
+        "NOR11",
+        "NOR13",
+        "NOR15"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "10:00",
+        "13:30",
+        "16:00",
+        "22:00"
+      ],
+      "durationMinutes": 540,
+      "inferred": false
+    },
+    {
+      "from": "Melnik RCO",
+      "to": "Liberec",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "10:03",
+      "runsPerWeek": 6.0,
+      "duration": "44h 57m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "10:03"
+      ],
+      "durationMinutes": 2697,
+      "inferred": true
+    },
+    {
+      "from": "Melnik RCO",
+      "to": "Lovosice CD - DUSS",
+      "trains": "60144",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "03:39",
+      "runsPerWeek": 6.0,
+      "duration": "12h 13m",
+      "note": "",
+      "trainNumbers": [
+        "60144"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "03:39"
+      ],
+      "durationMinutes": 733,
+      "inferred": false
+    },
+    {
+      "from": "Mersin Port",
+      "to": "Trieste PLT Terminal",
+      "trains": "10011",
+      "days": "Pon Čet Sob",
+      "times": "02:00",
+      "runsPerWeek": 3.0,
+      "duration": "79h 00m",
+      "note": "",
+      "trainNumbers": [
+        "10011"
+      ],
+      "departureDays": [
+        0,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "02:00"
+      ],
+      "durationMinutes": 4740,
+      "inferred": false
+    },
+    {
+      "from": "Mersin Port",
+      "to": "Trieste Samer",
+      "trains": "10011",
+      "days": "Pon Čet Sob",
+      "times": "02:00",
+      "runsPerWeek": 3.0,
+      "duration": "79h 00m",
+      "note": "",
+      "trainNumbers": [
+        "10011"
+      ],
+      "departureDays": [
+        0,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "02:00"
+      ],
+      "durationMinutes": 4740,
+      "inferred": false
+    },
+    {
+      "from": "Milano Smistamento FS",
+      "to": "Catania-Bicocca",
+      "trains": "51015, 51019",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "11:30, 19:00",
+      "runsPerWeek": 6.0,
+      "duration": "37h 35m",
+      "note": "",
+      "trainNumbers": [
+        "51015",
+        "51019"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "11:30",
+        "19:00"
+      ],
+      "durationMinutes": 2255,
+      "inferred": false
+    },
+    {
+      "from": "Milano Smistamento FS",
+      "to": "Maddaloni Marcianise",
+      "trains": "51999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "16:30",
+      "runsPerWeek": 5.0,
+      "duration": "18h 15m",
+      "note": "",
+      "trainNumbers": [
+        "51999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:30"
+      ],
+      "durationMinutes": 1095,
+      "inferred": false
+    },
+    {
+      "from": "Milano Smistamento FS",
+      "to": "Pomezia S. Palomba",
+      "trains": "51999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "16:30",
+      "runsPerWeek": 5.0,
+      "duration": "15h 00m",
+      "note": "",
+      "trainNumbers": [
+        "51999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:30"
+      ],
+      "durationMinutes": 900,
+      "inferred": false
+    },
+    {
+      "from": "Mortara KT",
+      "to": "Bari Giovinazzo",
+      "trains": "50450",
+      "days": "Tor Čet Sob",
+      "times": "16:00",
+      "runsPerWeek": 3.0,
+      "duration": "18h 30m",
+      "note": "",
+      "trainNumbers": [
+        "50450"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "16:00"
+      ],
+      "durationMinutes": 1110,
+      "inferred": false
+    },
+    {
+      "from": "Mortara KT",
+      "to": "Gent Interface Terminal",
+      "trains": "40378",
+      "days": "Tor Čet Sob",
+      "times": "03:00",
+      "runsPerWeek": 3.0,
+      "duration": "30h 00m",
+      "note": "",
+      "trainNumbers": [
+        "40378"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "03:00"
+      ],
+      "durationMinutes": 1800,
+      "inferred": false
+    },
+    {
+      "from": "Mortara KT",
+      "to": "Köln-Eifeltor Ubf",
+      "trains": "40028, 41050",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "21:00",
+      "runsPerWeek": 5.0,
+      "duration": "24h 10m",
+      "note": "",
+      "trainNumbers": [
+        "40028",
+        "41050"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "21:00"
+      ],
+      "durationMinutes": 1450,
+      "inferred": false
+    },
+    {
+      "from": "Mortara KT",
+      "to": "Rail-Hub Duisburg",
+      "trains": "43002, 43004",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "20:30",
+      "runsPerWeek": 5.0,
+      "duration": "21h 55m",
+      "note": "",
+      "trainNumbers": [
+        "43002",
+        "43004"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "20:30"
+      ],
+      "durationMinutes": 1315,
+      "inferred": false
+    },
+    {
+      "from": "Murcia",
+      "to": "Madrid Abroñigal",
+      "trains": "91006",
+      "days": "Sre",
+      "times": "11:00",
+      "runsPerWeek": 1.0,
+      "duration": "20h 00m",
+      "note": "",
+      "trainNumbers": [
+        "91006"
+      ],
+      "departureDays": [
+        2
+      ],
+      "departureTimes": [
+        "11:00"
+      ],
+      "durationMinutes": 1200,
+      "inferred": false
+    },
+    {
+      "from": "München-Riem Ubf",
+      "to": "Köln-Eifeltor Ubf",
+      "trains": "60941",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "20:20",
+      "runsPerWeek": 5.0,
+      "duration": "10h 40m",
+      "note": "",
+      "trainNumbers": [
+        "60941"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "20:20"
+      ],
+      "durationMinutes": 640,
+      "inferred": false
+    },
+    {
+      "from": "München-Riem Ubf",
+      "to": "Leipzig-Wahren Ubf",
+      "trains": "60933",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "18:20, 19:00",
+      "runsPerWeek": 5.0,
+      "duration": "10h 30m",
+      "note": "",
+      "trainNumbers": [
+        "60933"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:20",
+        "19:00"
+      ],
+      "durationMinutes": 630,
+      "inferred": false
+    },
+    {
+      "from": "München-Riem Ubf",
+      "to": "Ljubljana KT",
+      "trains": "41861, 41863",
+      "days": "Tor Sob",
+      "times": "12:00, 16:45",
+      "runsPerWeek": 2.0,
+      "duration": "43h 00m",
+      "note": "",
+      "trainNumbers": [
+        "41861",
+        "41863"
+      ],
+      "departureDays": [
+        1,
+        5
+      ],
+      "departureTimes": [
+        "12:00",
+        "16:45"
+      ],
+      "durationMinutes": 2580,
+      "inferred": false
+    },
+    {
+      "from": "München-Riem Ubf",
+      "to": "Ludwigshafen (Rh) BASF Ubf",
+      "trains": "59954, 83025",
+      "days": "Tor Čet Sob",
+      "times": "12:00, 15:45, 21:00",
+      "runsPerWeek": 5.0,
+      "duration": "9h 45m",
+      "note": "",
+      "trainNumbers": [
+        "59954",
+        "83025"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "12:00",
+        "15:45",
+        "21:00"
+      ],
+      "durationMinutes": 585,
+      "inferred": false
+    },
+    {
+      "from": "München-Riem Ubf",
+      "to": "Trieste Samer",
+      "trains": "41855",
+      "days": "Tor Sob",
+      "times": "08:30, 12:00",
+      "runsPerWeek": 2.0,
+      "duration": "44h 00m",
+      "note": "",
+      "trainNumbers": [
+        "41855"
+      ],
+      "departureDays": [
+        1,
+        5
+      ],
+      "departureTimes": [
+        "08:30",
+        "12:00"
+      ],
+      "durationMinutes": 2640,
+      "inferred": false
+    },
+    {
+      "from": "München-Riem Ubf",
+      "to": "Verona Quadrante Europa",
+      "trains": "43133, 43135",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "12:00, 21:00",
+      "runsPerWeek": 10.0,
+      "duration": "16h 30m",
+      "note": "",
+      "trainNumbers": [
+        "43133",
+        "43135"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "12:00",
+        "21:00"
+      ],
+      "durationMinutes": 990,
+      "inferred": false
+    },
+    {
+      "from": "München-Riem Ubf",
+      "to": "Wels Vbf CCT",
+      "trains": "59957",
+      "days": "Sre Pet",
+      "times": "21:00",
+      "runsPerWeek": 2.0,
+      "duration": "11h 00m",
+      "note": "",
+      "trainNumbers": [
+        "59957"
+      ],
+      "departureDays": [
+        2,
+        4
+      ],
+      "departureTimes": [
+        "21:00"
+      ],
+      "durationMinutes": 660,
+      "inferred": false
+    },
+    {
+      "from": "Neratovice",
+      "to": "Lovosice CD - DUSS",
+      "trains": "85011",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "16:06",
+      "runsPerWeek": 5.0,
+      "duration": "13h 02m",
+      "note": "",
+      "trainNumbers": [
+        "85011"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:06"
+      ],
+      "durationMinutes": 782,
+      "inferred": false
+    },
+    {
+      "from": "Neuss-Hessentor Ubf Trimodal",
+      "to": "Barcelona Morrot",
+      "trains": "42294",
+      "days": "Pon Pet",
+      "times": "12:30",
+      "runsPerWeek": 2.0,
+      "duration": "66h 30m",
+      "note": "",
+      "trainNumbers": [
+        "42294"
+      ],
+      "departureDays": [
+        0,
+        4
+      ],
+      "departureTimes": [
+        "12:30"
+      ],
+      "durationMinutes": 3990,
+      "inferred": false
+    },
+    {
+      "from": "Neuss-Hessentor Ubf Trimodal",
+      "to": "Hamburg-Billwerder Ubf",
+      "trains": "95045",
+      "days": "Pet",
+      "times": "20:00",
+      "runsPerWeek": 1.0,
+      "duration": "9h 30m",
+      "note": "",
+      "trainNumbers": [
+        "95045"
+      ],
+      "departureDays": [
+        4
+      ],
+      "departureTimes": [
+        "20:00"
+      ],
+      "durationMinutes": 570,
+      "inferred": false
+    },
+    {
+      "from": "Neuss-Hessentor Ubf Trimodal",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "95761",
+      "days": "Pet",
+      "times": "16:00",
+      "runsPerWeek": 1.0,
+      "duration": "17h 00m",
+      "note": "",
+      "trainNumbers": [
+        "95761"
+      ],
+      "departureDays": [
+        4
+      ],
+      "departureTimes": [
+        "16:00"
+      ],
+      "durationMinutes": 1020,
+      "inferred": false
+    },
+    {
+      "from": "Neuss-Hessentor Ubf Trimodal",
+      "to": "Poznan-CLIP",
+      "trains": "NESW2, NESW3, NESW4, NESW5, NESW6, NESW7",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "01:00, 05:00, 12:00",
+      "runsPerWeek": 6.0,
+      "duration": "34h 00m",
+      "note": "",
+      "trainNumbers": [
+        "NESW2",
+        "NESW3",
+        "NESW4",
+        "NESW5",
+        "NESW6",
+        "NESW7"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "01:00",
+        "05:00",
+        "12:00"
+      ],
+      "durationMinutes": 2040,
+      "inferred": false
+    },
+    {
+      "from": "Nola Interporto",
+      "to": "Bologna Cogefrin",
+      "trains": "55555",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "15:30",
+      "runsPerWeek": 5.0,
+      "duration": "16h 30m",
+      "note": "",
+      "trainNumbers": [
+        "55555"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "15:30"
+      ],
+      "durationMinutes": 990,
+      "inferred": false
+    },
+    {
+      "from": "Nürnberg Hafen Ubf",
+      "to": "Verona Quadrante Europa",
+      "trains": "42117, 42119",
+      "days": "Pon Čet",
+      "times": "15:50",
+      "runsPerWeek": 2.0,
+      "duration": "17h 10m",
+      "note": "",
+      "trainNumbers": [
+        "42117",
+        "42119"
+      ],
+      "departureDays": [
+        0,
+        3
+      ],
+      "departureTimes": [
+        "15:50"
+      ],
+      "durationMinutes": 1030,
+      "inferred": false
+    },
+    {
+      "from": "Obrnice u Mostu",
+      "to": "Lovosice CD - DUSS",
+      "trains": "86634",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "09:00",
+      "runsPerWeek": 5.0,
+      "duration": "22h 00m",
+      "note": "",
+      "trainNumbers": [
+        "86634"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "09:00"
+      ],
+      "durationMinutes": 1320,
+      "inferred": false
+    },
+    {
+      "from": "Ostrava Mosnov",
+      "to": "Lovosice CD - DUSS",
+      "trains": "99998",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "17:30",
+      "runsPerWeek": 5.0,
+      "duration": "90h 30m",
+      "note": "",
+      "trainNumbers": [
+        "99998"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "17:30"
+      ],
+      "durationMinutes": 5430,
+      "inferred": false
+    },
+    {
+      "from": "Ostrava Paskov",
+      "to": "Lovosice CD - DUSS",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "14:30",
+      "runsPerWeek": 5.0,
+      "duration": "19h 30m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "14:30"
+      ],
+      "durationMinutes": 1170,
+      "inferred": true
+    },
+    {
+      "from": "Patras Hafen DFDS",
+      "to": "Trieste Samer",
+      "trains": "10105",
+      "days": "Sre Pet",
+      "times": "01:00",
+      "runsPerWeek": 2.0,
+      "duration": "57h 00m",
+      "note": "",
+      "trainNumbers": [
+        "10105"
+      ],
+      "departureDays": [
+        2,
+        4
+      ],
+      "departureTimes": [
+        "01:00"
+      ],
+      "durationMinutes": 3420,
+      "inferred": false
+    },
+    {
+      "from": "Pendik",
+      "to": "Trieste Samer",
+      "trains": "10081",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "16:00, 22:00",
+      "runsPerWeek": 7.0,
+      "duration": "86h 00m",
+      "note": "",
+      "trainNumbers": [
+        "10081"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "16:00",
+        "22:00"
+      ],
+      "durationMinutes": 5160,
+      "inferred": false
+    },
+    {
+      "from": "Pomezia S. Palomba",
+      "to": "Milano Smistamento FS",
+      "trains": "51998",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "18:30",
+      "runsPerWeek": 5.0,
+      "duration": "13h 20m",
+      "note": "",
+      "trainNumbers": [
+        "51998"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:30"
+      ],
+      "durationMinutes": 800,
+      "inferred": false
+    },
+    {
+      "from": "Pomezia S. Palomba",
+      "to": "Segrate",
+      "trains": "57078",
+      "days": "Pon Tor Sre Pet",
+      "times": "17:00",
+      "runsPerWeek": 4.0,
+      "duration": "15h 00m",
+      "note": "",
+      "trainNumbers": [
+        "57078"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 900,
+      "inferred": false
+    },
+    {
+      "from": "Poznan-CLIP",
+      "to": "Neuss-Hessentor Ubf Trimodal",
+      "trains": "SWNE1, SWNE2, SWNE3, SWNE4, SWNE5, SWNE7",
+      "days": "Pon Tor Sre Čet Pet Ned",
+      "times": "14:00, 18:00, 21:00",
+      "runsPerWeek": 6.0,
+      "duration": "31h 00m",
+      "note": "",
+      "trainNumbers": [
+        "SWNE1",
+        "SWNE2",
+        "SWNE3",
+        "SWNE4",
+        "SWNE5",
+        "SWNE7"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "departureTimes": [
+        "14:00",
+        "18:00",
+        "21:00"
+      ],
+      "durationMinutes": 1860,
+      "inferred": false
+    },
+    {
+      "from": "Prerov",
+      "to": "Lovosice CD - DUSS",
+      "trains": "60100",
+      "days": "Pon Tor Sre Čet Pet Ned",
+      "times": "20:00",
+      "runsPerWeek": 6.0,
+      "duration": "8h 46m",
+      "note": "",
+      "trainNumbers": [
+        "60100"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "departureTimes": [
+        "20:00"
+      ],
+      "durationMinutes": 526,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Antwerpen Combinant",
+      "trains": "41538",
+      "days": "Tor Čet Sob",
+      "times": "12:45",
+      "runsPerWeek": 3.0,
+      "duration": "17h 15m",
+      "note": "",
+      "trainNumbers": [
+        "41538"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "12:45"
+      ],
+      "durationMinutes": 1035,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Hallsberg",
+      "trains": "42734",
+      "days": "Pet",
+      "times": "00:05",
+      "runsPerWeek": 1.0,
+      "duration": "31h 25m",
+      "note": "",
+      "trainNumbers": [
+        "42734"
+      ],
+      "departureDays": [
+        4
+      ],
+      "departureTimes": [
+        "00:05"
+      ],
+      "durationMinutes": 1885,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Hamburg-Billwerder Ubf",
+      "trains": "83014",
+      "days": "Pon Tor Sre Čet",
+      "times": "19:45",
+      "runsPerWeek": 4.0,
+      "duration": "8h 05m",
+      "note": "",
+      "trainNumbers": [
+        "83014"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "departureTimes": [
+        "19:45"
+      ],
+      "durationMinutes": 485,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "La Llagosta",
+      "trains": "43267",
+      "days": "Tor Čet",
+      "times": "05:00",
+      "runsPerWeek": 2.0,
+      "duration": "50h 00m",
+      "note": "",
+      "trainNumbers": [
+        "43267"
+      ],
+      "departureDays": [
+        1,
+        3
+      ],
+      "departureTimes": [
+        "05:00"
+      ],
+      "durationMinutes": 3000,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Leipzig-Wahren Ubf",
+      "trains": "60938",
+      "days": "Pon Tor Sre Čet",
+      "times": "17:45",
+      "runsPerWeek": 4.0,
+      "duration": "11h 15m",
+      "note": "",
+      "trainNumbers": [
+        "60938"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "departureTimes": [
+        "17:45"
+      ],
+      "durationMinutes": 675,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Ludwigshafen (Rh) BASF Ubf",
+      "trains": "83028",
+      "days": "Pon Sre",
+      "times": "21:20",
+      "runsPerWeek": 2.0,
+      "duration": "10h 40m",
+      "note": "",
+      "trainNumbers": [
+        "83028"
+      ],
+      "departureDays": [
+        0,
+        2
+      ],
+      "departureTimes": [
+        "21:20"
+      ],
+      "durationMinutes": 640,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Lyon Vénissieux Naviland",
+      "trains": "41260",
+      "days": "Pon Čet",
+      "times": "06:30",
+      "runsPerWeek": 2.0,
+      "duration": "26h 30m",
+      "note": "",
+      "trainNumbers": [
+        "41260"
+      ],
+      "departureDays": [
+        0,
+        3
+      ],
+      "departureTimes": [
+        "06:30"
+      ],
+      "durationMinutes": 1590,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "60942, 60944, 60946",
+      "days": "Pon Tor Sre Čet Sob",
+      "times": "11:15, 18:15, 20:50",
+      "runsPerWeek": 9.0,
+      "duration": "9h 45m",
+      "note": "",
+      "trainNumbers": [
+        "60942",
+        "60944",
+        "60946"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "11:15",
+        "18:15",
+        "20:50"
+      ],
+      "durationMinutes": 585,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Mortara KT",
+      "trains": "43001, 43005",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "07:30",
+      "runsPerWeek": 5.0,
+      "duration": "25h 30m",
+      "note": "",
+      "trainNumbers": [
+        "43001",
+        "43005"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "07:30"
+      ],
+      "durationMinutes": 1530,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "München-Riem Ubf",
+      "trains": "83028",
+      "days": "Pon Sre",
+      "times": "21:20",
+      "runsPerWeek": 2.0,
+      "duration": "32h 10m",
+      "note": "",
+      "trainNumbers": [
+        "83028"
+      ],
+      "departureDays": [
+        0,
+        2
+      ],
+      "departureTimes": [
+        "21:20"
+      ],
+      "durationMinutes": 1930,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Rotterdam RSC",
+      "trains": "41758",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "16:00",
+      "runsPerWeek": 5.0,
+      "duration": "5h 00m",
+      "note": "",
+      "trainNumbers": [
+        "41758"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:00"
+      ],
+      "durationMinutes": 300,
+      "inferred": false
+    },
+    {
+      "from": "Rail-Hub Duisburg",
+      "to": "Wels Vbf CCT",
+      "trains": "41941",
+      "days": "Pon Sre Pet",
+      "times": "13:15, 18:15",
+      "runsPerWeek": 3.0,
+      "duration": "20h 15m",
+      "note": "",
+      "trainNumbers": [
+        "41941"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "13:15",
+        "18:15"
+      ],
+      "durationMinutes": 1215,
+      "inferred": false
+    },
+    {
+      "from": "Rijeka Brajdica",
+      "to": "Ljubljana KT",
+      "trains": "45536, 45538",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "10:00, 18:00",
+      "runsPerWeek": 13.0,
+      "duration": "16h 00m",
+      "note": "",
+      "trainNumbers": [
+        "45536",
+        "45538"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "10:00",
+        "18:00"
+      ],
+      "durationMinutes": 960,
+      "inferred": false
+    },
+    {
+      "from": "Rostock Seehafen Ubf",
+      "to": "Verona Interterminal",
+      "trains": "76175",
+      "days": "Pon Tor Sre Čet Pet Ned",
+      "times": "20:05, 20:30",
+      "runsPerWeek": 6.0,
+      "duration": "37h 30m",
+      "note": "",
+      "trainNumbers": [
+        "76175"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "departureTimes": [
+        "20:05",
+        "20:30"
+      ],
+      "durationMinutes": 2250,
+      "inferred": false
+    },
+    {
+      "from": "Rotterdam Europoort P+O NSF",
+      "to": "Hannover Lehrte MegaHub",
+      "trains": "43375, 43377",
+      "days": "Pon Sre Čet Sob",
+      "times": "14:00",
+      "runsPerWeek": 4.0,
+      "duration": "13h 10m",
+      "note": "",
+      "trainNumbers": [
+        "43375",
+        "43377"
+      ],
+      "departureDays": [
+        0,
+        2,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "14:00"
+      ],
+      "durationMinutes": 790,
+      "inferred": false
+    },
+    {
+      "from": "Rotterdam RSC",
+      "to": "Köln-Eifeltor Ubf",
+      "trains": "41759, 47755",
+      "days": "Pon Sre Pet Sob",
+      "times": "02:00, 05:00",
+      "runsPerWeek": 4.0,
+      "duration": "8h 00m",
+      "note": "",
+      "trainNumbers": [
+        "41759",
+        "47755"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "02:00",
+        "05:00"
+      ],
+      "durationMinutes": 480,
+      "inferred": false
+    },
+    {
+      "from": "Rotterdam RSC",
+      "to": "Rail-Hub Duisburg",
+      "trains": "41759",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "02:00",
+      "runsPerWeek": 5.0,
+      "duration": "6h 00m",
+      "note": "",
+      "trainNumbers": [
+        "41759"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "02:00"
+      ],
+      "durationMinutes": 360,
+      "inferred": false
+    },
+    {
+      "from": "Sajoszentpeter",
+      "to": "Budapest BILK Kombiterminal",
+      "trains": "91413",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "18:00",
+      "runsPerWeek": 7.0,
+      "duration": "39h 00m",
+      "note": "",
+      "trainNumbers": [
+        "91413"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "18:00"
+      ],
+      "durationMinutes": 2340,
+      "inferred": false
+    },
+    {
+      "from": "San Roque",
+      "to": "Madrid Abroñigal",
+      "trains": "91008",
+      "days": "Pon Tor Sre Pet",
+      "times": "17:00",
+      "runsPerWeek": 4.0,
+      "duration": "19h 00m",
+      "note": "",
+      "trainNumbers": [
+        "91008"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 1140,
+      "inferred": false
+    },
+    {
+      "from": "Segrate",
+      "to": "Maddaloni Marcianise",
+      "trains": "51089",
+      "days": "Pon Tor Sre Pet",
+      "times": "16:00",
+      "runsPerWeek": 4.0,
+      "duration": "17h 00m",
+      "note": "",
+      "trainNumbers": [
+        "51089"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "16:00"
+      ],
+      "durationMinutes": 1020,
+      "inferred": false
+    },
+    {
+      "from": "Segrate",
+      "to": "Pomezia S. Palomba",
+      "trains": "51089",
+      "days": "Pon Tor Sre Pet",
+      "times": "15:30",
+      "runsPerWeek": 4.0,
+      "duration": "15h 30m",
+      "note": "",
+      "trainNumbers": [
+        "51089"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "15:30"
+      ],
+      "durationMinutes": 930,
+      "inferred": false
+    },
+    {
+      "from": "Sevilla Majarabique",
+      "to": "Madrid Abroñigal",
+      "trains": "84103, 84183",
+      "days": "Pon Sre Čet",
+      "times": "13:00, 14:00",
+      "runsPerWeek": 3.0,
+      "duration": "19h 00m",
+      "note": "",
+      "trainNumbers": [
+        "84103",
+        "84183"
+      ],
+      "departureDays": [
+        0,
+        2,
+        3
+      ],
+      "departureTimes": [
+        "13:00",
+        "14:00"
+      ],
+      "durationMinutes": 1140,
+      "inferred": false
+    },
+    {
+      "from": "Silla (Valencia)",
+      "to": "Madrid Abroñigal",
+      "trains": "91018",
+      "days": "Sre",
+      "times": "12:00",
+      "runsPerWeek": 1.0,
+      "duration": "20h 00m",
+      "note": "",
+      "trainNumbers": [
+        "91018"
+      ],
+      "departureDays": [
+        2
+      ],
+      "departureTimes": [
+        "12:00"
+      ],
+      "durationMinutes": 1200,
+      "inferred": false
+    },
+    {
+      "from": "St. Michael CCT",
+      "to": "Wels Vbf CCT",
+      "trains": "52002, 99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "17:30, 18:00",
+      "runsPerWeek": 10.0,
+      "duration": "37h 00m",
+      "note": "",
+      "trainNumbers": [
+        "52002",
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "17:30",
+        "18:00"
+      ],
+      "durationMinutes": 2220,
+      "inferred": false
+    },
+    {
+      "from": "Stockholm Norra Rosersberg",
+      "to": "Gävle Containerterterminal",
+      "trains": "51999",
+      "days": "Tor Sre Pet Sob",
+      "times": "15:00",
+      "runsPerWeek": 4.0,
+      "duration": "4h 30m",
+      "note": "",
+      "trainNumbers": [
+        "51999"
+      ],
+      "departureDays": [
+        1,
+        2,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "15:00"
+      ],
+      "durationMinutes": 270,
+      "inferred": false
+    },
+    {
+      "from": "Stockholm Norra Rosersberg",
+      "to": "Lübeck-Dänischburg CTL",
+      "trains": "41755, 44707",
+      "days": "Pon Pet",
+      "times": "16:00, 19:00",
+      "runsPerWeek": 2.0,
+      "duration": "36h 40m",
+      "note": "",
+      "trainNumbers": [
+        "41755",
+        "44707"
+      ],
+      "departureDays": [
+        0,
+        4
+      ],
+      "departureTimes": [
+        "16:00",
+        "19:00"
+      ],
+      "durationMinutes": 2200,
+      "inferred": false
+    },
+    {
+      "from": "Stockholm Norra Rosersberg",
+      "to": "Malmö Kombiterminal CMP",
+      "trains": "59281",
+      "days": "Tor Čet",
+      "times": "16:30",
+      "runsPerWeek": 2.0,
+      "duration": "14h 00m",
+      "note": "",
+      "trainNumbers": [
+        "59281"
+      ],
+      "departureDays": [
+        1,
+        3
+      ],
+      "departureTimes": [
+        "16:30"
+      ],
+      "durationMinutes": 840,
+      "inferred": false
+    },
+    {
+      "from": "Szeged Ct",
+      "to": "Budapest BILK Kombiterminal",
+      "trains": "91411",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "18:00",
+      "runsPerWeek": 7.0,
+      "duration": "39h 00m",
+      "note": "",
+      "trainNumbers": [
+        "91411"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "18:00"
+      ],
+      "durationMinutes": 2340,
+      "inferred": false
+    },
+    {
+      "from": "Trelleborg Hamnbana",
+      "to": "Alnabru (Oslo)",
+      "trains": "CN102",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "12:00, 17:00",
+      "runsPerWeek": 7.0,
+      "duration": "14h 00m",
+      "note": "",
+      "trainNumbers": [
+        "CN102"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "12:00",
+        "17:00"
+      ],
+      "durationMinutes": 840,
+      "inferred": false
+    },
+    {
+      "from": "Trelleborg Hamnbana",
+      "to": "Göteborg Älvsborgshamnen",
+      "trains": "4150",
+      "days": "Pon Tor Sre Čet Ned",
+      "times": "14:00, 20:30",
+      "runsPerWeek": 5.0,
+      "duration": "10h 40m",
+      "note": "",
+      "trainNumbers": [
+        "4150"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        6
+      ],
+      "departureTimes": [
+        "14:00",
+        "20:30"
+      ],
+      "durationMinutes": 640,
+      "inferred": false
+    },
+    {
+      "from": "Trelleborg Hamnbana",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "TT001, TT003, TT005, TT007, TT009, TT011, TT013",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "05:00, 08:30, 12:30, 15:30, 16:3 21:00, 22:30",
+      "runsPerWeek": null,
+      "duration": "10h 30m",
+      "note": "",
+      "trainNumbers": [
+        "TT001",
+        "TT003",
+        "TT005",
+        "TT007",
+        "TT009",
+        "TT011",
+        "TT013"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "05:00",
+        "08:30",
+        "12:30",
+        "15:30",
+        "21:00",
+        "22:30"
+      ],
+      "durationMinutes": 630,
+      "inferred": false
+    },
+    {
+      "from": "Trieste PLT Terminal",
+      "to": "Mersin Port",
+      "trains": "10012",
+      "days": "Pon Sre Sob",
+      "times": "13:00",
+      "runsPerWeek": 3.0,
+      "duration": "104h 00m",
+      "note": "",
+      "trainNumbers": [
+        "10012"
+      ],
+      "departureDays": [
+        0,
+        2,
+        5
+      ],
+      "departureTimes": [
+        "13:00"
+      ],
+      "durationMinutes": 6240,
+      "inferred": false
+    },
+    {
+      "from": "Trieste Samer",
+      "to": "Cesme",
+      "trains": "10034, 10036, 10038, 10040",
+      "days": "Tor Čet Pet Sob",
+      "times": "17:30",
+      "runsPerWeek": 4.0,
+      "duration": "74h 30m",
+      "note": "",
+      "trainNumbers": [
+        "10034",
+        "10036",
+        "10038",
+        "10040"
+      ],
+      "departureDays": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "17:30"
+      ],
+      "durationMinutes": 4470,
+      "inferred": false
+    },
+    {
+      "from": "Trieste Samer",
+      "to": "Mersin Port",
+      "trains": "10012",
+      "days": "Pon Sre Sob",
+      "times": "13:00",
+      "runsPerWeek": 3.0,
+      "duration": "104h 00m",
+      "note": "",
+      "trainNumbers": [
+        "10012"
+      ],
+      "departureDays": [
+        0,
+        2,
+        5
+      ],
+      "departureTimes": [
+        "13:00"
+      ],
+      "durationMinutes": 6240,
+      "inferred": false
+    },
+    {
+      "from": "Trieste Samer",
+      "to": "München-Riem Ubf",
+      "trains": "41854",
+      "days": "Pon Sre",
+      "times": "01:00",
+      "runsPerWeek": 2.0,
+      "duration": "28h 30m",
+      "note": "",
+      "trainNumbers": [
+        "41854"
+      ],
+      "departureDays": [
+        0,
+        2
+      ],
+      "departureTimes": [
+        "01:00"
+      ],
+      "durationMinutes": 1710,
+      "inferred": false
+    },
+    {
+      "from": "Trieste Samer",
+      "to": "Patras Hafen DFDS",
+      "trains": "10102",
+      "days": "Sre Ned",
+      "times": "17:00",
+      "runsPerWeek": 2.0,
+      "duration": "41h 00m",
+      "note": "",
+      "trainNumbers": [
+        "10102"
+      ],
+      "departureDays": [
+        2,
+        6
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 2460,
+      "inferred": false
+    },
+    {
+      "from": "Trieste Samer",
+      "to": "Pendik",
+      "trains": "10082",
+      "days": "Pon Tor Sre Čet Pet Sob Ned",
+      "times": "14:00",
+      "runsPerWeek": 7.0,
+      "duration": "70h 30m",
+      "note": "",
+      "trainNumbers": [
+        "10082"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "14:00"
+      ],
+      "durationMinutes": 4230,
+      "inferred": false
+    },
+    {
+      "from": "Trieste Samer",
+      "to": "Yalova",
+      "trains": "10001, 10003",
+      "days": "Čet Pet",
+      "times": "16:00, 18:00",
+      "runsPerWeek": 2.0,
+      "duration": "71h 30m",
+      "note": "",
+      "trainNumbers": [
+        "10001",
+        "10003"
+      ],
+      "departureDays": [
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:00",
+        "18:00"
+      ],
+      "durationMinutes": 4290,
+      "inferred": false
+    },
+    {
+      "from": "Umea Kombi",
+      "to": "Malmö Kombiterminal CMP",
+      "trains": "S0039",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "17:30",
+      "runsPerWeek": 5.0,
+      "duration": "39h 00m",
+      "note": "",
+      "trainNumbers": [
+        "S0039"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "17:30"
+      ],
+      "durationMinutes": 2340,
+      "inferred": false
+    },
+    {
+      "from": "Verona Interterminal",
+      "to": "Lübeck-Skandinavienkai Ubf",
+      "trains": "43138",
+      "days": "Tor Sre Čet Sob Ned",
+      "times": "01:00",
+      "runsPerWeek": 5.0,
+      "duration": "29h 00m",
+      "note": "",
+      "trainNumbers": [
+        "43138"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        5,
+        6
+      ],
+      "departureTimes": [
+        "01:00"
+      ],
+      "durationMinutes": 1740,
+      "inferred": false
+    },
+    {
+      "from": "Verona Interterminal",
+      "to": "Rostock Seehafen Ubf",
+      "trains": "42154, 42156",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "01:30, 11:00",
+      "runsPerWeek": 6.0,
+      "duration": "32h 00m",
+      "note": "",
+      "trainNumbers": [
+        "42154",
+        "42156"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "01:30",
+        "11:00"
+      ],
+      "durationMinutes": 1920,
+      "inferred": false
+    },
+    {
+      "from": "Verona Quadrante Europa",
+      "to": "Bari Ferruccio",
+      "trains": "52133",
+      "days": "Pon Sre Pet",
+      "times": "16:30",
+      "runsPerWeek": 3.0,
+      "duration": "17h 30m",
+      "note": "",
+      "trainNumbers": [
+        "52133"
+      ],
+      "departureDays": [
+        0,
+        2,
+        4
+      ],
+      "departureTimes": [
+        "16:30"
+      ],
+      "durationMinutes": 1050,
+      "inferred": false
+    },
+    {
+      "from": "Verona Quadrante Europa",
+      "to": "Bari Giovinazzo",
+      "trains": "58701",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "11:30, 15:30",
+      "runsPerWeek": 6.0,
+      "duration": "20h 30m",
+      "note": "",
+      "trainNumbers": [
+        "58701"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "11:30",
+        "15:30"
+      ],
+      "durationMinutes": 1230,
+      "inferred": false
+    },
+    {
+      "from": "Verona Quadrante Europa",
+      "to": "CTR - Container Terminal Regensburg",
+      "trains": "42118",
+      "days": "Tor Pet",
+      "times": "17:30",
+      "runsPerWeek": 2.0,
+      "duration": "61h 30m",
+      "note": "",
+      "trainNumbers": [
+        "42118"
+      ],
+      "departureDays": [
+        1,
+        4
+      ],
+      "departureTimes": [
+        "17:30"
+      ],
+      "durationMinutes": 3690,
+      "inferred": false
+    },
+    {
+      "from": "Verona Quadrante Europa",
+      "to": "Hannover Lehrte MegaHub",
+      "trains": "43816",
+      "days": "Tor Sre Čet Pet Ned",
+      "times": "00:30",
+      "runsPerWeek": 5.0,
+      "duration": "23h 05m",
+      "note": "",
+      "trainNumbers": [
+        "43816"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        6
+      ],
+      "departureTimes": [
+        "00:30"
+      ],
+      "durationMinutes": 1385,
+      "inferred": false
+    },
+    {
+      "from": "Verona Quadrante Europa",
+      "to": "Köln-Eifeltor Ubf",
+      "trains": "43120, 43124, 43126",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "01:00, 09:30, 17:30",
+      "runsPerWeek": 13.0,
+      "duration": "24h 10m",
+      "note": "",
+      "trainNumbers": [
+        "43120",
+        "43124",
+        "43126"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "01:00",
+        "09:30",
+        "17:30"
+      ],
+      "durationMinutes": 1450,
+      "inferred": false
+    },
+    {
+      "from": "Verona Quadrante Europa",
+      "to": "Ludwigshafen (Rh) BASF Ubf",
+      "trains": "42132, 42134, 42136, 42138",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "13:00, 22:00",
+      "runsPerWeek": 10.0,
+      "duration": "25h 00m",
+      "note": "",
+      "trainNumbers": [
+        "42132",
+        "42134",
+        "42136",
+        "42138"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "13:00",
+        "22:00"
+      ],
+      "durationMinutes": 1500,
+      "inferred": false
+    },
+    {
+      "from": "Verona Quadrante Europa",
+      "to": "Maddaloni Marcianise",
+      "trains": "52007",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "15:00",
+      "runsPerWeek": 5.0,
+      "duration": "17h 30m",
+      "note": "",
+      "trainNumbers": [
+        "52007"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "15:00"
+      ],
+      "durationMinutes": 1050,
+      "inferred": false
+    },
+    {
+      "from": "Verona Quadrante Europa",
+      "to": "München-Riem Ubf",
+      "trains": "43132, 43134",
+      "days": "Tor Sre Čet Pet Sob",
+      "times": "01:30, 12:00",
+      "runsPerWeek": 9.0,
+      "duration": "17h 30m",
+      "note": "",
+      "trainNumbers": [
+        "43132",
+        "43134"
+      ],
+      "departureDays": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "01:30",
+        "12:00"
+      ],
+      "durationMinutes": 1050,
+      "inferred": false
+    },
+    {
+      "from": "Verona Quadrante Europa",
+      "to": "Nürnberg Hafen Ubf",
+      "trains": "42118",
+      "days": "Tor Pet",
+      "times": "17:30",
+      "runsPerWeek": 2.0,
+      "duration": "24h 15m",
+      "note": "",
+      "trainNumbers": [
+        "42118"
+      ],
+      "departureDays": [
+        1,
+        4
+      ],
+      "departureTimes": [
+        "17:30"
+      ],
+      "durationMinutes": 1455,
+      "inferred": false
+    },
+    {
+      "from": "Villach Süd CCT",
+      "to": "Wels Vbf CCT",
+      "trains": "52002, 99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "18:00, 19:30",
+      "runsPerWeek": 10.0,
+      "duration": "36h 30m",
+      "note": "",
+      "trainNumbers": [
+        "52002",
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:00",
+        "19:30"
+      ],
+      "durationMinutes": 2190,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Bludenz CCT",
+      "trains": "52001, 99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "18:00, 19:30",
+      "runsPerWeek": 10.0,
+      "duration": "37h 00m",
+      "note": "",
+      "trainNumbers": [
+        "52001",
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:00",
+        "19:30"
+      ],
+      "durationMinutes": 2220,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Budapest BILK Kombiterminal",
+      "trains": "41939, 61933",
+      "days": "Tor Sob",
+      "times": "15:30",
+      "runsPerWeek": 2.0,
+      "duration": "42h 30m",
+      "note": "",
+      "trainNumbers": [
+        "41939",
+        "61933"
+      ],
+      "departureDays": [
+        1,
+        5
+      ],
+      "departureTimes": [
+        "15:30"
+      ],
+      "durationMinutes": 2550,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Graz Süd CCT",
+      "trains": "51781, 52001, 54785",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "10:00, 18:00, 19:30",
+      "runsPerWeek": 9.0,
+      "duration": "39h 00m",
+      "note": "",
+      "trainNumbers": [
+        "51781",
+        "52001",
+        "54785"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "10:00",
+        "18:00",
+        "19:30"
+      ],
+      "durationMinutes": 2340,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Gummern Ubf",
+      "trains": "99991, 99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "19:30",
+      "runsPerWeek": 6.0,
+      "duration": "10h 30m",
+      "note": "",
+      "trainNumbers": [
+        "99991",
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "19:30"
+      ],
+      "durationMinutes": 630,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Linz OMV - Chemiepark",
+      "trains": "99999",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "17:00",
+      "runsPerWeek": 6.0,
+      "duration": "13h 00m",
+      "note": "",
+      "trainNumbers": [
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 780,
+      "inferred": true
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Ludwigshafen (Rh) BASF Ubf",
+      "trains": "42868",
+      "days": "Čet Sob",
+      "times": "15:30, 18:30",
+      "runsPerWeek": 2.0,
+      "duration": "37h 30m",
+      "note": "",
+      "trainNumbers": [
+        "42868"
+      ],
+      "departureDays": [
+        3,
+        5
+      ],
+      "departureTimes": [
+        "15:30",
+        "18:30"
+      ],
+      "durationMinutes": 2250,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "München-Riem Ubf",
+      "trains": "42868",
+      "days": "Čet Sob",
+      "times": "15:30, 18:30",
+      "runsPerWeek": 2.0,
+      "duration": "38h 00m",
+      "note": "",
+      "trainNumbers": [
+        "42868"
+      ],
+      "departureDays": [
+        3,
+        5
+      ],
+      "departureTimes": [
+        "15:30",
+        "18:30"
+      ],
+      "durationMinutes": 2280,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Rail-Hub Duisburg",
+      "trains": "41940, 41942",
+      "days": "Tor Čet Sob",
+      "times": "16:30, 18:00, 18:30",
+      "runsPerWeek": 3.0,
+      "duration": "25h 00m",
+      "note": "",
+      "trainNumbers": [
+        "41940",
+        "41942"
+      ],
+      "departureDays": [
+        1,
+        3,
+        5
+      ],
+      "departureTimes": [
+        "16:30",
+        "18:00",
+        "18:30"
+      ],
+      "durationMinutes": 1500,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "St. Michael CCT",
+      "trains": "52001, 99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "18:00, 19:30",
+      "runsPerWeek": 10.0,
+      "duration": "34h 30m",
+      "note": "",
+      "trainNumbers": [
+        "52001",
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:00",
+        "19:30"
+      ],
+      "durationMinutes": 2070,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Villach Süd CCT",
+      "trains": "52001, 99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "16:00, 18:00",
+      "runsPerWeek": 10.0,
+      "duration": "38h 00m",
+      "note": "",
+      "trainNumbers": [
+        "52001",
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "16:00",
+        "18:00"
+      ],
+      "durationMinutes": 2280,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Wien Süd CCT",
+      "trains": "41939, 61933",
+      "days": "Tor Sob",
+      "times": "15:30",
+      "runsPerWeek": 2.0,
+      "duration": "38h 30m",
+      "note": "",
+      "trainNumbers": [
+        "41939",
+        "61933"
+      ],
+      "departureDays": [
+        1,
+        5
+      ],
+      "departureTimes": [
+        "15:30"
+      ],
+      "durationMinutes": 2310,
+      "inferred": false
+    },
+    {
+      "from": "Wels Vbf CCT",
+      "to": "Wolfurt CCT",
+      "trains": "52001, 99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "18:00, 19:30",
+      "runsPerWeek": 10.0,
+      "duration": "37h 00m",
+      "note": "",
+      "trainNumbers": [
+        "52001",
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "18:00",
+        "19:30"
+      ],
+      "durationMinutes": 2220,
+      "inferred": false
+    },
+    {
+      "from": "Wien Süd CCT",
+      "to": "Budapest BILK Kombiterminal",
+      "trains": "42339",
+      "days": "Sre Sob",
+      "times": "01:00",
+      "runsPerWeek": 2.0,
+      "duration": "57h 00m",
+      "note": "",
+      "trainNumbers": [
+        "42339"
+      ],
+      "departureDays": [
+        2,
+        5
+      ],
+      "departureTimes": [
+        "01:00"
+      ],
+      "durationMinutes": 3420,
+      "inferred": false
+    },
+    {
+      "from": "Wien Süd CCT",
+      "to": "Wels Vbf CCT",
+      "trains": "61932",
+      "days": "Tor Sob",
+      "times": "03:30",
+      "runsPerWeek": 2.0,
+      "duration": "4h 45m",
+      "note": "",
+      "trainNumbers": [
+        "61932"
+      ],
+      "departureDays": [
+        1,
+        5
+      ],
+      "departureTimes": [
+        "03:30"
+      ],
+      "durationMinutes": 285,
+      "inferred": false
+    },
+    {
+      "from": "Wolfurt CCT",
+      "to": "Wels Vbf CCT",
+      "trains": "52002, 99999",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "17:00",
+      "runsPerWeek": 10.0,
+      "duration": "39h 00m",
+      "note": "",
+      "trainNumbers": [
+        "52002",
+        "99999"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "17:00"
+      ],
+      "durationMinutes": 2340,
+      "inferred": false
+    },
+    {
+      "from": "Yalova",
+      "to": "Trieste Samer",
+      "trains": "10002, 10004",
+      "days": "Pon Ned",
+      "times": "01:00, 20:00",
+      "runsPerWeek": 2.0,
+      "duration": "72h 30m",
+      "note": "",
+      "trainNumbers": [
+        "10002",
+        "10004"
+      ],
+      "departureDays": [
+        0,
+        6
+      ],
+      "departureTimes": [
+        "01:00",
+        "20:00"
+      ],
+      "durationMinutes": 4350,
+      "inferred": false
+    },
+    {
+      "from": "Zaragoza Plaza",
+      "to": "Madrid Abroñigal",
+      "trains": "91016",
+      "days": "Pon Tor Sre Čet Pet",
+      "times": "20:00",
+      "runsPerWeek": 5.0,
+      "duration": "14h 30m",
+      "note": "",
+      "trainNumbers": [
+        "91016"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "departureTimes": [
+        "20:00"
+      ],
+      "durationMinutes": 870,
+      "inferred": false
+    },
+    {
+      "from": "Zilina RCG-Terminal",
+      "to": "Lovosice CD - DUSS",
+      "trains": "88922",
+      "days": "Pon Tor Sre Čet Pet Sob",
+      "times": "16:00",
+      "runsPerWeek": 6.0,
+      "duration": "42h 00m",
+      "note": "",
+      "trainNumbers": [
+        "88922"
+      ],
+      "departureDays": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "departureTimes": [
+        "16:00"
+      ],
+      "durationMinutes": 2520,
+      "inferred": false
+    }
+  ]
+}

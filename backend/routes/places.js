@@ -1,4 +1,5 @@
 const express = require("express");
+const {readJson}=require('../lib/parameter-store');
 
 function placeFromFeature(feature) {
   const p = feature?.properties || {};
@@ -39,6 +40,10 @@ function createPlacesRouter({ pool, requireSession, asyncRoute }) {
   let queue = Promise.resolve();
   const endpoint = () =>
     process.env.GEOCODER_URL || "https://photon.komoot.io/api/";
+  async function unitTerminalRows(type){
+    try{const [rows]=await pool.execute("SELECT id,name,country_code,city,address,latitude,longitude,NULL AS website FROM unit_terminals WHERE unit_type=? AND active=1 AND latitude IS NOT NULL AND longitude IS NOT NULL",[type]);return rows;}
+    catch(error){if(error.code!=='ER_NO_SUCH_TABLE')throw error;const rows=await readJson(pool,'app_unit_terminals_catalog')||[];return rows.filter(row=>row.unitType===type&&row.active!==false&&row.latitude!=null&&row.longitude!=null).map(row=>({id:row.id,name:row.name,country_code:row.countryCode,city:row.city,address:row.address,latitude:row.latitude,longitude:row.longitude,website:null}));}
+  }
   async function request(url) {
     const task = queue.then(async () => {
       const wait = Math.max(0, 700 - (Date.now() - lastRequest));
@@ -136,9 +141,26 @@ function createPlacesRouter({ pool, requireSession, asyncRoute }) {
           .status(400)
           .json({ error: "Koordinati lokacije niso veljavni." });
       const rolaOnly = req.body?.rolaOnly === true;
-      const [rows] = await pool.execute(
-        "SELECT id,name,country_code,city,address,latitude,longitude,website FROM terminals WHERE latitude IS NOT NULL AND longitude IS NOT NULL",
-      );
+      const unitType = String(req.body?.unitType || '').toLocaleLowerCase('sl');
+      let rows;
+      if (unitType.includes('p400')) {
+        rows = await unitTerminalRows('P400');
+      } else if (unitType.includes('zabojnik') || unitType.includes('container') || unitType.includes('kontejner') || /zaboj\s*45/.test(unitType)) {
+        rows = await unitTerminalRows('CONTAINER');
+      } else if (unitType.includes('izmenljivi') || unitType.includes('swap')) {
+        rows = await unitTerminalRows('SWAP_BODY');
+      } else if (rolaOnly) {
+        [rows] = await pool.execute("SELECT id,name,country_code,city,address,latitude,longitude,website FROM terminals WHERE latitude IS NOT NULL AND longitude IS NOT NULL");
+      } else {
+        const [rola] = await pool.execute("SELECT id,name,country_code,city,address,latitude,longitude,website FROM terminals WHERE latitude IS NOT NULL AND longitude IS NOT NULL");
+        const units = [...await unitTerminalRows('P400'),...await unitTerminalRows('CONTAINER'),...await unitTerminalRows('SWAP_BODY')];
+        rows = [...rola,...units];
+      }
+      if ((unitType.includes('p400') || unitType.includes('zabojnik') || unitType.includes('container') || unitType.includes('kontejner') || unitType.includes('izmenljivi') || unitType.includes('swap')) && (!rows.length || rows.every(row=>row.latitude==null||row.longitude==null))) {
+        const wanted=unitType.includes('p400')?'P400':unitType.includes('zabojnik')||unitType.includes('container')||unitType.includes('kontejner')?'CONTAINER':'SWAP_BODY';
+        const catalog=await readJson(pool,'app_unit_terminals_catalog')||[];
+        rows=catalog.filter(row=>row.unitType===wanted&&row.active!==false&&row.latitude!=null&&row.longitude!=null).map(row=>({id:row.id,name:row.name,country_code:row.countryCode,city:row.city,address:row.address,latitude:row.latitude,longitude:row.longitude,website:null}));
+      }
       const candidates = rows
         .map((row) => {
           const terminalLat = Number(row.latitude),

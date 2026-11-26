@@ -496,3 +496,21 @@
   color: #8992a2;
   font-weight: 400;
 }
+.field-hint{align-self:end;margin:-7px 0 0;color:#77839a;font-size:9px;line-height:1.3}
+.results,.form-panel,.history{border:1px solid #e7ebf2;border-radius:14px;box-shadow:0 8px 26px #1e2a4309}
+.option-card{transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+.option-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px #26365616}
+.timeline li{padding-bottom:14px}
+.timeline li>div{gap:4px}
+.timeline small{line-height:1.45}
+html[data-theme="dark"] .form-panel h2,html[data-theme="dark"] .results h2,html[data-theme="dark"] .history h2,html[data-theme="dark"] .results h3{color:#e2e8f2}
+html[data-theme="dark"] .form-grid input,html[data-theme="dark"] .form-grid select,html[data-theme="dark"] .duration-inputs input{border-color:#384356;background:#222a38;color:#e2e8f2}
+html[data-theme="dark"] .planner-subpages button{border-color:#354052;background:#202735;color:#d3dbea}
+html[data-theme="dark"] .planner-subpages button.active{border-color:#657ae8;background:#2b3452;color:#cbd3ff}
+html[data-theme="dark"] .auto-estimate-note{border-color:#354052;background:#202735;color:#e0e6f1}
+html[data-theme="dark"] .auto-estimate-note small,html[data-theme="dark"] .duration-inputs small,html[data-theme="dark"] .field-hint{color:#a1aec2}
+html[data-theme="dark"] .duration-inputs,html[data-theme="dark"] .form-grid label,html[data-theme="dark"] .places label,html[data-theme="dark"] .checks label,html[data-theme="dark"] .cost-mode label{color:#c3cddd}
+@media(max-width:720px){.planner-subpages{display:grid;grid-template-columns:1fr}.form-panel,.results,.history{padding:16px}}
+.schedule-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin:1rem 0;padding:1rem;border:1px solid var(--border,#d8deea);border-radius:12px;background:var(--surface-soft,#f5f7fb)}
+.schedule-summary>div{display:grid;gap:.25rem}.schedule-summary small{color:var(--text-muted,#64748b)}.schedule-summary b{font-size:1.05rem}
+@media(max-width:600px){.schedule-summary{grid-template-columns:1fr}}

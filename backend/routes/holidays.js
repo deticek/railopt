@@ -1,5 +1,6 @@
 const express = require("express");
 const { validDate } = require("../lib/validation");
+const { invalidateHolidayCache } = require("../services/delivery-planner");
 function createRouter(deps) {
   const router = express.Router();
   const { pool, requireSession, asyncRoute, validDate } = deps;
@@ -44,7 +45,25 @@ function createRouter(deps) {
           return res.status(409).json({ error: "Ta praznik je že vnešen." });
         throw error;
       }
+      invalidateHolidayCache(country);
       res.status(201).json({ countryCode: country, date, name });
+    }),
+  );
+  router.delete(
+    "/api/holidays",
+    requireSession,
+    asyncRoute(async (req, res) => {
+      const country = String(req.query?.countryCode || "").trim().toUpperCase();
+      const date = String(req.query?.date || "");
+      if (!/^[A-Z]{2}$/.test(country) || !validDate(date))
+        return res.status(400).json({ error: "Preveri državo in datum praznika." });
+      const [result] = await pool.execute(
+        "DELETE FROM holidays WHERE country_code=? AND holiday_date=?",
+        [country, date],
+      );
+      if (!result.affectedRows) return res.status(404).json({ error: "Praznika ni več v koledarju." });
+      invalidateHolidayCache(country);
+      res.json({ deleted: true });
     }),
   );
   return router;

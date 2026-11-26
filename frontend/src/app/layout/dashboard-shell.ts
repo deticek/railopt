@@ -15,6 +15,8 @@ export class DashboardShellComponent {
   readonly titles: Record<DashboardView, string> = {
     overview: 'Pregled poslovanja',
     history: 'Zgodovina',
+    holidays: 'Prazniki in prosti dnevi',
+    disruptions: 'Cestne in železniške motnje',
     routes: 'Transportne relacije',
     emissions: 'Planer dostave',
     settings: 'Nastavitve',

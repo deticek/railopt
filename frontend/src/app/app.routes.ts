@@ -8,6 +8,8 @@ import { RoutesComponent } from './features/routes/routes';
 import { DataEntryComponent } from './features/data-entry/data-entry';
 import { DeliveryPlannerComponent } from './features/delivery-planner/delivery-planner';
 import { SettingsComponent } from './features/settings/settings';
+import { HolidaysComponent } from './features/holidays';
+import { DisruptionsComponent } from './features/disruptions';
 
 const sessionGuard: CanActivateFn = (_route, state) =>
   sessionStorage.getItem('railopt-token')
@@ -24,6 +26,8 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'overview' },
       { path: 'overview', component: OverviewComponent },
       { path: 'history', component: HistoryComponent },
+      { path: 'holidays', component: HolidaysComponent },
+      { path: 'disruptions', component: DisruptionsComponent },
       { path: 'shipments', redirectTo: 'history' },
       { path: 'routes', component: RoutesComponent },
       { path: 'data', component: DataEntryComponent },

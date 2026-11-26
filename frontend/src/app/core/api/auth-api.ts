@@ -1,6 +1,6 @@
 import { apiBaseUrl, apiRequest, readApiError } from './api-client';
 
-export interface AuthSession { token: string; user: { name?: string; email?: string; role?: number } }
+export interface AuthSession { token: string; user: { id?: string|null; name?: string; username?: string; email?: string; role?: number; permissions?: string[] } }
 
 async function readSession(response: Response): Promise<AuthSession> {
   if (!response.ok) throw new Error(await readApiError(response, 'Prijava ni uspela.'));

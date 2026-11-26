@@ -11,6 +11,8 @@
     "api": "cd backend && node server.js",
     "import:excel": "node backend/import_excel.js",
     "import:terminals": "node backend/seed_terminals.js",
+    "import:unit-terminals": "node backend/seed_unit_terminals.js",
+    "import:kombiverkehr": "node backend/import_kombiverkehr.js",
     "recalculate:delivery-plans": "node backend/recalculate_delivery_plans.js",
     "build": "cd frontend && npm run build && cd .. && electron-builder"
   },

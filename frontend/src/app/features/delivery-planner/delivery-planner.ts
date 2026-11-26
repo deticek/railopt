@@ -2,10 +2,10 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, signal } from '@angula
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PlacePickerComponent } from '../../components/place-picker/place-picker';
+import { RouteMapComponent } from '../../components/route-map';
 import {
   calculateLatestLoading,
   estimateDeliveryPlan,
-  findFreightTerminals,
   listDeliveryPlans,
   saveDeliveryPlan,
   type DeliveryOption,
@@ -22,7 +22,7 @@ function localInputDate(date: Date): string {
 @Component({
   selector: 'app-delivery-planner',
   standalone: true,
-  imports: [FormsModule, DecimalPipe, DatePipe, PlacePickerComponent],
+  imports: [FormsModule, DecimalPipe, DatePipe, PlacePickerComponent, RouteMapComponent],
   templateUrl: './delivery-planner.html',
   styleUrl: './delivery-planner.scss',
 })
@@ -30,13 +30,6 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
   constructor(private readonly changeDetector: ChangeDetectorRef) {}
   origin: PlaceSelection | null = null;
   destination: PlaceSelection | null = null;
-  terminalOrigin: PlaceSelection | null = null;
-  terminalDestination: PlaceSelection | null = null;
-  terminalOriginKm: number | null = null;
-  terminalDestinationKm: number | null = null;
-  terminalStatus = '';
-  private terminalSearch = { origin: 0, destination: 0 };
-  private terminalRequests = 0;
   loadingAt = localInputDate(new Date());
   deliveryDeadlineAt = localInputDate(new Date(Date.now() + 72 * 3600000));
   scheduleMode: 'arrival' | 'latest-loading' = 'arrival';
@@ -45,7 +38,7 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
   weightKg = 24000;
   unitType = 'P400 – dvigljiva prikolica';
   globalExtraTimeMinutes = 0;
-  transportMode: 'road' | 'compare' = 'compare';
+  readonly transportMode = 'compare' as const;
   preference: 'cost' | 'emissions' | 'time' = 'cost';
   roLaTicketEur = 0;
   adr = false;
@@ -81,63 +74,20 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
       })
       .catch(() => {});
   }
-  async setOrigin(place: PlaceSelection | null): Promise<void> {
+  setOrigin(place: PlaceSelection | null): void {
     this.origin = place;
-    this.terminalOrigin = null;
-    this.terminalOriginKm = null;
-    await this.findTerminal(place, 'origin');
   }
-  async setDestination(place: PlaceSelection | null): Promise<void> {
+  setDestination(place: PlaceSelection | null): void {
     this.destination = place;
-    this.terminalDestination = null;
-    this.terminalDestinationKm = null;
-    await this.findTerminal(place, 'destination');
-  }
-  private async findTerminal(
-    place: PlaceSelection | null,
-    side: 'origin' | 'destination',
-  ): Promise<void> {
-    const request = ++this.terminalSearch[side];
-    if (!place || place.lat === null || place.lon === null) {
-      this.terminalStatus = 'Izberi naslov ali kraj z zemljevida, da poiščem tovorne terminale.';
-      return;
-    }
-    this.terminalRequests++;
-    this.terminalStatus = 'Samodejno iščem najbližja tovorna terminala v lokalni bazi…';
-    try {
-      const candidates = await findFreightTerminals(place, this.usesRoLaTerminals);
-      if (request !== this.terminalSearch[side]) return;
-      const nearest = candidates[0] || null;
-      if (side === 'origin') {
-        this.terminalOrigin = nearest;
-        this.terminalOriginKm = nearest?.distanceKm ?? null;
-      } else {
-        this.terminalDestination = nearest;
-        this.terminalDestinationKm = nearest?.distanceKm ?? null;
-      }
-      this.terminalStatus =
-        this.terminalRequests > 1
-          ? 'Iščem še drugi terminal…'
-          : this.terminalOrigin && this.terminalDestination
-            ? 'Našla sem najbližja terminala iz lokalne baze.'
-            : 'Baza nima terminala za eno od lokacij.';
-    } catch {
-      if (request === this.terminalSearch[side])
-        this.terminalStatus =
-          'Lokalni seznam terminalov trenutno ni dosegljiv. Preveri povezavo z aplikacijo.';
-    } finally {
-      this.terminalRequests = Math.max(0, this.terminalRequests - 1);
-      if (!this.terminalRequests && this.terminalOrigin && this.terminalDestination)
-        this.terminalStatus = 'Našla sem najbližja terminala iz lokalne baze.';
-    }
   }
   setUnitType(unitType: string): void {
     this.unitType = unitType;
-    if (this.origin) void this.findTerminal(this.origin, 'origin');
-    if (this.destination) void this.findTerminal(this.destination, 'destination');
   }
-  get usesRoLaTerminals(): boolean {
-    return /tovornjak|nedvigljiv|ponjav/i.test(this.unitType);
+  get maxWeightKg(): number {
+    const unit = this.unitType.toLocaleLowerCase('sl-SI');
+    if (unit.includes('zabojnik 45') || /zaboj\s*45/.test(unit)) return 22000;
+    if (unit.includes('izmenljivi zaboj')) return 23000;
+    return 24000;
   }
   get extraTimeMinutes(): number {
     return Number(this.extraTimeHours || 0) * 60 + Number(this.extraTimeRemainderMinutes || 0);
@@ -159,18 +109,29 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
       this.error.set('Na zemljevidu izberi kraj naklada in kraj razklada.');
       return;
     }
-    if (this.transportMode === 'compare' && (!this.terminalOrigin || !this.terminalDestination)) {
+    const weight = Number(this.weightKg);
+    if (weight > this.maxWeightKg) {
       this.error.set(
-        this.terminalStatus || 'V bližini izbranih lokacij nisem našel tovornih terminalov.',
+        (this.unitType.toLocaleLowerCase('sl-SI').includes('zabojnik 45') || /zaboj\s*45/.test(this.unitType.toLocaleLowerCase('sl-SI')))
+          ? 'Za zabojnik 45′ je največja teža tovora 22.000 kg.'
+          : this.unitType.toLocaleLowerCase('sl-SI').includes('izmenljivi zaboj')
+            ? 'Za izmenljivi zaboj je največja teža tovora 23.000 kg.'
+            : 'Največja dovoljena teža tovora je 24.000 kg.',
       );
       return;
     }
-    const loadingAt = this.loadingAt;
+    let loadingAt = this.loadingAt;
     let deadline = this.deliveryDeadlineAt;
     if (this.scheduleMode === 'arrival') {
       const future = new Date(loadingAt);
       future.setDate(future.getDate() + 60);
       deadline = localInputDate(future);
+    } else {
+      const requestedDeadline = new Date(this.deliveryDeadlineAt);
+      const now = new Date();
+      const earliestSearch = new Date(requestedDeadline.getTime() - 90 * 24 * 60 * 60 * 1000);
+      if (Number.isFinite(earliestSearch.getTime()) && now < earliestSearch) now.setTime(earliestSearch.getTime());
+      loadingAt = localInputDate(now);
     }
     this.error.set('');
     this.saveMessage.set('');
@@ -186,8 +147,6 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
     const input: DeliveryPlanInput = {
       origin: this.origin,
       destination: this.destination,
-      terminalOrigin: this.terminalOrigin,
-      terminalDestination: this.terminalDestination,
       loadingAt,
       deliveryDeadlineAt: deadline,
       loadingWindowStart: this.loadingWindowStart,
@@ -217,12 +176,9 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
       this.progress.set('Iskanje cestnih odsekov in praznikov…');
       if (this.scheduleMode === 'latest-loading') {
         const response = await calculateLatestLoading(input);
-        this.loadingAt = response.latestLoadingAt;
         this.result.set(response.result);
         this.selectedOptionId.set(
-          this.transportMode === 'road'
-            ? 'road'
-            : response.result.recommendedOptionId || response.result.options[0]?.id || 'road',
+          response.result.recommendedOptionId || response.result.options[0]?.id || 'road',
         );
         this.estimateId.set(response.estimateId);
         this.progress.set('Najkasnejši naklad je izračunan.');
@@ -230,9 +186,7 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
         const response = await estimateDeliveryPlan(input);
         this.result.set(response.result);
         this.selectedOptionId.set(
-          this.transportMode === 'road'
-            ? 'road'
-            : response.result.recommendedOptionId || response.result.options[0]?.id || 'road',
+          response.result.recommendedOptionId || response.result.options[0]?.id || 'road',
         );
         this.estimateId.set(response.estimateId);
         this.progress.set('Prihod je izračunan.');

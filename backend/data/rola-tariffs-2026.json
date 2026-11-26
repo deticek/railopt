@@ -1,0 +1,19 @@
+{
+  "year": 2026,
+  "currency": "EUR",
+  "source": "TIM_Hekaton_2026_podatki_v2_v2.xlsx · list RO-LA terminali · cenik ROLA 2026",
+  "weightClassesKg": [20000, 30000, 40500, 42000, 44000],
+  "fares": [
+    { "from": "Maribor", "to": "Wels", "railDistanceKm": 301, "prices": [580, 580, 580, 580, 580] },
+    { "from": "Wels", "to": "Maribor", "railDistanceKm": 301, "prices": [580, 580, 580, 580, 580] },
+    { "from": "Wörgl", "to": "Brenner", "railDistanceKm": 100.1, "prices": [147, 165, 206, 284, 333] },
+    { "from": "Brenner", "to": "Wörgl", "railDistanceKm": 100.1, "prices": [118, 132, 166, 256, 299] },
+    { "from": "Wörgl", "to": "Trento", "railDistanceKm": 246.4, "prices": [275, 341, 418, 492, 554] },
+    { "from": "Trento", "to": "Wörgl", "railDistanceKm": 246.4, "prices": [275, 341, 418, 492, 554] }
+  ],
+  "estimatedEuroPerRailKm": [1.455553, 1.598118, 1.82716, 2.206989, 2.444043],
+  "adrSurchargeEur": 35,
+  "holidaySurchargeEur": 50,
+  "holidaySurchargeDates": ["2026-05-01", "2026-05-14", "2026-06-04", "2026-08-15", "2026-10-26", "2026-11-01", "2026-12-08"],
+  "holidaySurchargeAppliesTo": ["Wörgl-Brenner", "Brenner-Wörgl", "Wörgl-Trento", "Trento-Wörgl"]
+}

@@ -8,13 +8,16 @@ import {
   type DeliveryOption,
   type DeliveryPlanInput,
   type PlaceSelection,
+  type RouteMapPoint,
+  type RouteMapSegment,
   type SavedDeliveryPlan,
 } from '../../core/api/delivery-plans-api';
+import { RouteMapComponent } from '../route-map';
 
 @Component({
   selector: 'app-delivery-plan-details',
   standalone: true,
-  imports: [DatePipe, DecimalPipe, FormsModule, PlacePickerComponent],
+  imports: [DatePipe, DecimalPipe, FormsModule, PlacePickerComponent, RouteMapComponent],
   templateUrl: './delivery-plan-details.html',
   styleUrl: './delivery-plan-details.scss',
 })
@@ -53,6 +56,40 @@ export class DeliveryPlanDetailsComponent {
     );
   }
 
+  routeSegments(option: DeliveryOption): RouteMapSegment[] {
+    if (option.routeSegments?.length) return option.routeSegments;
+    const origin = this.plan.input?.origin;
+    const destination = this.plan.input?.destination;
+    const originTerminal = this.plan.input?.terminalOrigin;
+    const destinationTerminal = this.plan.input?.terminalDestination;
+    const valid = (point: PlaceSelection | null | undefined): point is PlaceSelection & { lat: number; lon: number } =>
+      point?.lat != null && point.lon != null && Number.isFinite(Number(point.lat)) && Number.isFinite(Number(point.lon));
+    if (!valid(origin) || !valid(destination)) return [];
+    const roadSegment = (label: string, from: PlaceSelection, to: PlaceSelection): RouteMapSegment => ({
+      mode: 'road', label, coordinates: [[Number(from.lat), Number(from.lon)], [Number(to.lat), Number(to.lon)]],
+    });
+    if (option.id === 'road' || !valid(originTerminal) || !valid(destinationTerminal))
+      return [roadSegment(option.id === 'road' ? 'Cestna pot (povezovalna črta)' : 'Cestna pot (ocena)', origin, destination)];
+    return [
+      roadSegment('Tovornjak do terminala', origin, originTerminal),
+      { mode: 'rail', label: 'Železniški del (terminala)', coordinates: [[Number(originTerminal.lat), Number(originTerminal.lon)], [Number(destinationTerminal.lat), Number(destinationTerminal.lon)]] },
+      roadSegment('Tovornjak od terminala do cilja', destinationTerminal, destination),
+    ];
+  }
+
+  routePoints(option: DeliveryOption): RouteMapPoint[] {
+    if (option.routePoints?.length) return option.routePoints;
+    const segments = this.routeSegments(option);
+    const coords = segments.flatMap(segment => segment.coordinates);
+    const origin = this.plan.input?.origin;
+    const destination = this.plan.input?.destination;
+    if (coords.length < 2) return [];
+    return [
+      { label: origin?.label || this.plan.origin, lat: coords[0][0], lon: coords[0][1], kind: 'origin' },
+      { label: destination?.label || this.plan.destination, lat: coords.at(-1)![0], lon: coords.at(-1)![1], kind: 'destination' },
+    ];
+  }
+
   get statusOnTime(): boolean {
     return this.preferFastest
       ? (this.selectedOption?.onTime ?? this.plan.result.onTime)
@@ -86,8 +123,8 @@ export class DeliveryPlanDetailsComponent {
     try {
       const rolaOnly = isRoLaUnit(unitType);
       const [origins, destinations] = await Promise.all([
-        findFreightTerminals(input.origin, rolaOnly),
-        findFreightTerminals(input.destination, rolaOnly),
+        findFreightTerminals(input.origin, rolaOnly, input.unitType),
+        findFreightTerminals(input.destination, rolaOnly, input.unitType),
       ]);
       if (this.editInput !== input || input.unitType !== unitType) return;
       input.terminalOrigin = origins[0] ? terminalSelection(origins[0]) : null;
@@ -172,7 +209,7 @@ export class DeliveryPlanDetailsComponent {
     this.error = '';
     try {
       const terminal =
-        (await findFreightTerminals(place, isRoLaUnit(this.editInput.unitType)))[0] || null;
+        (await findFreightTerminals(place, isRoLaUnit(this.editInput.unitType), this.editInput.unitType))[0] || null;
       this.editInput[side === 'origin' ? 'terminalOrigin' : 'terminalDestination'] = terminal
         ? {
             label: terminal.label,
@@ -199,8 +236,8 @@ export class DeliveryPlanDetailsComponent {
       if (!input.terminalOrigin || !input.terminalDestination) {
         try {
           const [origins, destinations] = await Promise.all([
-            findFreightTerminals(input.origin, isRoLaUnit(input.unitType)),
-            findFreightTerminals(input.destination, isRoLaUnit(input.unitType)),
+            findFreightTerminals(input.origin, isRoLaUnit(input.unitType), input.unitType),
+            findFreightTerminals(input.destination, isRoLaUnit(input.unitType), input.unitType),
           ]);
           input.terminalOrigin =
             input.terminalOrigin || (origins[0] ? terminalSelection(origins[0]) : null);
