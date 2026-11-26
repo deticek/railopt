@@ -5,6 +5,7 @@ import { PlacePickerComponent } from '../place-picker/place-picker';
 import {
   findFreightTerminals,
   updateSavedDeliveryPlan,
+  estimateDeliveryPlan,
   type DeliveryOption,
   type DeliveryPlanInput,
   type PlaceSelection,
@@ -32,6 +33,8 @@ export class DeliveryPlanDetailsComponent {
   findingTerminals = false;
   error = '';
   preferredOptionId = '';
+  recalculating = false;
+  private previewSequence = 0;
 
   get options(): DeliveryOption[] {
     return Array.isArray(this.plan.result?.options) ? this.plan.result.options : [];
@@ -102,21 +105,54 @@ export class DeliveryPlanDetailsComponent {
 
   chooseOption(option: DeliveryOption): void {
     this.preferredOptionId = option.id;
-    if (this.editInput) this.editInput.transportMode = option.id === 'road' ? 'road' : 'compare';
+    if (this.editInput) {
+      const mode = option.id === 'road' ? 'ROAD' : option.id === 'rail' ? 'INTERMODAL' : 'RO_LA';
+      this.setTransportMode(mode);
+    }
   }
 
-  setTransportMode(mode: 'road' | 'compare'): void {
+  setTransportMode(mode: 'ROAD' | 'INTERMODAL' | 'RO_LA'): void {
     if (!this.editInput) return;
-    this.editInput.transportMode = mode;
-    this.preferredOptionId =
-      mode === 'road' ? 'road' : this.combinedOptionId(this.editInput.unitType);
+    const input = this.editInput;
+    input.selectedTransportMode = mode;
+    input.transportMode = mode === 'ROAD' ? 'road' : 'compare';
+    this.preferredOptionId = mode === 'ROAD' ? 'road' : mode === 'INTERMODAL' ? 'rail' : 'rola';
+    void this.refreshModeCalculation(input);
+  }
+
+  get intermodalAvailable(): boolean { return Boolean(this.editInput && isLiftableUnit(this.editInput.unitType)); }
+  get rolaAvailable(): boolean { return Boolean(this.editInput && isRoLaUnit(this.editInput.unitType)); }
+
+  private async refreshModeCalculation(input: DeliveryPlanInput): Promise<void> {
+    const sequence = ++this.previewSequence;
+    this.recalculating = true;
+    this.error = '';
+    try {
+      const { result } = await estimateDeliveryPlan(input);
+      if (sequence !== this.previewSequence || this.editInput !== input) return;
+      const chosen = result.options.find(option => option.id === this.preferredOptionId)
+        || result.options[0];
+      this.preferredOptionId = chosen?.id || '';
+      this.plan = { ...this.plan, result: { ...result, selectedOptionId: chosen?.id } };
+    } catch (error) {
+      if (sequence === this.previewSequence)
+        this.error = error instanceof Error ? error.message : 'Izračuna izbrane možnosti ni bilo mogoče osvežiti.';
+    } finally {
+      if (sequence === this.previewSequence) this.recalculating = false;
+    }
   }
 
   async setUnitType(unitType: string): Promise<void> {
     const input = this.editInput;
     if (!input) return;
     input.unitType = unitType;
-    if (input.transportMode === 'compare') this.preferredOptionId = this.combinedOptionId(unitType);
+    if (input.selectedTransportMode === 'INTERMODAL' && !isLiftableUnit(unitType)) {
+      input.selectedTransportMode = isRoLaUnit(unitType) ? 'RO_LA' : 'ROAD';
+    } else if (input.selectedTransportMode === 'RO_LA' && !isRoLaUnit(unitType)) {
+      input.selectedTransportMode = isLiftableUnit(unitType) ? 'INTERMODAL' : 'ROAD';
+    }
+    input.transportMode = input.selectedTransportMode === 'ROAD' ? 'road' : 'compare';
+    this.preferredOptionId = input.selectedTransportMode === 'ROAD' ? 'road' : input.selectedTransportMode === 'INTERMODAL' ? 'rail' : 'rola';
     input.terminalOrigin = null;
     input.terminalDestination = null;
     this.findingTerminals = true;
@@ -137,10 +173,7 @@ export class DeliveryPlanDetailsComponent {
     } finally {
       this.findingTerminals = false;
     }
-  }
-
-  private combinedOptionId(unitType: string): string {
-    return /nedvigljiv|ponjav|tovornjak/i.test(unitType) ? 'rola' : 'rail';
+    await this.refreshModeCalculation(input);
   }
 
   warnings(option: DeliveryOption): string[] {
@@ -162,7 +195,12 @@ export class DeliveryPlanDetailsComponent {
     const transportMode =
       saved?.transportMode ||
       (selectedOptionId && selectedOptionId !== 'road' ? 'compare' : 'road');
-    this.preferredOptionId = transportMode === 'compare' ? this.combinedOptionId(unitType) : 'road';
+    const storedMode = saved?.selectedTransportMode;
+    let selectedTransportMode = (storedMode === 'ROAD' || storedMode === 'INTERMODAL' || storedMode === 'RO_LA') ? storedMode :
+      (selectedOptionId === 'rola' ? 'RO_LA' : selectedOptionId === 'rail' ? 'INTERMODAL' : transportMode === 'road' ? 'ROAD' : isRoLaUnit(unitType) ? 'RO_LA' : 'INTERMODAL');
+    if(selectedTransportMode==='INTERMODAL'&&!isLiftableUnit(unitType))selectedTransportMode=isRoLaUnit(unitType)?'RO_LA':'ROAD';
+    if(selectedTransportMode==='RO_LA'&&!isRoLaUnit(unitType))selectedTransportMode=isLiftableUnit(unitType)?'INTERMODAL':'ROAD';
+    this.preferredOptionId = selectedTransportMode === 'ROAD' ? 'road' : selectedTransportMode === 'INTERMODAL' ? 'rail' : 'rola';
     this.editInput = {
       ...saved,
       origin: normalizePlace(saved?.origin, this.plan.origin),
@@ -177,6 +215,7 @@ export class DeliveryPlanDetailsComponent {
       unloadingWindowEnd: saved?.unloadingWindowEnd || '15:00',
       extraTimeMinutes: Number(saved?.extraTimeMinutes ?? this.plan.result.extraTimeMinutes ?? 0),
       transportMode,
+      selectedTransportMode,
       preference: saved?.preference || 'cost',
       roLaTicketEur: Number(saved?.roLaTicketEur ?? this.selectedOption?.cost.railTicketEur ?? 0),
       adr: Boolean(saved?.adr ?? this.plan.result.adr),
@@ -296,4 +335,8 @@ function terminalSelection(place: PlaceSelection): PlaceSelection {
 
 function isRoLaUnit(unitType: string): boolean {
   return /tovornjak|nedvigljiv|ponjav/i.test(unitType);
+}
+
+function isLiftableUnit(unitType: string): boolean {
+  return /p400|izmenljivi zaboj|zabojnik\s*(?:40|45)|zaboj\s*45|kontejner|swap/i.test(unitType);
 }

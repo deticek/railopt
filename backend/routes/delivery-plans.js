@@ -1,12 +1,37 @@
 const express = require("express");
 const { estimateDeliveryPlan } = require("../services/delivery-planner");
 const {readJson}=require('../lib/parameter-store');
-const { nearestRailTerminals } = require('../services/kombiverkehr-network');
+const trailerCatalog = require('../data/trailer-catalog.json');
 
 function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
   const router = express.Router();
   const pending = new Map();
   const group = "Izračuni dostav";
+  function normalizeCatalogEquipment(input) {
+    const id=String(input?.equipmentCatalogId||'');
+    if(!id)return input;
+    const item=trailerCatalog.find(row=>row.id===id);
+    if(!item)throw new Error('Izbrane prikolice ni v katalogu.');
+    const weight=Number(input.weightKg),gross=Number(item.tare_t)+Number(item.tractor_t)+weight/1000;
+    if(!Number.isFinite(weight)||weight<=0||weight>Number(item.payload_t)*1000)throw new Error(`Nosilnost prikolice ${item.name} je ${item.payload_t} t.`);
+    if(input.adr&&!item.adr)throw new Error(`${item.name} v katalogu ni označena kot primerna za ADR.`);
+    const choice=String(input.selectedTransportMode||'AUTO').toUpperCase();
+    const liftable=item.uct!=='ne';
+    const rolaEligible=item.length_m<=18.8&&item.width_m<=2.6&&item.height_m<=4&&gross<=(item.category==='zabojnik'?44:40);
+    if(choice==='INTERMODAL'&&!liftable)throw new Error(`${item.name} ni dvigljiva enota; za vlak izberi združljivo prikolico.`);
+    if(choice==='RO_LA'&&!rolaEligible)throw new Error(`${item.name} ne ustreza omejitvam Ro-La (mere ali skupna masa).`);
+    let unitType=String(input.unitType||item.name);
+    if(choice==='ROAD') unitType=item.name;
+    else if(choice==='RO_LA'||(choice==='AUTO'&&!liftable&&rolaEligible)) unitType='Nedvigljiva prikolica s ponjavo';
+    else if(choice==='AUTO'&&!liftable&&!rolaEligible) return {...input,unitType:item.name,equipmentName:item.name,equipmentCatalogId:id,transportMode:'road',catalogWarnings:[`${item.name} presega modelirane omejitve Ro-La; izračunana je samo cesta.`]};
+    else if(item.id==='P400') unitType='P400 – dvigljiva prikolica';
+    else if(item.id==='ZABOJ1360') unitType='Izmenljivi zaboj';
+    else if(item.id==='Z40HC') unitType='Kontejner 40 HC';
+    else if(item.id==='Z45PW') unitType='Zabojnik 45′';
+    else if(liftable) unitType='P400 – dvigljiva prikolica';
+    else unitType='Nedvigljiva prikolica s ponjavo';
+    return {...input,unitType,equipmentName:item.name,equipmentCatalogId:id,catalogWarnings:[...(item.uct==='zamenjava'?['Za železniški odsek je potrebna dvigljiva nadomestna enota; pribitek se obračuna v ceni.']:[])]};
+  }
   const userId = (user) =>
     String(user?.id || user?.email || "development").slice(0, 254);
   async function loadParameters() {
@@ -44,38 +69,12 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
     };
   }
   async function useDatabaseTerminals(input) {
+    input=normalizeCatalogEquipment(input);
     const unit = String(input.unitType || '').toLocaleLowerCase('sl');
     const unitKind = unit.includes('p400') ? 'P400'
       : unit.includes('zabojnik') || unit.includes('container') || unit.includes('kontejner') || /zaboj\s*45/.test(unit) ? 'CONTAINER'
       : unit.includes('izmenljivi') || unit.includes('swap') ? 'SWAP_BODY' : null;
     let terminals;
-    if (unitKind && input.transportMode === 'compare') {
-      try {
-        const [origins, destinations] = await Promise.all([
-          nearestRailTerminals(pool, input.origin),
-          nearestRailTerminals(pool, input.destination),
-        ]);
-        if (origins[0] && destinations[0]) {
-          return {
-            ...input,
-            terminalOrigin: {
-              label: origins[0].name,
-              lat: Number(origins[0].latitude),
-              lon: Number(origins[0].longitude),
-              countryCode: null,
-            },
-            terminalDestination: {
-              label: destinations[0].name,
-              lat: Number(destinations[0].latitude),
-              lon: Number(destinations[0].longitude),
-              countryCode: null,
-            },
-          };
-        }
-      } catch (error) {
-        if (error.code !== 'ER_NO_SUCH_TABLE') throw error;
-      }
-    }
     if(unitKind){
       try{[terminals]=await pool.execute("SELECT CONCAT(name,' (',city,')') AS name,country_code,latitude,longitude FROM unit_terminals WHERE unit_type=? AND active=1 AND latitude IS NOT NULL AND longitude IS NOT NULL",[unitKind]);}
       catch(error){if(error.code!=='ER_NO_SUCH_TABLE')throw error;const rows=await readJson(pool,'app_unit_terminals_catalog')||[];terminals=rows.filter(row=>row.unitType===unitKind&&row.active!==false&&row.latitude!=null&&row.longitude!=null).map(row=>({name:row.name,country_code:row.countryCode,latitude:row.latitude,longitude:row.longitude}));}
@@ -103,6 +102,8 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
       /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(String(value || "")) &&
       !Number.isNaN(new Date(value).getTime());
     const weight = Number(body?.weightKg);
+    const catalogItem=trailerCatalog.find(row=>row.id===String(body?.equipmentCatalogId||''));
+    const maxWeight=catalogItem?Number(catalogItem.payload_t)*1000:24000;
     const extraTime = Number(body?.extraTimeMinutes ?? 0);
     const globalExtraTime = Number(body?.globalExtraTimeMinutes ?? 0);
     const hasPoint = (place) =>
@@ -124,7 +125,7 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
       new Date(body.deliveryDeadlineAt) > new Date(body.loadingAt) &&
       Number.isFinite(weight) &&
       weight > 0 &&
-      weight <= 24000 &&
+      weight <= maxWeight &&
       String(body?.unitType || "").length <= 100 &&
       Number.isInteger(extraTime) &&
       extraTime >= 0 &&
@@ -137,11 +138,32 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
   function planValidationMessage(body, fallback) {
     const unit = String(body?.unitType || "").toLocaleLowerCase("sl-SI");
     const weight = Number(body?.weightKg);
-    if ((unit.includes("zabojnik 45") || /zaboj\s*45/.test(unit)) && weight > 22000)
+    if (!body?.equipmentCatalogId && (unit.includes("zabojnik 45") || /zaboj\s*45/.test(unit)) && weight > 22000)
       return "Za zabojnik 45′ je največja teža tovora 22.000 kg.";
-    if (unit.includes("izmenljivi zaboj") && weight > 23000)
+    if (!body?.equipmentCatalogId && unit.includes("izmenljivi zaboj") && weight > 23000)
       return "Za izmenljivi zaboj je največja teža tovora 23.000 kg.";
     return validPlan(body) ? null : fallback;
+  }
+  function applySelectedTransport(input, result) {
+    const choice = String(input?.selectedTransportMode || 'AUTO').toUpperCase();
+    if (!['AUTO','ROAD','INTERMODAL','RO_LA'].includes(choice))
+      throw new Error('Izbran način prevoza ni veljaven.');
+    const unit = String(input?.unitType || '').toLocaleLowerCase('sl-SI');
+    const liftable = /p400|izmenljivi zaboj|zabojnik (?:40|45)|zaboj\s*45|kontejner/.test(unit);
+    const rola = /nedvigljiv|ponjav|tovornjak/.test(unit);
+    if (choice === 'INTERMODAL' && !liftable)
+      throw new Error('Kombinirani vlak je na voljo samo za dvigljive enote (P400, zaboj ali kontejner).');
+    if (choice === 'RO_LA' && !rola)
+      throw new Error('Ro-La je na voljo za tovornjak oziroma nedvigljivo prikolico.');
+    if (choice === 'ROAD') result.options = result.options.filter(option => option.id === 'road');
+    if (choice === 'INTERMODAL') result.options = result.options.filter(option => option.id === 'rail');
+    if (choice === 'RO_LA') result.options = result.options.filter(option => option.id === 'rola');
+    if (!result.options.length)
+      throw new Error('Za izbrano enoto in način prevoza ni mogoče sestaviti izvedljive možnosti.');
+    if (choice !== 'AUTO') result.recommendedOptionId = result.options[0].id;
+    if(input.equipmentName)result.unitType=input.equipmentName;
+    if(input.catalogWarnings?.length)result.warnings=[...(result.warnings||[]),...input.catalogWarnings];
+    return result;
   }
   function localDateTimeInput(value) {
     const date=new Date(value);
@@ -316,10 +338,10 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
             .status(400)
             .json({ error: validationMessage });
         const input = await useDatabaseTerminals(req.body);
-        const result = await estimateDeliveryPlan(input, {
+        const result = applySelectedTransport(input, await estimateDeliveryPlan(input, {
           pool,
           params: await loadParameters(),
-        });
+        }));
         const estimateId = crypto.randomUUID();
         const owner = userId(req.user);
         for (const [key, value] of pending)
@@ -367,7 +389,7 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
             ...baseInput,
             loadingAt: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}T${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`,
           };
-          const result = await estimateDeliveryPlan(input, { pool, params });
+          const result = applySelectedTransport(input, await estimateDeliveryPlan(input, { pool, params }));
           return {
             input,
             result,
@@ -510,10 +532,10 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
       const input = { ...req.body };
       delete input.selectedOptionId;
       const normalizedInput = await useDatabaseTerminals(input);
-      const result = await estimateDeliveryPlan(normalizedInput, {
+      const result = applySelectedTransport(normalizedInput, await estimateDeliveryPlan(normalizedInput, {
         pool,
         params: await loadParameters(),
-      });
+      }));
       const chosen = result.options?.some(
         (option) => option.id === selectedOptionId,
       )

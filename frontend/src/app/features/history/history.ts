@@ -8,8 +8,13 @@ import {
   type SavedDeliveryPlan,
 } from '../../core/api/delivery-plans-api';
 import { isCompletedDeliveryPlan } from '../../core/api/delivery-plan-status';
+import { getRoutes } from '../../core/api/transport-api';
+import { listBusinessShipments, listTrailers, listUnitTerminals } from '../../core/api/admin-api';
+import { listRailDisruptions, listRailTerminals, listRoadDisruptions } from '../../core/api/delivery-plans-api';
+import { apiRequest } from '../../core/api/api-client';
+import { importExcelWorkbook } from '../../core/api/excel-import-api';
 import type { Shipment } from '../../models';
-import { exportRecordsCsv, exportRecordsPdf, makePlanExportRecord, makeShipmentExportRecord, type ExportRecord } from '../../core/export-data';
+import { exportJsonArchive, exportRecordsCsv, exportRecordsPdf, makePlanExportRecord, makeShipmentExportRecord, type ExportRecord } from '../../core/export-data';
 import {
   DeliveryPlanDetailsComponent,
   fastestDeliveryOption,
@@ -41,6 +46,8 @@ export class HistoryComponent implements OnInit {
   planRecalcProgress = { total: 0, completed: 0, failed: 0 };
   exportBusy = '';
   exportMessage = '';
+  readonly isAdmin=Number(sessionStorage.getItem('railopt-role'))===1;
+  excelFile:File|null=null;importingExcel=false;importMessage='';
   get historyShipments(): Shipment[] {
     return this.rows;
   }
@@ -99,6 +106,19 @@ export class HistoryComponent implements OnInit {
     } catch (error) { this.exportMessage = error instanceof Error ? error.message : 'Zgodovine ni bilo mogoče izvoziti.'; }
     finally { this.exportBusy = ''; this.changeDetector.markForCheck(); }
   }
+  async exportCompleteArchive():Promise<void>{
+    if(this.exportBusy)return;this.exportBusy='archive';this.exportMessage='Pripravljam celoten arhiv…';this.error='';this.changeDetector.markForCheck();
+    try{
+      const read=async(path:string)=>{const response=await apiRequest(path);if(!response.ok)throw new Error(`Arhivskega vira ${path} ni mogoče prebrati.`);return response.json();};
+      const [routes,parameters,holidays,railTerminals,railDisruptions,roadDisruptions,trailers,unitTerminals,businessShipments]=await Promise.all([getRoutes(),read('/parameters'),read('/holidays'),listRailTerminals(),listRailDisruptions(),listRoadDisruptions(),listTrailers(),listUnitTerminals(),listBusinessShipments()]);
+      const shipmentCalculations:unknown[]=[];const batchSize=5;
+      for(let start=0;start<this.rows.length;start+=batchSize){const batch=this.rows.slice(start,start+batchSize);const settled=await Promise.allSettled(batch.map(row=>compareShipment(row.id)));settled.forEach((result,index)=>shipmentCalculations.push({shipmentId:batch[index].id,calculation:result.status==='fulfilled'?result.value:null,error:result.status==='rejected'?String(result.reason):null}));this.exportMessage=`Pripravljam izračune ${Math.min(start+batch.length,this.rows.length)}/${this.rows.length}…`;this.changeDetector.markForCheck();}
+      const archive={format:'railopt-complete-archive-v1',exportedAt:new Date().toISOString(),shipments:this.rows,shipmentCalculations,deliveryPlans:this.plans,routes,parameters,holidays,railTerminals,railDisruptions,roadDisruptions,trailers,unitTerminals,businessShipments};
+      exportJsonArchive(`railopt_celoten_arhiv_${new Date().toISOString().slice(0,10)}.json`,archive);this.exportMessage='Celoten JSON arhiv je prenesen.';
+    }catch(e){this.error=e instanceof Error?e.message:'Celotnega arhiva ni bilo mogoče pripraviti.';}finally{this.exportBusy='';this.changeDetector.markForCheck();}
+  }
+  selectExcel(event:Event):void{this.excelFile=(event.target as HTMLInputElement).files?.[0]||null;this.importMessage='';}
+  async importWorkbook():Promise<void>{if(!this.isAdmin||!this.excelFile||this.importingExcel)return;this.importingExcel=true;this.importMessage='Uvažam Excel in posodabljam ujemajoče se zapise…';this.error='';this.changeDetector.markForCheck();try{const result=await importExcelWorkbook(this.excelFile);const counts=result.imported;this.importMessage=`Uvoz končan: ${counts.routes} relacij, ${counts.shipments} pošiljk, ${counts.parameters} parametrov in ${counts.holidays} praznikov. Obstoječi zapisi z enako oznako relacije oziroma številko pošiljke so posodobljeni; drugih zapisov uvoz ne izbriše.`;this.excelFile=null;const refreshed=await Promise.allSettled([getShipments(),listAllDeliveryPlans()]);if(refreshed[0].status==='fulfilled')this.rows=refreshed[0].value;if(refreshed[1].status==='fulfilled')this.plans=refreshed[1].value;}catch(e){this.importMessage='';this.error=e instanceof Error?e.message:'Excelove datoteke ni bilo mogoče uvoziti.';}finally{this.importingExcel=false;this.changeDetector.markForCheck();}}
   isShipmentExpanded(row: Shipment): boolean {
     return this.expandedShipmentId === String(row.id);
   }

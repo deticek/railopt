@@ -30,7 +30,7 @@ export class LoginComponent {
   ) {}
   async signIn(): Promise<void> {
     if (!this.email.trim() || !this.password) {
-      this.loginError = 'Vnesite e-poštni naslov in geslo.';
+      this.loginError = 'Vnesite uporabniško ime ali e-pošto ter geslo.';
       return;
     }
     this.loading = true;

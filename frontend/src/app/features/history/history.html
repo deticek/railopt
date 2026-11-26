@@ -8,9 +8,10 @@
 @if (error) {
   <div class="notice" role="alert">{{ error }}</div>
 }
+@if(isAdmin){<section class="panel history-import-panel"><div><h3>Uvoz Excelovega delovnega zvezka</h3><p>Uvozi relacije, pošiljke, Excelove parametre in praznike. Ujemajoče se relacije in pošiljke se posodobijo; obstoječi zapisi, ki jih datoteka ne vsebuje, ostanejo v bazi.</p></div><label class="excel-file">Izberi .xlsx<input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" (change)="selectExcel($event)"></label><button class="primary-btn" type="button" [disabled]="!excelFile||importingExcel" (click)="importWorkbook()">{{importingExcel?'Uvažam…':'Uvozi Excel'}}</button>@if(importMessage){<p class="import-status" role="status">{{importMessage}}</p>}</section>}
 <section class="panel history-export-panel">
   <div><h3>Izvoz zgodovine</h3><p>Izvozi pošiljke in shranjene izračune skupaj z vsemi vhodnimi podatki, možnostmi, časovnicami in rezultati.</p></div>
-  <div class="history-actions"><button class="primary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllHistory('csv')">Izvozi celotno zgodovino v Excel (CSV)</button><button class="secondary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllHistory('pdf')">Izvozi celotno zgodovino v PDF</button></div>
+  <div class="history-actions"><button class="primary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllHistory('csv')">Izvozi celotno zgodovino v Excel (CSV)</button><button class="secondary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllHistory('pdf')">Izvozi celotno zgodovino v PDF</button><button class="secondary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportCompleteArchive()">{{exportBusy==='archive'?'Pripravljam arhiv…':'Izvozi popoln arhiv JSON'}}</button></div>
 </section>
 <section class="panel full-list">
   <div class="list-toolbar">

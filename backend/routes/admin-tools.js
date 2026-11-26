@@ -1,5 +1,6 @@
 const express = require('express');
 const {readJson,writeJson,listJson}=require('../lib/parameter-store');
+const terminalNetwork = require('../data/terminal-network.json');
 
 const PERMISSIONS = [
   'dashboard.read', 'shipments.read', 'shipments.write', 'routes.read',
@@ -13,6 +14,10 @@ const safeId = (value) => /^[0-9a-f-]{36}$/i.test(String(value || ''));
 function createAdminToolsRouter({ pool, authPool, requireSession, requireAdmin, requirePermission, clearRolePermissionCache=()=>{}, crypto }) {
   const router = express.Router();
   const admin = [requireSession, requireAdmin];
+
+  // Full, coordinate-verified terminal catalogue used only by the map.
+  // Keeping it separate avoids changing the operational terminal choices and Ro-La calculations.
+  router.get('/terminal-network', requireSession, (_req, res) => res.json(terminalNetwork));
 
   router.get('/roles', ...admin, async (_req, res, next) => {
     try {
@@ -110,6 +115,7 @@ function createAdminToolsRouter({ pool, authPool, requireSession, requireAdmin, 
     }
   });
   router.put('/unit-terminals/:id', requireSession, requirePermission('terminals.manage'), async (req, res, next) => {
+    return res.status(403).json({ error: 'Terminali so zaklenjeni in jih ni mogoče spreminjati.' });
     try {
       const id = String(req.params.id || ''), name = String(req.body?.name || '').trim(), address = String(req.body?.address || '').trim();
       const lat = req.body?.latitude == null || req.body?.latitude === '' ? null : Number(req.body.latitude);

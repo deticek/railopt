@@ -28,14 +28,21 @@
     <a class="nav-link" routerLink="/disruptions" routerLinkActive="active">
        <span class="nav-icon">⚠</span> Motnje</a>
 
+    <a class="nav-link" routerLink="/business" routerLinkActive="active">
+       <span class="nav-icon">▤</span> Poslovni potek</a>
+
+    <a class="nav-link" routerLink="/equipment" routerLinkActive="active">
+       <span class="nav-icon">▰</span> Oprema</a>
+
+    <a class="nav-link" routerLink="/terminals" routerLinkActive="active">
+       <span class="nav-icon">⌖</span> Terminali</a>
+
+    <a class="nav-link" routerLink="/parameters" routerLinkActive="active">
+       <span class="nav-icon">⚙</span> Parametri</a>
+
 
   </nav>
   <div class="sidebar-spacer"></div>
-  <div class="help-card">
-    <span class="help-icon">?</span><b>Potrebujete pomoč?</b>
-    <p>Naša ekipa vam je na voljo.</p>
-    <a href="mailto:podpora@railopt.local">Kontaktirajte podporo <span>→</span></a>
-  </div>
   <button class="settings-link" (click)="viewSelected.emit('settings')">
     <span class="nav-icon">⚙</span> Nastavitve
   </button>
@@ -48,6 +55,5 @@
     <span class="profile-name">
        <b>{{ username || 'Uporabnik' }}</b>
        <small>Član ekipe</small></span>
-     <button class="logout" title="Odjava" (click)="signOut.emit()">↗</button>
   </div>
 </aside>

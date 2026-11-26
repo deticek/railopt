@@ -1,12 +1,12 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { createUser, listUsers } from '../../core/api/auth-api';
-import { AdminMessage, AuditEntry, Customer, RoleRecord, Trailer, UnitTerminal, UserRecord, getCustomerShipments, listAdminMessages, listAuditLogs, listCustomers, listRoles, listTrailers, listUnitTerminals, replyAdminMessage, saveCustomer, saveCustomerShipments, saveRole, saveTrailer, sendAdminMessage, updateUnitTerminal, updateUser } from '../../core/api/admin-api';
+import { AdminMessage, AuditEntry, Customer, RoleRecord, Trailer, UnitTerminal, UserRecord, getCustomerShipments, listAdminMessages, listAuditLogs, listCustomers, listRoles, listTrailers, listUnitTerminals, replyAdminMessage, saveCustomer, saveCustomerShipments, saveRole, saveTrailer, sendAdminMessage, updateUser } from '../../core/api/admin-api';
 import { getShipments } from '../../core/api/transport-api';
 import type { Shipment } from '../../models';
 
-@Component({ selector: 'app-settings', standalone: true, imports: [FormsModule,DatePipe,DecimalPipe], templateUrl: './settings.html', styleUrl:'./settings.scss' })
+@Component({ selector: 'app-settings', standalone: true, imports: [FormsModule,DatePipe], templateUrl: './settings.html', styleUrl:'./settings.scss' })
 export class SettingsComponent implements OnInit {
   constructor(private readonly changeDetector:ChangeDetectorRef){}
   role=Number(sessionStorage.getItem('railopt-role')||0);
@@ -23,6 +23,7 @@ export class SettingsComponent implements OnInit {
   trailerName=''; trailerRegistration=''; trailerType='P400'; trailerTerminalIds:string[]=[]; trailerRolaTerminalIds:string[]=[];
   customerName=''; customerTax=''; customerEmail=''; customerPhone=''; customerAddress='';
   terminalFilter=''; error=''; message=''; loading=false;
+  allTrailerTypesEnabled=localStorage.getItem('railopt-all-trailers')==='true';
   readonly permissionOptions=[
     {code:'dashboard.read',label:'Pregled in grafi'}, {code:'shipments.read',label:'Branje pošiljk'}, {code:'shipments.write',label:'Urejanje pošiljk'},
     {code:'routes.read',label:'Branje relacij'}, {code:'routes.write',label:'Urejanje relacij'}, {code:'planner.use',label:'Planer in izračuni'},
@@ -30,6 +31,7 @@ export class SettingsComponent implements OnInit {
     {code:'customers.read',label:'Branje strank'}, {code:'customers.write',label:'Urejanje strank'}, {code:'audit.read',label:'Revizijski dnevniki'},
   ];
   get isAdmin():boolean{return this.role===1;}
+  setAllTrailerTypes(enabled:boolean):void{this.allTrailerTypesEnabled=enabled;localStorage.setItem('railopt-all-trailers',enabled?'true':'false');this.message=enabled?'Celoten tehnični katalog je vklopljen v planerju.':'Planer uporablja osnovne vrste enot.';}
   get canManageOperations():boolean{return this.isAdmin||this.permissions.has('terminals.manage')||this.permissions.has('trailers.manage');}
   get canSeeCustomers():boolean{return this.isAdmin||this.permissions.has('customers.read')||this.permissions.has('customers.write');}
   get roleNameForUser():string{return this.roles.find(r=>r.roleId===this.role)?.role_name|| (this.role===1?'Skrbnik':this.role===2?'Uporabnik':`Vloga ${this.role}`);}
@@ -51,7 +53,6 @@ export class SettingsComponent implements OnInit {
   trailerEditSelected(id:string):boolean{const item=this.editingTrailer;if(!item)return false;return (item.unitType==='NON_LIFTABLE'?item.rolaTerminalIds:item.terminalIds)?.some(x=>String(x)===String(id))||false;}
   toggleEditedTrailerTerminal(id:string,checked:boolean):void{const item=this.editingTrailer;if(!item)return;const field=item.unitType==='NON_LIFTABLE'?'rolaTerminalIds':'terminalIds';const values=item[field]||[];item[field]=checked?[...new Set([...values,id])]:values.filter(x=>String(x)!==String(id));}
   async saveEditedTrailer():Promise<void>{if(!this.editingTrailer)return;try{await saveTrailer(this.editingTrailer);this.message='Podatki prikolice in terminali so shranjeni.';this.editingTrailer=null;this.trailers=await listTrailers();}catch(e){this.error=e instanceof Error?e.message:'Prikolice ni bilo mogoče posodobiti.';}}
-  async saveTerminal(item:UnitTerminal):Promise<void>{try{await updateUnitTerminal(item);this.message=`Terminal ${item.name} je shranjen.`;}catch(e){this.error=e instanceof Error?e.message:'Terminala ni bilo mogoče shraniti.';}}
   async createCustomer():Promise<void>{try{await saveCustomer({name:this.customerName,taxNumber:this.customerTax,email:this.customerEmail,phone:this.customerPhone,address:this.customerAddress,active:true});this.customerName='';this.customerTax='';this.customerEmail='';this.customerPhone='';this.customerAddress='';this.message='Stranka je shranjena.';this.customers=await listCustomers();}catch(e){this.error=e instanceof Error?e.message:'Stranke ni bilo mogoče shraniti.';}}
   editCustomer(item:Customer):void{this.editingCustomer={...item};}
   async saveEditedCustomer():Promise<void>{if(!this.editingCustomer)return;try{await saveCustomer(this.editingCustomer);this.message='Podatki stranke so shranjeni.';this.editingCustomer=null;this.customers=await listCustomers();}catch(e){this.error=e instanceof Error?e.message:'Stranke ni bilo mogoče posodobiti.';}}

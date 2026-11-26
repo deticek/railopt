@@ -18,6 +18,7 @@ const createShipmentsRouter = require('./routes/shipments');
 const createTransportRoutesRouter = require('./routes/transport-routes');
 const createParametersRouter = require('./routes/parameters');
 const createHolidaysRouter = require('./routes/holidays');
+const createExcelImportRouter = require('./routes/excel-import');
 const { createAdminToolsRouter } = require('./routes/admin-tools');
 const { validDate, validTime } = require('./lib/validation');
 const { readJson, writeJson } = require('./lib/parameter-store');
@@ -166,8 +167,9 @@ function permissionForRequest(req) {
   if (path === '/admin-messages') return method === 'POST' ? 'messages.send' : 'messages.manage';
   if (path === '/audit-logs') return 'audit.read';
   if (path === '/unit-terminals') return method === 'GET' ? ['routes.read','terminals.manage'] : 'terminals.manage';
+  if (path === '/terminal-network') return 'routes.read';
   if (path.startsWith('/unit-terminals/')) return 'terminals.manage';
-  if (path === '/trailers' || path.startsWith('/trailers/')) return 'trailers.manage';
+  if (path === '/trailers' || path.startsWith('/trailers/')) return method === 'GET' ? ['routes.read','trailers.manage'] : 'trailers.manage';
   if (path === '/customers' || path.startsWith('/customers/')) return method === 'GET' ? 'customers.read' : 'customers.write';
   if (path === '/dashboard') return 'dashboard.read';
   if (path.startsWith('/delivery-plans') || path.startsWith('/places') || path.startsWith('/emissions') || path.startsWith('/rail-network') || path.startsWith('/road-disruptions')) return 'planner.use';
@@ -255,6 +257,7 @@ async function start() {
     throw new Error('The configured MySQL auth database does not contain a compatible users table.');
   }
   app.use('/api', createHealthRouter({ pool, authPool, asyncRoute }));
+  app.use(createExcelImportRouter({ requireSession, requireAdmin, asyncRoute }));
   app.use(createAuthRouter({ pool, authPool, sessions, administrator, databaseUsersEnabled, userSchema, userColumn, normalizeRole, getRolePermissions, bcryptRounds, bcrypt, crypto, requireSession, asyncRoute }));
   app.use('/api', (req,res,next) => requireSession(req,res,() => authorizeApiAccess(req,res,next)));
   app.use('/api', auditApiWrites);
@@ -268,7 +271,7 @@ async function start() {
   app.use(createDashboardRouter({ pool, requireSession, asyncRoute, serializeShipment }));
   app.use(createShipmentsRouter({ pool, requireSession, asyncRoute, serializeShipment, validDate }));
   app.use(createTransportRoutesRouter({ pool, requireSession, asyncRoute, serializeRoute, validTime }));
-  app.use(createParametersRouter({ pool, requireSession, asyncRoute, crypto }));
+  app.use(createParametersRouter({ pool, requireSession, requireAdmin, asyncRoute, crypto }));
   app.use(createHolidaysRouter({ pool, requireSession, asyncRoute, validDate }));
   app.use((err, _req, res, _next) => {
     console.error(`API request failed: ${err.code || err.name || 'Error'}`);

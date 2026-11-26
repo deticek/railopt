@@ -22,26 +22,26 @@ function createAuthRouter(deps) {
   router.post(
     "/api/auth/login",
     asyncRoute(async (req, res) => {
-      const email = String(req.body?.email || "")
+      const login = String(req.body?.email || req.body?.username || "")
         .trim()
         .toLowerCase();
       const password = String(req.body?.password || "");
       if (
-        !email ||
-        !/^\S+@\S+\.\S+$/.test(email) ||
+        !login ||
+        login.length > 254 ||
         !password ||
         password.length > 256
       ) {
         return res
           .status(400)
-          .json({ error: "Vnesite veljaven e-poštni naslov in geslo." });
+          .json({ error: "Vnesite uporabniško ime ali e-pošto ter geslo." });
       }
       let account = administrator;
       if (databaseUsersEnabled) {
         const active = userSchema.hasActive ? "active" : "TRUE";
         const [rows] = await authPool.execute(
-          `SELECT id,username,email,${userColumn(userSchema.password)} AS password_hash,role,${active} AS active FROM users WHERE email=? LIMIT 1`,
-          [email],
+          `SELECT id,username,email,${userColumn(userSchema.password)} AS password_hash,role,${active} AS active FROM users WHERE LOWER(email)=? OR LOWER(username)=? LIMIT 1`,
+          [login, login],
         );
         account = rows[0]
           ? {

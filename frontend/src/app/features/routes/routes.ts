@@ -97,6 +97,8 @@ export class RoutesComponent implements OnInit {
   get historicalPlans(): SavedDeliveryPlan[] {
     return this.plans.filter((plan) => isCompletedDeliveryPlan(plan));
   }
+  get planUsesIntermodal():boolean{return Boolean(this.planForm&&/p400|izmenljivi zaboj|zabojnik\s*(?:40|45)|zaboj\s*45|kontejner|swap/i.test(this.planForm.unitType));}
+  get planUsesRoLa():boolean{return Boolean(this.planForm&&/tovornjak|nedvigljiv|ponjav/i.test(this.planForm.unitType));}
   togglePlanDetails(id: string): void {
     this.expandedPlanId = this.expandedPlanId === id ? '' : id;
   }
@@ -324,6 +326,13 @@ export class RoutesComponent implements OnInit {
       copy.destination || calculated?.destination?.label || '',
     );
     const globalExtra = Number(raw.globalExtraTimeMinutes ?? 0);
+    const unitType = String(raw.unitType || calculated.unitType || copy.unitType || 'Tovornjak – samo cesta');
+    let selectedTransportMode: DeliveryPlanInput['selectedTransportMode'] =
+      raw.selectedTransportMode === 'ROAD' || raw.selectedTransportMode === 'INTERMODAL' || raw.selectedTransportMode === 'RO_LA'
+        ? raw.selectedTransportMode
+        : selectedOption?.id === 'rail' ? 'INTERMODAL' : selectedOption?.id === 'rola' ? 'RO_LA' : 'ROAD';
+    if(selectedTransportMode==='INTERMODAL'&&!/p400|izmenljivi zaboj|zabojnik\s*(?:40|45)|zaboj\s*45|kontejner|swap/i.test(unitType))selectedTransportMode=/tovornjak|nedvigljiv|ponjav/i.test(unitType)?'RO_LA':'ROAD';
+    if(selectedTransportMode==='RO_LA'&&!/tovornjak|nedvigljiv|ponjav/i.test(unitType))selectedTransportMode=/p400|izmenljivi zaboj|zabojnik\s*(?:40|45)|zaboj\s*45|kontejner|swap/i.test(unitType)?'INTERMODAL':'ROAD';
     const input: DeliveryPlanInput = {
       origin,
       destination,
@@ -343,9 +352,8 @@ export class RoutesComponent implements OnInit {
       unloadingWindowStart: raw.unloadingWindowStart || '07:00',
       unloadingWindowEnd: raw.unloadingWindowEnd || '15:00',
       weightKg: Number(raw.weightKg ?? calculated.weightKg ?? copy.weightKg ?? 1),
-      unitType: String(
-        raw.unitType || calculated.unitType || copy.unitType || 'Tovornjak – samo cesta',
-      ),
+      unitType,
+      selectedTransportMode,
       extraTimeMinutes: Number(raw.extraTimeMinutes ?? calculated.extraTimeMinutes ?? 0),
       globalExtraTimeMinutes: globalExtra,
       transportMode:
@@ -401,7 +409,8 @@ export class RoutesComponent implements OnInit {
     if (!plan || !input) return;
     try {
       const previous = plan.result.selectedOptionId;
-      const truckOnly = /tovornjak.*samo cesta/i.test(input.unitType);
+      const requestedMode = input.selectedTransportMode || 'AUTO';
+      const truckOnly = requestedMode === 'ROAD';
       const rolaOnly = /tovornjak|nedvigljiv|ponjav/i.test(input.unitType);
       if (!truckOnly && (!input.terminalOrigin || !input.terminalDestination)) {
         const [originTerminals, destinationTerminals] = await Promise.all([
@@ -428,6 +437,7 @@ export class RoutesComponent implements OnInit {
       const comparison = await estimateDeliveryPlan({
         ...input,
         transportMode: truckOnly ? 'road' : 'compare',
+        selectedTransportMode: requestedMode,
       });
       plan.result = {
         ...comparison.result,
@@ -436,6 +446,7 @@ export class RoutesComponent implements OnInit {
           : comparison.result.recommendedOptionId || comparison.result.options[0]?.id,
       };
       input.transportMode = truckOnly ? 'road' : 'compare';
+      input.selectedTransportMode = requestedMode;
     } catch (error) {
       this.error = error instanceof Error ? error.message : 'Primerjava ceste in Ro-La ni uspela.';
     } finally {
@@ -498,10 +509,16 @@ export class RoutesComponent implements OnInit {
         break;
       case 'unitType':
         this.planForm.unitType = String(value);
+        if(this.planForm.selectedTransportMode==='INTERMODAL'&&!this.planUsesIntermodal)this.planForm.selectedTransportMode=this.planUsesRoLa?'RO_LA':'ROAD';
+        else if(this.planForm.selectedTransportMode==='RO_LA'&&!this.planUsesRoLa)this.planForm.selectedTransportMode=this.planUsesIntermodal?'INTERMODAL':'ROAD';
         this.planForm.terminalOrigin = null;
         this.planForm.terminalDestination = null;
         if (!/tovornjak.*samo cesta/i.test(this.planForm.unitType))
           void this.refreshPlanTerminals();
+        break;
+      case 'selectedTransportMode':
+        this.planForm.selectedTransportMode = value==='INTERMODAL'||value==='RO_LA'?value:'ROAD';
+        this.planForm.transportMode = this.planForm.selectedTransportMode==='ROAD'?'road':'compare';
         break;
       case 'transportMode':
         this.planForm.transportMode = value === 'compare' ? 'compare' : 'road';

@@ -1,5 +1,6 @@
 const { calculateTrip, resolvePlace } = require("../routes/emissions");
 const roLaTariffs = require("../data/rola-tariffs-2026.json");
+const trailerCatalog = require("../data/trailer-catalog.json");
 const { findScheduledRailPath, findNearestScheduledRailPath } = require('./kombiverkehr-network');
 const approximateRoadWarning =
   "Usmerjevalnika nista bila dosegljiva; cestna razdalja je približna ocena (zračna razdalja × 1,3, najmanj 1 km, hitrost 65 km/h). Pred uporabo preveri dejansko cestno pot.";
@@ -187,7 +188,18 @@ function simulateDrive(
   } = {},
 ) {
   const distanceKm = Number(route?.distanceKm);
-  const durationHours = Number(route?.durationHours);
+  const routeHours = Number(route?.durationHours);
+  const truckHours = Array.isArray(route?.segments) && route.segments.length
+    ? route.segments.reduce((sum, segment) => {
+        const km=Number(segment.distanceKm);
+        const posted=Number(segment.speedLimitKmh);
+        const name=String(segment.roadName||'');
+        const motorway=/\b(?:A|E|M|AP)\s?\d+/i.test(name);
+        const estimate=Number.isFinite(posted)&&posted>0?Math.min(posted,80):motorway?80:55;
+        return sum+(Number.isFinite(km)&&km>0?km/estimate:0);
+      },0)
+    : routeHours;
+  const durationHours = Math.max(routeHours,truckHours);
   const averageSpeedKmh = distanceKm / durationHours;
   if (
     !Number.isFinite(distanceKm) ||
@@ -456,10 +468,12 @@ async function estimateDeliveryPlan(input, { pool, params }) {
     throw new Error("Naklad in razklad morata biti različna.");
   const weightKg = Number(input.weightKg);
   const unitType = String(input.unitType || "").trim();
+  const catalogItem=trailerCatalog.find(row=>row.id===String(input.equipmentCatalogId||''));
+  const maxWeightKg=catalogItem?Number(catalogItem.payload_t)*1000:24000;
   if (
     !Number.isFinite(weightKg) ||
     weightKg <= 0 ||
-    weightKg > 24000 ||
+    weightKg > maxWeightKg ||
     !unitType ||
     unitType.length > 100
   )
@@ -467,9 +481,9 @@ async function estimateDeliveryPlan(input, { pool, params }) {
       "Teža mora biti med 1 in 24.000 kg, vrsta enote pa izbrana.",
     );
   const lowerUnit = unitType.toLocaleLowerCase("sl");
-  if ((lowerUnit.includes("zabojnik 45") || /zaboj\s*45/.test(lowerUnit)) && weightKg > 22000)
+  if (!catalogItem && (lowerUnit.includes("zabojnik 45") || /zaboj\s*45/.test(lowerUnit)) && weightKg > 22000)
     throw new Error("Za zabojnik 45′ je največja teža tovora 22.000 kg.");
-  if (lowerUnit.includes("izmenljivi zaboj") && weightKg > 23000)
+  if (!catalogItem && lowerUnit.includes("izmenljivi zaboj") && weightKg > 23000)
     throw new Error("Za izmenljivi zaboj je največja teža tovora 23.000 kg.");
   const loadingAt = localDateTime(input.loadingAt);
   const deadlineAt = localDateTime(input.deliveryDeadlineAt);
@@ -659,6 +673,7 @@ async function estimateDeliveryPlan(input, { pool, params }) {
       { label: destination.label, lat: destinationResolved.lat, lon: destinationResolved.lon, kind: "destination" },
     ],
     warnings: [
+      "Cestni čas vključuje voznikove odmore in dnevni počitek ter konservativno oceno hitrosti po cestnih odsekih (največ 80 km/h; neznani odseki 55 km/h). Usmerjevalnik ne zagotavlja popolnih omejitev za tovornjake ali zastojev v živo.",
       ...(road.approximate ? [approximateRoadWarning] : []),
       ...(road.detouredDisruptions || []).map(name => `Cestni obvoz je upošteval motnjo: ${name}.`),
       ...(road.unavoidedDisruptions || []).map(name => `Usmerjevalnik ni mogel zanesljivo obvoziti cestne motnje: ${name}.`),
@@ -668,7 +683,7 @@ async function estimateDeliveryPlan(input, { pool, params }) {
   let comparisonNotice = null;
   let railRoadsApproximate = false;
   const compareRequested = input.transportMode === "compare";
-  const liftable = /p400|izmenljivi zaboj|zabojnik 45|zaboj\s*45/.test(lowerUnit);
+  const liftable = /p400|izmenljivi zaboj|zabojnik (?:40|45)|zaboj\s*45|kontejner/.test(lowerUnit);
   const roLa = /nedvigljiv|ponjav|tovornjak/.test(lowerUnit);
   const hasTerminal = (place) => {
     const label = String(place?.label || "").trim();

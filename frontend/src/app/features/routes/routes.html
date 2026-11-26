@@ -73,7 +73,7 @@
               </button>
             </td>
             <td>{{ row.cost }}</td>
-            <td><button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'csv')">CSV</button> <button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'pdf')">PDF</button></td>
+            <td class="row-actions"><button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'csv')">CSV</button><button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'pdf')">PDF</button></td>
           </tr>
         } @empty {
           <tr>
@@ -143,7 +143,7 @@
               }}
               €
             </td>
-            <td>
+            <td class="row-actions">
               <button class="secondary-btn" type="button" (click)="togglePlanDetails(plan.id)">
                 {{ expandedPlanId === plan.id ? 'Skrij' : 'Podrobnosti' }}
               </button>
@@ -233,13 +233,11 @@
           (ngModelChange)="setPlanInputValue('weightKg', $event); refreshPlanComparison()"
           required
       /></label>
-      <label
-        >Vrsta enote<input
-          name="planUnit"
-          [ngModel]="planForm.unitType"
-          (ngModelChange)="setPlanInputValue('unitType', $event); refreshPlanComparison()"
-          required
-      /></label>
+      <label>Vrsta enote<select name="planUnit" [ngModel]="planForm.unitType" (ngModelChange)="setPlanInputValue('unitType', $event); refreshPlanComparison()" required>
+        <option [ngValue]="planForm.unitType">{{planForm.unitType}}</option>
+        @for(unit of ['Tovornjak – samo cesta','P400 – dvigljiva prikolica','Nedvigljiva prikolica s ponjavo','Izmenljivi zaboj','Zabojnik 45′','Kontejner 40 HC'];track unit){@if(unit!==planForm.unitType){<option [ngValue]="unit">{{unit}}</option>}}
+      </select></label>
+      <label>Način prevoza<select name="planMode" [ngModel]="planForm.selectedTransportMode" (ngModelChange)="setPlanInputValue('selectedTransportMode', $event); refreshPlanComparison()"><option value="ROAD">Samo tovornjak</option><option value="INTERMODAL" [disabled]="!planUsesIntermodal">Kombinirani vlak</option><option value="RO_LA" [disabled]="!planUsesRoLa">Ro-La</option></select><small>Možnosti, ki niso združljive z izbrano enoto, so izklopljene.</small></label>
       <label
         >Dodaten čas – ure<input
           type="number"
@@ -619,7 +617,7 @@
             </td>
             <td>{{ row.cost }}</td>
             <td>{{ row.co2 }}</td>
-            <td>
+            <td class="row-actions">
               <button class="secondary-btn" type="button" (click)="editShipment(row)">
                 Uredi podatke
               </button>
@@ -824,7 +822,7 @@
             <td>{{ row.roadDistanceKm }} km</td>
             <td>{{ row.unitType }}</td>
             <td>{{ row.extraTimeMinutes }} min</td>
-            <td>
+            <td class="row-actions">
               <button class="secondary-btn" type="button" (click)="editRoute(row)">Uredi</button>
               <button class="secondary-btn" type="button" (click)="exportRoute(row, 'csv')">CSV</button>
               <button class="secondary-btn" type="button" (click)="exportRoute(row, 'pdf')">PDF</button>

@@ -4,6 +4,7 @@ const { estimateDeliveryPlan } = require("../services/delivery-planner");
 const { resolvePlace } = require("./emissions");
 const crypto = require("node:crypto");
 const { nearestRailTerminals } = require("../services/kombiverkehr-network");
+const { readJson, writeJson, listJson } = require("../lib/parameter-store");
 function createRouter(deps) {
   const router = express.Router();
   const { pool, requireSession, asyncRoute, serializeShipment, validDate } =
@@ -11,6 +12,25 @@ function createRouter(deps) {
   const validId = (value) =>
     /^\d{1,20}$/.test(value) || /^[0-9a-f-]{36}$/i.test(value);
   const calculationTasks = new Map();
+  const businessStates = new Set(['OFFER','CONFIRMED','ORDERED','IN_TRANSIT','DELIVERED','INVOICED','CANCELLED']);
+  router.get('/api/shipments/business', requireSession, asyncRoute(async (_req,res)=>{
+    const [rows]=await pool.query(`SELECT s.id,s.shipment_number,s.loading_date,s.road_delivery_date,s.recipient_deadline,s.weight_kg,s.unit_type,s.adr,r.loading_city,r.unloading_city,tr.transport_type,tr.total_cost,tr.co2_kg,tr.delivery_date AS result_delivery_date,tr.delivery_time AS result_delivery_time FROM shipments s JOIN routes r ON r.id=s.route_id LEFT JOIN transport_results tr ON tr.id=(SELECT t.id FROM transport_results t WHERE t.shipment_id=s.id ORDER BY t.recommended DESC,t.created_at DESC LIMIT 1) ORDER BY s.loading_date DESC,s.shipment_number LIMIT 1000`);
+    const stored=await listJson(pool,'Poslovni podatki pošiljk','business_shipment_');
+    const records=new Map(stored.map(x=>[x.code,x.value]));
+    res.json(rows.map(row=>{const id=String(row.id), extras=records.get(`business_shipment_${id}`)||{};return {id,shipmentNumber:Number(row.shipment_number),route:`${row.loading_city} → ${row.unloading_city}`,loadingDate:sqlDate(row.loading_date),deliveryDate:sqlDate(row.road_delivery_date),deadline:sqlDate(row.recipient_deadline),calculatedDeliveryAt:row.result_delivery_date?`${sqlDate(row.result_delivery_date)}${row.result_delivery_time?`T${String(row.result_delivery_time).slice(0,8)}`:''}`:null,weightKg:Number(row.weight_kg),unitType:row.unit_type,adr:Boolean(row.adr),transportType:row.transport_type||null,costEur:row.total_cost==null?null:Number(row.total_cost),emissionsKgCo2e:row.co2_kg==null?null:Number(row.co2_kg),businessStatus:'OFFER',carrier:null,sender:null,recipient:null,goods:null,soldPriceEur:null,actualCostEur:null,invoiceNumber:null,...extras};}));
+  }));
+  router.put('/api/shipments/:id/business', requireSession, asyncRoute(async (req,res)=>{
+    const id=String(req.params.id||'');
+    if(!validId(id))return res.status(400).json({error:'Oznaka pošiljke ni veljavna.'});
+    const [[exists]]=await pool.execute('SELECT id FROM shipments WHERE id=? LIMIT 1',[id]);
+    if(!exists)return res.status(404).json({error:'Pošiljke ni mogoče najti.'});
+    const status=String(req.body?.businessStatus||'OFFER');
+    const clean=(value,max)=>String(value||'').trim().slice(0,max)||null;
+    const record={businessStatus:status,carrier:clean(req.body?.carrier,160),sender:clean(req.body?.sender,160),recipient:clean(req.body?.recipient,160),goods:clean(req.body?.goods,1000),soldPriceEur:req.body?.soldPriceEur===''||req.body?.soldPriceEur==null?null:Number(req.body.soldPriceEur),actualCostEur:req.body?.actualCostEur===''||req.body?.actualCostEur==null?null:Number(req.body.actualCostEur),invoiceNumber:clean(req.body?.invoiceNumber,80),updatedAt:new Date().toISOString()};
+    if(!businessStates.has(status)||[record.soldPriceEur,record.actualCostEur].some(v=>v!==null&&(!Number.isFinite(v)||v<0)))return res.status(400).json({error:'Preveri status in zneske pošiljke.'});
+    await writeJson(pool,`business_shipment_${id}`,'Poslovni podatki pošiljk',`Pošiljka ${id}`,record,'source:app');
+    res.json({id,...record});
+  }));
   const sqlDate = (value) =>
     value instanceof Date
       ? `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, "0")}-${String(value.getDate()).padStart(2, "0")}`

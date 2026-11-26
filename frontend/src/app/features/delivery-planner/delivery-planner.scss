@@ -514,3 +514,4 @@ html[data-theme="dark"] .duration-inputs,html[data-theme="dark"] .form-grid labe
 .schedule-summary{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.8rem;margin:1rem 0;padding:1rem;border:1px solid var(--border,#d8deea);border-radius:12px;background:var(--surface-soft,#f5f7fb)}
 .schedule-summary>div{display:grid;gap:.25rem}.schedule-summary small{color:var(--text-muted,#64748b)}.schedule-summary b{font-size:1.05rem}
 @media(max-width:600px){.schedule-summary{grid-template-columns:1fr}}
+:host{display:block;min-width:0}.page-heading,.planner-subpages,.form-panel,.results,.history{margin-left:auto;margin-right:auto}.page-heading{max-width:1040px}.form-grid>*,.form-grid label,.places label{min-width:0}.form-grid input,.form-grid select,.duration-inputs input{max-width:100%;min-width:0}.timeline b,.timeline small,.chosen-option,.results{overflow-wrap:anywhere}

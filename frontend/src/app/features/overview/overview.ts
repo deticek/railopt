@@ -30,11 +30,17 @@ export class OverviewComponent implements OnInit {
     for(let i=5;i>=0;i--){const d=new Date(now.getFullYear(),now.getMonth()-i,1);const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;rows.push({label:new Intl.DateTimeFormat('sl-SI',{month:'short'}).format(d),count:source.get(key)||0,height:0,x:0});}
     const max=Math.max(1,...rows.map(x=>x.count));return rows.map((r,i)=>({...r,height:Math.max(5,(r.count/max)*78),x:10+i*16}));
   }
-  get roadChoiceCount():number{return (this.data?.transportBreakdown||[]).filter(x=>x.mode==='ROAD').reduce((sum,x)=>sum+x.count,0);}
-  get railChoiceCount():number{return (this.data?.transportBreakdown||[]).filter(x=>x.mode!=='ROAD').reduce((sum,x)=>sum+x.count,0);}
-  get roadUnfinishedCount():number{return (this.data?.transportBreakdown||[]).filter(x=>x.mode==='ROAD').reduce((sum,x)=>sum+x.unfinishedCount,0);}
-  get railUnfinishedCount():number{return (this.data?.transportBreakdown||[]).filter(x=>x.mode!=='ROAD').reduce((sum,x)=>sum+x.unfinishedCount,0);}
-  get totalBreakdown():number{return this.roadChoiceCount+this.railChoiceCount;}
+  private countFor(mode:string):number{return (this.data?.transportBreakdown||[]).filter(x=>x.mode===mode).reduce((sum,x)=>sum+x.count,0);}
+  private unfinishedFor(mode:string):number{return (this.data?.transportBreakdown||[]).filter(x=>x.mode===mode).reduce((sum,x)=>sum+x.unfinishedCount,0);}
+  get roadChoiceCount():number{return this.countFor('ROAD');}
+  get railChoiceCount():number{return this.countFor('INTERMODAL');}
+  get rolaChoiceCount():number{return this.countFor('RO_LA');}
+  get roadUnfinishedCount():number{return this.unfinishedFor('ROAD');}
+  get railUnfinishedCount():number{return this.unfinishedFor('INTERMODAL');}
+  get rolaUnfinishedCount():number{return this.unfinishedFor('RO_LA');}
+  get totalBreakdown():number{return this.roadChoiceCount+this.railChoiceCount+this.rolaChoiceCount;}
   get roadChoicePercent():number{return this.totalBreakdown?Math.round(this.roadChoiceCount/this.totalBreakdown*100):0;}
-  get railChoicePercent():number{return this.totalBreakdown?100-this.roadChoicePercent:0;}
+  get railChoicePercent():number{return this.totalBreakdown?Math.round(this.railChoiceCount/this.totalBreakdown*100):0;}
+  get rolaChoicePercent():number{return Math.max(0,100-this.roadChoicePercent-this.railChoicePercent);}
+  get chartAriaLabel():string{return `Cesta ${this.roadChoicePercent} odstotkov, kombinirani vlak ${this.railChoicePercent} odstotkov, Ro-La ${this.rolaChoicePercent} odstotkov`;}
 }

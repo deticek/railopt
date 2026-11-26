@@ -1,12 +1,16 @@
 :host {
   display: block;
 }
-html[data-theme="dark"] .plan-details{background:#1b222e;border-color:#303a4b}
-html[data-theme="dark"] .plan-heading h3,html[data-theme="dark"] .option-title,html[data-theme="dark"] .input-summary b,html[data-theme="dark"] .metrics b{color:#e0e6f0}
-html[data-theme="dark"] .plan-heading p,html[data-theme="dark"] .plan-details h4,html[data-theme="dark"] .option-content h5,html[data-theme="dark"] .cost-note,html[data-theme="dark"] .terminal-info,html[data-theme="dark"] .option-summary{color:#aab6c9}
-html[data-theme="dark"] .input-summary>div,html[data-theme="dark"] .metrics>div,html[data-theme="dark"] .option-detail,html[data-theme="dark"] .edit-fields input,html[data-theme="dark"] .edit-fields select,html[data-theme="dark"] .edit-fields textarea{background:#222a38;border-color:#354052;color:#e0e6f0}
-html[data-theme="dark"] .transport-choice{background:#222a38;border-color:#354052;color:#d7deea}
-html[data-theme="dark"] .timeline li:not(:last-child):before{background:#414c60}
+html[data-theme="dark"] .plan-details{background:#252527;border-color:#444447}
+html[data-theme="dark"] .plan-heading h3,html[data-theme="dark"] .option-title,html[data-theme="dark"] .input-summary b,html[data-theme="dark"] .metrics b{color:#f0f0f1}
+html[data-theme="dark"] .plan-heading p,html[data-theme="dark"] .plan-details h4,html[data-theme="dark"] .option-content h5,html[data-theme="dark"] .cost-note,html[data-theme="dark"] .terminal-info,html[data-theme="dark"] .option-summary{color:#c5c5c8}
+html[data-theme="dark"] .input-summary>div,html[data-theme="dark"] .metrics>div,html[data-theme="dark"] .option-detail,html[data-theme="dark"] .edit-fields input,html[data-theme="dark"] .edit-fields select,html[data-theme="dark"] .edit-fields textarea{background:#343437;border-color:#4a4a4e;color:#f0f0f1}
+html[data-theme="dark"] .transport-mode-choice{background:#303033;border-color:#48484b;color:#ededee}
+html[data-theme="dark"] .transport-choice{background:#353538;border-color:#4b4b4f;color:#ededee}
+html[data-theme="dark"] .transport-mode-choice .transport-choice b{color:#f0f0f1}
+html[data-theme="dark"] .transport-mode-choice .transport-choice small{color:#c5c5c8}
+html[data-theme="dark"] .transport-mode-choice .transport-choice.active{background:#414145;border-color:#8585d9}
+html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
 .plan-details {
   display: grid;
   gap: 12px;
@@ -382,7 +386,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#414c60}
 }
 .transport-options {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 10px;
 }
 .transport-mode-choice .transport-choice {
@@ -409,6 +413,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#414c60}
   opacity: 0.48;
   cursor: not-allowed;
 }
+.transport-mode-choice .transport-choice.unavailable{opacity:.45;cursor:not-allowed}
 .transport-mode-choice .transport-choice input {
   position: absolute;
   width: 1px;

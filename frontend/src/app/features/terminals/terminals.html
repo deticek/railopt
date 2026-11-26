@@ -1,0 +1,49 @@
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">TERMINALNA MREŽA</span>
+    <h1>Zemljevid terminalov<span class="heading-period">.</span></h1>
+    <p class="muted">Evropski intermodalni terminali za zabojnike, zamenljive zaboje, polprikolice in Ro-La.</p>
+  </div>
+</div>
+@if(error){<div class="notice" role="alert">{{error}}</div>}
+<section class="terminal-explorer">
+  <aside class="panel terminal-filter">
+    <label>Išči terminal, mesto ali naslov<input [(ngModel)]="query" name="query" placeholder="Lyon, Hamburg, Wien …"></label>
+    <label>Država<select [(ngModel)]="country" name="country"><option value="">Vse države</option>@for(c of countries;track c){<option [value]="c">{{c}}</option>}</select></label>
+    <div class="terminal-types">@for(type of unitTypes;track type){<label><input type="checkbox" [checked]="types.has(type)" (change)="setType(type,$any($event.target).checked)"> {{typeLabel(type)}}</label>}</div>
+    <small class="muted">Prikazanih {{visible.length}} od {{terminals.length}} terminalov · {{terminalClusters.length}} lokacij@if(terminalsWithoutCoordinates){ · {{terminalsWithoutCoordinates}} brez koordinat}.</small>
+    <div class="terminal-list">
+      @for(t of visible;track track($index,t)){
+        <button type="button" [class.selected]="selected?.id===t.id" (click)="selected=t"><b>{{t.name}}</b><small>{{t.city}} · {{t.countryCode}} · {{terminalTypes(t)}}</small></button>
+      }@empty{<p class="muted">{{loading?'Nalaganje terminalov…':'Za izbrane filtre ni terminalov.'}}</p>}
+    </div>
+  </aside>
+  <article class="panel map-wrap">
+    <div class="map-toolbar"><b>Evropska mreža · {{terminalClusters.length}} lokacij</b><span>Kolešček = povečava · povleci = premik</span><button type="button" (click)="zoomBy(1)">+</button><button type="button" (click)="zoomBy(-1)">−</button></div>
+    <div class="terminal-map-canvas" (wheel)="zoomBy($event.deltaY<0?1:-1,$event)" (pointerdown)="panStart($event)" (pointermove)="panMove($event)" (pointerup)="panEnd()" (pointercancel)="panEnd()" (lostpointercapture)="panEnd()">
+      <svg viewBox="0 0 1000 650" role="img" aria-label="Zemljevid evropskih terminalov">
+        @for(tile of tiles;track tile.url){<image [attr.href]="tile.url" [attr.x]="tile.x" [attr.y]="tile.y" width="256" height="256"/>}
+        @for(cluster of terminalClusters;track cluster.key){
+          <g class="map-pin" [class.active]="selectedCluster?.key===cluster.key" [attr.transform]="'translate('+clusterPosition(cluster).x+' '+clusterPosition(cluster).y+')'" (click)="selectCluster(cluster)">
+            <circle [attr.r]="cluster.terminals.length>1?11:7"></circle>
+            @if(cluster.terminals.length>1){<text class="cluster-count" text-anchor="middle" y="4">{{cluster.terminals.length}}</text>}
+            <title>{{cluster.terminals.length}} terminalov: {{cluster.terminals.map(t=>markerLabel(t)).join('; ')}}</title>
+            @if(selectedCluster?.key===cluster.key){<text class="cluster-label" x="14" y="-10">{{cluster.terminals.length>1?cluster.terminals.length+' terminalov · ':''}}{{selected?.name}}</text>}
+          </g>
+        }
+      </svg>
+      <small class="map-credit">© OpenStreetMap contributors</small>
+    </div>
+    @if(selected){
+      <section class="selected-terminal">
+        <div><span class="eyebrow">IZBRANI TERMINAL</span><h2>{{selected.name}}</h2><p>{{selected.city}}, {{selected.countryCode}} · {{terminalTypes(selected)}}</p>
+          @if(selected.operator){<p>Upravljavec: {{selected.operator}}</p>}
+          @if(selectedCluster && selectedCluster.terminals.length>1){<div class="co-located-terminals"><b>Zapisi na isti lokaciji</b>@for(t of selectedCluster.terminals;track t.id){<button type="button" [class.selected]="selected.id===t.id" (click)="selected=t">{{t.name}} · {{terminalTypes(t)}}</button>}</div>}
+        </div>
+        <dl><dt>Naslov</dt><dd>{{selected.address||'Ni podatka'}}</dd><dt>Koordinate</dt><dd>{{selected.latitude}}, {{selected.longitude}}</dd>@if(selected.handling?.length){<dt>Oprema</dt><dd>{{selected.handling?.join(', ')}}</dd>}@if(selected.approx){<dt>Natančnost</dt><dd>Približna koordinata</dd>}</dl>
+        <a class="secondary-btn" [href]="mapUrl(selected)" target="_blank" rel="noreferrer">Odpri zemljevid</a>
+      </section>
+    }
+    <p class="map-disclaimer">Zemljevid uporablja 439 edinstvenih terminalov za kombinirani promet (brez podvojenih koordinat), ter veljavne Ro-La terminale iz aplikacije. Če vir ne navaja opreme, je to označeno posebej; seznam je samo zemljevidni katalog in ne spreminja izračunov.</p>
+  </article>
+</section>

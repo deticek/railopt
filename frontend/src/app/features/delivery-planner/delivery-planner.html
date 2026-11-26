@@ -81,8 +81,16 @@
           <option value="Nedvigljiva prikolica s ponjavo">Nedvigljiva prikolica s ponjavo</option>
           <option value="Izmenljivi zaboj">Izmenljivi zaboj</option>
           <option value="Zabojnik 45′">Zabojnik 45′</option>
+          <option value="Kontejner 40 HC">Kontejner 40 HC</option>
         </select>
       </label>
+      @if(showFullTrailerCatalog){<label>Prikolica iz tehničnega kataloga
+        <select name="catalogTrailer" [ngModel]="equipmentCatalogId" (ngModelChange)="setCatalogEquipment($event)">
+          <option value="">Uporabi osnovno vrsto enote</option>
+          @for(item of equipmentCatalog;track item.id){<option [value]="item.id">{{item.id==='P400'?'▰':item.category==='zabojnik'?'▣':item.category==='posebna'?'⚙':'⇄'}} {{item.name}} · {{item.payload_t}} t</option>}
+        </select><small>Tehnični katalog samodejno preveri nosilnost, ADR, dvigljivost ter omejitve Ro-La.</small>
+      </label>}
+      @if(showFullTrailerCatalog&&selectedCatalogItem){<div class="auto-estimate-note trailer-selection"><b>{{selectedCatalogItem.name}}</b><small>{{selectedCatalogItem.length_m}} × {{selectedCatalogItem.width_m}} × {{selectedCatalogItem.height_m}} m · {{selectedCatalogItem.pallets||'—'}} palet · {{selectedCatalogItem.volume_m3||'—'}} m³ · {{selectedCatalogItem.uct==='da'?'dvigljiva za vlak':selectedCatalogItem.uct==='zamenjava'?'za vlak potrebna dvigljiva zamenjava':'ni dvigljiva'}}</small></div>}
     </div>
 
     <h2>Čas poti in primerjava</h2>
@@ -93,6 +101,12 @@
           >Uporabljam ocenjene čase poti za naklad–razklad ali do terminala in od terminala.</small
         >
       </div>
+      <label>Način prevoza<select name="selectedTransportMode" [(ngModel)]="selectedTransportMode">
+        <option value="AUTO">Primerjaj vse možnosti, ki ustrezajo enoti</option>
+        <option value="ROAD">Samo cesta</option>
+        <option value="INTERMODAL" [disabled]="!usesIntermodal">Kombinirani prevoz z vlakom (dvigljiva enota)</option>
+        <option value="RO_LA" [disabled]="!usesRoLa">Ro-La (tovornjak na vlaku)</option>
+      </select><small>Vlak in Ro-La sta ločeni možnosti; izbira je omejena na združljivo vrsto enote.</small></label>
       <div class="auto-estimate-note">
         <b>Primerjam cestni in železniški prevoz samodejno.</b
         ><small
