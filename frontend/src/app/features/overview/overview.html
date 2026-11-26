@@ -33,8 +33,58 @@
   </article>
 </section>
 <section class="dashboard-charts">
-  <article class="panel chart-panel"><div class="panel-heading"><div><h3>Pošiljke po mesecih</h3><p>Število nakladov v zadnjih šestih mesecih</p></div></div><div class="bar-chart" role="img" aria-label="Mesečno število pošiljk">@for(bar of monthlyBars;track $index){<div class="bar-column"><b>{{bar.count}}</b><span [style.height.px]="bar.height"></span><small>{{bar.label}}</small></div>}</div></article>
-  <article class="panel chart-panel"><div class="panel-heading"><div><h3>Izbrani način prevoza</h3><p>Izračunane pošiljke in še nedostavljene načrtovane relacije</p></div></div>@if(totalBreakdown){<div class="choice-chart" role="img" [attr.aria-label]="chartAriaLabel"><div class="choice-labels three"><div><span class="choice-dot road"></span><b>Samo cesta</b><strong>{{roadChoicePercent}}%</strong><small>{{roadChoiceCount}} relacij · {{roadUnfinishedCount}} odprtih</small></div><div><span class="choice-dot rail"></span><b>Kombinirani vlak</b><strong>{{railChoicePercent}}%</strong><small>{{railChoiceCount}} relacij · {{railUnfinishedCount}} odprtih</small></div><div><span class="choice-dot rola"></span><b>Ro-La</b><strong>{{rolaChoicePercent}}%</strong><small>{{rolaChoiceCount}} relacij · {{rolaUnfinishedCount}} odprtih</small></div></div><div class="choice-track"><span class="choice-road" [style.width.%]="roadChoicePercent"></span><span class="choice-rail" [style.width.%]="railChoicePercent"></span><span class="choice-rola" [style.width.%]="rolaChoicePercent"></span></div></div>}@else{<p class="muted">{{loading?'Nalaganje…':'Ni shranjenih izbir prevoza.'}}</p>}</article>
+  <article class="panel chart-panel">
+    <div class="panel-heading">
+      <div>
+        <h3>Pošiljke po mesecih</h3>
+        <p>Število nakladov v zadnjih šestih mesecih</p>
+      </div>
+    </div>
+    <div class="bar-chart" role="img" aria-label="Mesečno število pošiljk">
+      @for (bar of monthlyBars; track $index) {
+        <div class="bar-column">
+          <b>{{ bar.count }}</b
+          ><span [style.height.px]="bar.height"></span><small>{{ bar.label }}</small>
+        </div>
+      }
+    </div>
+  </article>
+  <article class="panel chart-panel">
+    <div class="panel-heading">
+      <div>
+        <h3>Izbrani način prevoza</h3>
+        <p>Izračunane pošiljke in še nedostavljene načrtovane relacije</p>
+      </div>
+    </div>
+    @if (totalBreakdown) {
+      <div class="choice-chart" role="img" [attr.aria-label]="chartAriaLabel">
+        <div class="choice-labels three">
+          <div>
+            <span class="choice-dot road"></span><b>Samo cesta</b
+            ><strong>{{ roadChoicePercent }}%</strong
+            ><small>{{ roadChoiceCount }} relacij · {{ roadUnfinishedCount }} odprtih</small>
+          </div>
+          <div>
+            <span class="choice-dot rail"></span><b>Kombinirani vlak</b
+            ><strong>{{ railChoicePercent }}%</strong
+            ><small>{{ railChoiceCount }} relacij · {{ railUnfinishedCount }} odprtih</small>
+          </div>
+          <div>
+            <span class="choice-dot rola"></span><b>Ro-La</b
+            ><strong>{{ rolaChoicePercent }}%</strong
+            ><small>{{ rolaChoiceCount }} relacij · {{ rolaUnfinishedCount }} odprtih</small>
+          </div>
+        </div>
+        <div class="choice-track">
+          <span class="choice-road" [style.width.%]="roadChoicePercent"></span
+          ><span class="choice-rail" [style.width.%]="railChoicePercent"></span
+          ><span class="choice-rola" [style.width.%]="rolaChoicePercent"></span>
+        </div>
+      </div>
+    } @else {
+      <p class="muted">{{ loading ? 'Nalaganje…' : 'Ni shranjenih izbir prevoza.' }}</p>
+    }
+  </article>
 </section>
 <section class="panel shipments-panel">
   <div class="panel-heading shipment-heading">
@@ -63,7 +113,13 @@
             <td>{{ item.route }}</td>
             <td>{{ item.status }}</td>
             <td>{{ item.transportType }}</td>
-            <td>{{ item.calculatedDeliveryAt ? (item.calculatedDeliveryAt | date:'d. MMM yyyy, HH:mm') : date(item.deliveryDate) }}</td>
+            <td>
+              {{
+                item.calculatedDeliveryAt
+                  ? (item.calculatedDeliveryAt | date: 'd. MMM yyyy, HH:mm')
+                  : date(item.deliveryDate)
+              }}
+            </td>
             <td>{{ money(item.cost) }}</td>
             <td>{{ item.co2Kg ?? '—' }}</td>
           </tr>

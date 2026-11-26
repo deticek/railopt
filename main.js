@@ -55,6 +55,8 @@ async function createWindow() {
     minWidth: 900,
     minHeight: 650,
     backgroundColor: "#f6f7fb",
+    icon: path.join(__dirname, "icon.ico"),
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       additionalArguments: isDev ? ["--railopt-development"] : [],
@@ -63,6 +65,8 @@ async function createWindow() {
       sandbox: true,
     },
   });
+  win.setMenuBarVisibility(false);
+  win.removeMenu();
 
   if (useDevServer) {
     win.loadURL(frontendUrl).catch((error) => {
@@ -92,3 +96,5 @@ app.on("window-all-closed", () => {
 app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) createWindow();
 });
+
+

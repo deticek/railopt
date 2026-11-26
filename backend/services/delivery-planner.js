@@ -777,6 +777,30 @@ async function estimateDeliveryPlan(input, { pool, params }) {
           reserveEnd,
         )
       : null;
+    // The nearest terminal pair may not be connected in the published
+    // timetable. Search nearby pairs before falling back to a generic model.
+    const originCandidates = Array.isArray(input.terminalOriginCandidates) ? input.terminalOriginCandidates : [];
+    const destinationCandidates = Array.isArray(input.terminalDestinationCandidates) ? input.terminalDestinationCandidates : [];
+    if (liftable && !scheduledRailPath && (originCandidates.length || destinationCandidates.length)) {
+      const alternative = await findNearestScheduledRailPath(
+        pool, originResolved, destinationResolved, reserveEnd,
+        { origin: terminalOrigin.label, destination: terminalDestination.label },
+      );
+      if (alternative?.originTerminalCoordinate && alternative?.destinationTerminalCoordinate) {
+        terminalOrigin = validatePlace({...terminalOrigin,label:alternative.originTerminal,lat:alternative.originTerminalCoordinate[0],lon:alternative.originTerminalCoordinate[1]}, 'nadomestni odhodni terminal');
+        terminalDestination = validatePlace({...terminalDestination,label:alternative.destinationTerminal,lat:alternative.destinationTerminalCoordinate[0],lon:alternative.destinationTerminalCoordinate[1]}, 'nadomestni prihodni terminal');
+        [toTerminal,betweenTerminals,fromTerminal]=await Promise.all([
+          calculateTrip(routeInput(origin),routeInput(terminalOrigin),weightKg,undefined,roadDisruptions),
+          calculateTrip(routeInput(terminalOrigin),routeInput(terminalDestination),weightKg),
+          calculateTrip(routeInput(terminalDestination),routeInput(destination),weightKg,undefined,roadDisruptions),
+        ]);
+        railRoadsApproximate=toTerminal.approximate||betweenTerminals.approximate||fromTerminal.approximate;
+        firstDrive=simulateDrive(departure,toTerminal,{weekendBan,breakAfterHours:breakAfter,breakMinutes:45,maxDailyHours:9,dailyRestHours:11,extraTimeMinutes});
+        terminalDropEnd=addMinutes(firstDrive.arrival,dropHours*60);
+        reserveEnd=addMinutes(terminalDropEnd,parameterValue(params,'kombinirani_prevoz_rezerva_za_zamudo_vlaka',3)*60);
+        scheduledRailPath=await findScheduledRailPath(pool,terminalOrigin.label,terminalDestination.label,reserveEnd);
+      }
+    }
     if (liftable && !scheduledRailPath) {
       const alternative = await findNearestScheduledRailPath(
         pool,

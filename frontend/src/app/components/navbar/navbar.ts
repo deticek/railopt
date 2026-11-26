@@ -1,7 +1,18 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 
-export type DashboardView = 'overview' | 'history' | 'routes' | 'emissions' | 'holidays' | 'disruptions' | 'business' | 'equipment' | 'terminals' | 'parameters' | 'settings';
+export type DashboardView =
+  | 'overview'
+  | 'history'
+  | 'routes'
+  | 'emissions'
+  | 'holidays'
+  | 'disruptions'
+  | 'business'
+  | 'equipment'
+  | 'terminals'
+  | 'parameters'
+  | 'settings';
 
 @Component({
   selector: 'app-navbar',

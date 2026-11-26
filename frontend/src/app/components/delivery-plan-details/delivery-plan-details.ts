@@ -65,17 +65,44 @@ export class DeliveryPlanDetailsComponent {
     const destination = this.plan.input?.destination;
     const originTerminal = this.plan.input?.terminalOrigin;
     const destinationTerminal = this.plan.input?.terminalDestination;
-    const valid = (point: PlaceSelection | null | undefined): point is PlaceSelection & { lat: number; lon: number } =>
-      point?.lat != null && point.lon != null && Number.isFinite(Number(point.lat)) && Number.isFinite(Number(point.lon));
+    const valid = (
+      point: PlaceSelection | null | undefined,
+    ): point is PlaceSelection & { lat: number; lon: number } =>
+      point?.lat != null &&
+      point.lon != null &&
+      Number.isFinite(Number(point.lat)) &&
+      Number.isFinite(Number(point.lon));
     if (!valid(origin) || !valid(destination)) return [];
-    const roadSegment = (label: string, from: PlaceSelection, to: PlaceSelection): RouteMapSegment => ({
-      mode: 'road', label, coordinates: [[Number(from.lat), Number(from.lon)], [Number(to.lat), Number(to.lon)]],
+    const roadSegment = (
+      label: string,
+      from: PlaceSelection,
+      to: PlaceSelection,
+    ): RouteMapSegment => ({
+      mode: 'road',
+      label,
+      coordinates: [
+        [Number(from.lat), Number(from.lon)],
+        [Number(to.lat), Number(to.lon)],
+      ],
     });
     if (option.id === 'road' || !valid(originTerminal) || !valid(destinationTerminal))
-      return [roadSegment(option.id === 'road' ? 'Cestna pot (povezovalna črta)' : 'Cestna pot (ocena)', origin, destination)];
+      return [
+        roadSegment(
+          option.id === 'road' ? 'Cestna pot (povezovalna črta)' : 'Cestna pot (ocena)',
+          origin,
+          destination,
+        ),
+      ];
     return [
       roadSegment('Tovornjak do terminala', origin, originTerminal),
-      { mode: 'rail', label: 'Železniški del (terminala)', coordinates: [[Number(originTerminal.lat), Number(originTerminal.lon)], [Number(destinationTerminal.lat), Number(destinationTerminal.lon)]] },
+      {
+        mode: 'rail',
+        label: 'Železniški del (terminala)',
+        coordinates: [
+          [Number(originTerminal.lat), Number(originTerminal.lon)],
+          [Number(destinationTerminal.lat), Number(destinationTerminal.lon)],
+        ],
+      },
       roadSegment('Tovornjak od terminala do cilja', destinationTerminal, destination),
     ];
   }
@@ -83,13 +110,23 @@ export class DeliveryPlanDetailsComponent {
   routePoints(option: DeliveryOption): RouteMapPoint[] {
     if (option.routePoints?.length) return option.routePoints;
     const segments = this.routeSegments(option);
-    const coords = segments.flatMap(segment => segment.coordinates);
+    const coords = segments.flatMap((segment) => segment.coordinates);
     const origin = this.plan.input?.origin;
     const destination = this.plan.input?.destination;
     if (coords.length < 2) return [];
     return [
-      { label: origin?.label || this.plan.origin, lat: coords[0][0], lon: coords[0][1], kind: 'origin' },
-      { label: destination?.label || this.plan.destination, lat: coords.at(-1)![0], lon: coords.at(-1)![1], kind: 'destination' },
+      {
+        label: origin?.label || this.plan.origin,
+        lat: coords[0][0],
+        lon: coords[0][1],
+        kind: 'origin',
+      },
+      {
+        label: destination?.label || this.plan.destination,
+        lat: coords.at(-1)![0],
+        lon: coords.at(-1)![1],
+        kind: 'destination',
+      },
     ];
   }
 
@@ -120,8 +157,12 @@ export class DeliveryPlanDetailsComponent {
     void this.refreshModeCalculation(input);
   }
 
-  get intermodalAvailable(): boolean { return Boolean(this.editInput && isLiftableUnit(this.editInput.unitType)); }
-  get rolaAvailable(): boolean { return Boolean(this.editInput && isRoLaUnit(this.editInput.unitType)); }
+  get intermodalAvailable(): boolean {
+    return Boolean(this.editInput && isLiftableUnit(this.editInput.unitType));
+  }
+  get rolaAvailable(): boolean {
+    return Boolean(this.editInput && isRoLaUnit(this.editInput.unitType));
+  }
 
   private async refreshModeCalculation(input: DeliveryPlanInput): Promise<void> {
     const sequence = ++this.previewSequence;
@@ -130,13 +171,16 @@ export class DeliveryPlanDetailsComponent {
     try {
       const { result } = await estimateDeliveryPlan(input);
       if (sequence !== this.previewSequence || this.editInput !== input) return;
-      const chosen = result.options.find(option => option.id === this.preferredOptionId)
-        || result.options[0];
+      const chosen =
+        result.options.find((option) => option.id === this.preferredOptionId) || result.options[0];
       this.preferredOptionId = chosen?.id || '';
       this.plan = { ...this.plan, result: { ...result, selectedOptionId: chosen?.id } };
     } catch (error) {
       if (sequence === this.previewSequence)
-        this.error = error instanceof Error ? error.message : 'Izračuna izbrane možnosti ni bilo mogoče osvežiti.';
+        this.error =
+          error instanceof Error
+            ? error.message
+            : 'Izračuna izbrane možnosti ni bilo mogoče osvežiti.';
     } finally {
       if (sequence === this.previewSequence) this.recalculating = false;
     }
@@ -152,7 +196,12 @@ export class DeliveryPlanDetailsComponent {
       input.selectedTransportMode = isLiftableUnit(unitType) ? 'INTERMODAL' : 'ROAD';
     }
     input.transportMode = input.selectedTransportMode === 'ROAD' ? 'road' : 'compare';
-    this.preferredOptionId = input.selectedTransportMode === 'ROAD' ? 'road' : input.selectedTransportMode === 'INTERMODAL' ? 'rail' : 'rola';
+    this.preferredOptionId =
+      input.selectedTransportMode === 'ROAD'
+        ? 'road'
+        : input.selectedTransportMode === 'INTERMODAL'
+          ? 'rail'
+          : 'rola';
     input.terminalOrigin = null;
     input.terminalDestination = null;
     this.findingTerminals = true;
@@ -196,11 +245,28 @@ export class DeliveryPlanDetailsComponent {
       saved?.transportMode ||
       (selectedOptionId && selectedOptionId !== 'road' ? 'compare' : 'road');
     const storedMode = saved?.selectedTransportMode;
-    let selectedTransportMode = (storedMode === 'ROAD' || storedMode === 'INTERMODAL' || storedMode === 'RO_LA') ? storedMode :
-      (selectedOptionId === 'rola' ? 'RO_LA' : selectedOptionId === 'rail' ? 'INTERMODAL' : transportMode === 'road' ? 'ROAD' : isRoLaUnit(unitType) ? 'RO_LA' : 'INTERMODAL');
-    if(selectedTransportMode==='INTERMODAL'&&!isLiftableUnit(unitType))selectedTransportMode=isRoLaUnit(unitType)?'RO_LA':'ROAD';
-    if(selectedTransportMode==='RO_LA'&&!isRoLaUnit(unitType))selectedTransportMode=isLiftableUnit(unitType)?'INTERMODAL':'ROAD';
-    this.preferredOptionId = selectedTransportMode === 'ROAD' ? 'road' : selectedTransportMode === 'INTERMODAL' ? 'rail' : 'rola';
+    let selectedTransportMode =
+      storedMode === 'ROAD' || storedMode === 'INTERMODAL' || storedMode === 'RO_LA'
+        ? storedMode
+        : selectedOptionId === 'rola'
+          ? 'RO_LA'
+          : selectedOptionId === 'rail'
+            ? 'INTERMODAL'
+            : transportMode === 'road'
+              ? 'ROAD'
+              : isRoLaUnit(unitType)
+                ? 'RO_LA'
+                : 'INTERMODAL';
+    if (selectedTransportMode === 'INTERMODAL' && !isLiftableUnit(unitType))
+      selectedTransportMode = isRoLaUnit(unitType) ? 'RO_LA' : 'ROAD';
+    if (selectedTransportMode === 'RO_LA' && !isRoLaUnit(unitType))
+      selectedTransportMode = isLiftableUnit(unitType) ? 'INTERMODAL' : 'ROAD';
+    this.preferredOptionId =
+      selectedTransportMode === 'ROAD'
+        ? 'road'
+        : selectedTransportMode === 'INTERMODAL'
+          ? 'rail'
+          : 'rola';
     this.editInput = {
       ...saved,
       origin: normalizePlace(saved?.origin, this.plan.origin),
@@ -248,7 +314,13 @@ export class DeliveryPlanDetailsComponent {
     this.error = '';
     try {
       const terminal =
-        (await findFreightTerminals(place, isRoLaUnit(this.editInput.unitType), this.editInput.unitType))[0] || null;
+        (
+          await findFreightTerminals(
+            place,
+            isRoLaUnit(this.editInput.unitType),
+            this.editInput.unitType,
+          )
+        )[0] || null;
       this.editInput[side === 'origin' ? 'terminalOrigin' : 'terminalDestination'] = terminal
         ? {
             label: terminal.label,

@@ -22,7 +22,7 @@ export async function calculateRoadEmissions(
   origin: string,
   destination: string,
   weightKg: number,
-  onProgress: (message: string) => void = () => undefined
+  onProgress: (message: string) => void = () => undefined,
 ): Promise<RoadEmissionResult> {
   let response: Response;
   try {
@@ -30,15 +30,20 @@ export async function calculateRoadEmissions(
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
       body: JSON.stringify({ origin, destination, weightKg }),
-      signal: AbortSignal.timeout(35000)
+      signal: AbortSignal.timeout(35000),
     });
   } catch (error) {
     if (error instanceof DOMException && error.name === 'TimeoutError') {
-      throw new Error('API se ni odzval v 35 sekundah. Preveri, da sta zagnana Railopt API in internetna povezava.');
+      throw new Error(
+        'API se ni odzval v 35 sekundah. Preveri, da sta zagnana Railopt API in internetna povezava.',
+      );
     }
-    throw new Error('Z aplikacijskim API-jem se ni mogoče povezati. Zapri in ponovno zaženi Railopt.');
+    throw new Error(
+      'Z aplikacijskim API-jem se ni mogoče povezati. Zapri in ponovno zaženi Railopt.',
+    );
   }
-  if (!response.ok) throw new Error(await readApiError(response, 'Cestne razdalje ni bilo mogoče izračunati.'));
+  if (!response.ok)
+    throw new Error(await readApiError(response, 'Cestne razdalje ni bilo mogoče izračunati.'));
   if (!response.body) throw new Error('Strežnik ni poslal podatkov o napredku.');
 
   const reader = response.body.getReader();
@@ -48,7 +53,11 @@ export async function calculateRoadEmissions(
   let serverError: string | undefined;
 
   const handleFrame = (frame: string): void => {
-    const data = frame.split(/\r?\n/).filter(line => line.startsWith('data:')).map(line => line.slice(5).trim()).join('\n');
+    const data = frame
+      .split(/\r?\n/)
+      .filter((line) => line.startsWith('data:'))
+      .map((line) => line.slice(5).trim())
+      .join('\n');
     if (!data) return;
     const event = JSON.parse(data) as StreamEvent;
     if (event.type === 'progress') onProgress(event.message);

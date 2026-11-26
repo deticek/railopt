@@ -11,7 +11,7 @@ const PERMISSIONS = [
 const UNIT_TYPES = new Set(['P400', 'CONTAINER', 'SWAP_BODY', 'NON_LIFTABLE']);
 const safeId = (value) => /^[0-9a-f-]{36}$/i.test(String(value || ''));
 
-function createAdminToolsRouter({ pool, authPool, requireSession, requireAdmin, requirePermission, clearRolePermissionCache=()=>{}, crypto }) {
+function createAdminToolsRouter({ pool, authPool, requireSession, requireAdmin, requirePermission, clearRolePermissionCache=()=>{}, sessions=new Map(), crypto }) {
   const router = express.Router();
   const admin = [requireSession, requireAdmin];
 
@@ -63,6 +63,39 @@ function createAdminToolsRouter({ pool, authPool, requireSession, requireAdmin, 
       if(!names.has('active'))await writeJson(pool,`app_user_${id}`,'Stanje računov',username,{active});
       res.json({ id, username, email, role: roleId, active });
     } catch (error) { next(error); }
+  });
+
+  router.delete('/users/:id', ...admin, async (req, res, next) => {
+    try {
+      const id = String(req.params.id || '');
+      if (!safeId(id)) return res.status(400).json({ error: 'ID uporabnika ni veljaven.' });
+      if (id === String(req.user?.id || '')) return res.status(400).json({ error: 'Svojega uporabniškega računa ne moreš izbrisati.' });
+
+      const [columns] = await authPool.execute("SELECT COLUMN_NAME FROM information_schema.columns WHERE table_schema=DATABASE() AND table_name='users'");
+      const hasActive = columns.some(column => column.COLUMN_NAME === 'active');
+      const [users] = await authPool.execute(`SELECT role${hasActive ? ',active' : ''} FROM users WHERE id=? LIMIT 1`, [id]);
+      if (!users.length) return res.status(404).json({ error: 'Uporabniškega računa ni mogoče najti.' });
+
+      const role = String(users[0].role ?? '').trim().toUpperCase();
+      const isAdminRole = role === '1' || role === 'ADMIN' || role === 'ADMINISTRATOR';
+      if (isAdminRole) {
+        const [admins] = await authPool.execute(`SELECT COUNT(*) AS count FROM users WHERE UPPER(CAST(role AS CHAR)) IN ('1','ADMIN','ADMINISTRATOR')${hasActive ? ' AND active=TRUE' : ''} AND id<>?`, [id]);
+        if (Number(admins[0]?.count || 0) === 0) return res.status(409).json({ error: 'Zadnjega aktivnega skrbnika ni mogoče izbrisati.' });
+      }
+
+      const [result] = await authPool.execute('DELETE FROM users WHERE id=?', [id]);
+      if (!result.affectedRows) return res.status(404).json({ error: 'Uporabniškega računa ni mogoče najti.' });
+      for (const [tokenHash, session] of sessions.entries()) {
+        if (String(session.user?.id || '') === id) sessions.delete(tokenHash);
+      }
+      await pool.execute('DELETE FROM parameters WHERE parameter_code=?', [`app_user_${id}`]).catch(error => {
+        if (error.code !== 'ER_NO_SUCH_TABLE') console.error(`Deleted-user state cleanup failed: ${error.code || error.name || 'Error'}`);
+      });
+      return res.status(204).end();
+    } catch (error) {
+      if (error.code === 'ER_ROW_IS_REFERENCED_2') return res.status(409).json({ error: 'Računa ni mogoče izbrisati, ker so nanj vezani drugi zapisi.' });
+      return next(error);
+    }
   });
 
   router.post('/admin-messages', requireSession, async (req, res, next) => {

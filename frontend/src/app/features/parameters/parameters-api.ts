@@ -1,4 +1,35 @@
 import { apiRequest, readApiError } from '../../core/api/api-client';
-export interface ParameterRecord {parameter_code:string;parameter_group:string;parameter_name:string;fixed_value:number|null;per_unit_value:number|null;numeric_value:number|null;unit:string|null;text_value:string|null;source_note:string|null;value:string;}
-export async function listParameters():Promise<ParameterRecord[]>{const r=await apiRequest('/parameters');if(!r.ok)throw new Error(await readApiError(r,'Parametrov ni mogoče naložiti.'));const rows=await r.json() as Omit<ParameterRecord,'value'>[];return rows.map(x=>({...x,value:x.fixed_value!==null&&x.per_unit_value!==null?`${x.fixed_value}+${x.per_unit_value}`:x.numeric_value!==null?String(x.numeric_value):x.text_value||''}));}
-export async function updateParameter(code:string,value:string):Promise<void>{const r=await apiRequest(`/parameters/${encodeURIComponent(code)}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({value})});if(!r.ok)throw new Error(await readApiError(r,'Parametra ni bilo mogoče shraniti.'));}
+export interface ParameterRecord {
+  parameter_code: string;
+  parameter_group: string;
+  parameter_name: string;
+  fixed_value: number | null;
+  per_unit_value: number | null;
+  numeric_value: number | null;
+  unit: string | null;
+  text_value: string | null;
+  source_note: string | null;
+  value: string;
+}
+export async function listParameters(): Promise<ParameterRecord[]> {
+  const r = await apiRequest('/parameters');
+  if (!r.ok) throw new Error(await readApiError(r, 'Parametrov ni mogoče naložiti.'));
+  const rows = (await r.json()) as Omit<ParameterRecord, 'value'>[];
+  return rows.map((x) => ({
+    ...x,
+    value:
+      x.fixed_value !== null && x.per_unit_value !== null
+        ? `${x.fixed_value}+${x.per_unit_value}`
+        : x.numeric_value !== null
+          ? String(x.numeric_value)
+          : x.text_value || '',
+  }));
+}
+export async function updateParameter(code: string, value: string): Promise<void> {
+  const r = await apiRequest(`/parameters/${encodeURIComponent(code)}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ value }),
+  });
+  if (!r.ok) throw new Error(await readApiError(r, 'Parametra ni bilo mogoče shraniti.'));
+}

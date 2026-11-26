@@ -1,4 +1,4 @@
-import { Component, isDevMode } from '@angular/core';
+import { ChangeDetectorRef, Component, isDevMode } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { login, loginAsDeveloper } from '../../core/api/auth-api';
@@ -27,6 +27,7 @@ export class LoginComponent {
   constructor(
     private readonly router: Router,
     private readonly route: ActivatedRoute,
+    private readonly changeDetector: ChangeDetectorRef,
   ) {}
   async signIn(): Promise<void> {
     if (!this.email.trim() || !this.password) {
@@ -43,6 +44,7 @@ export class LoginComponent {
       this.loginError = error instanceof Error ? error.message : 'Prijava ni uspela.';
     } finally {
       this.loading = false;
+      this.changeDetector.markForCheck();
     }
   }
   async skipLogin(): Promise<void> {
@@ -56,6 +58,7 @@ export class LoginComponent {
         error instanceof Error ? error.message : 'Razvojne prijave ni mogoče vzpostaviti.';
     } finally {
       this.loading = false;
+      this.changeDetector.markForCheck();
     }
   }
   private saveSession(session: {

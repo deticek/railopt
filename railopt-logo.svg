@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 270" role="img" aria-labelledby="title desc">
+<title id="title">Railopt</title><desc id="desc">Railopt transport planning: a truck carried by rail, with an R route symbol.</desc>
+<defs><linearGradient id="road" x1="0" x2="1"><stop stop-color="#26B9D0"/><stop offset="1" stop-color="#178CAC"/></linearGradient></defs>
+<g transform="translate(8 8) scale(.49)">
+ <rect x="8" y="8" width="496" height="496" rx="112" fill="#102B46" stroke="#294965" stroke-width="4"/>
+ <circle cx="99" cy="82" r="13" fill="#F4B545"/>
+ <path d="M127 348V128h131c44 0 70 25 70 62 0 43-30 70-78 70H130m116-1 113 108" fill="none" stroke="#F7FBFF" stroke-width="45" stroke-linecap="round" stroke-linejoin="round"/>
+ <rect x="174" y="267" width="129" height="59" rx="9" fill="url(#road)"/><rect x="183" y="276" width="108" height="10" rx="4" fill="#76DDE7"/>
+ <path d="M303 288l19-16h28l19 19v35h-66z" fill="#F7FBFF"/><rect x="324" y="280" width="30" height="17" rx="3" fill="#1B4567"/>
+ <rect x="157" y="324" width="229" height="19" rx="6" fill="#F4B545"/>
+ <circle cx="202" cy="354" r="17" fill="#102B46" stroke="#A9BDCD" stroke-width="5"/><circle cx="347" cy="354" r="17" fill="#102B46" stroke="#A9BDCD" stroke-width="5"/>
+ <path d="M145 386h260m-260 28h260" stroke="#26B9D0" stroke-width="8" stroke-linecap="round"/>
+ <path d="M161 382v34m31-34v34m31-34v34m31-34v34m31-34v34m31-34v34m31-34v34m31-34v34m31-34v34" stroke="#1B4567" stroke-width="10" stroke-linecap="round"/>
+ <circle cx="396" cy="369" r="14" fill="#F4B545" stroke="#F7FBFF" stroke-width="3"/>
+</g>
+<text x="300" y="148" font-family="Segoe UI, Arial, sans-serif" font-size="112" font-weight="700" letter-spacing="-4"><tspan fill="#102B46">rail</tspan><tspan fill="#26B9D0">opt</tspan></text>
+<path d="M303 190h416" stroke="#DDE8EF" stroke-width="7" stroke-linecap="round"/><path d="M303 190h283" stroke="#26B9D0" stroke-width="7" stroke-linecap="round"/><circle cx="589" cy="190" r="9" fill="#F4B545"/>
+<text x="304" y="235" font-family="Segoe UI, Arial, sans-serif" font-size="22" font-weight="600" letter-spacing="4" fill="#1B4567">TRANSPORT PLANNING</text>
+</svg>

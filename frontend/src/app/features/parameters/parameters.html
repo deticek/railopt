@@ -1,3 +1,83 @@
-<div class="page-heading"><div><span class="eyebrow">PREGLED RAČUNSKIH VREDNOSTI</span><h1>Parametri<span class="heading-period">.</span></h1><p class="muted">Vrednosti, uvožene iz Excelovega modela, z enoto in virom. Nespremenljivi podatki voznega reda, terminalov in revizij so skriti.</p></div></div>
-@if(error){<div class="notice" role="alert">{{error}}</div>}@if(message){<div class="notice success" role="status">{{message}}</div>}
-<div class="parameter-groups">@for(group of groups();track group){<section class="panel parameter-group"><header><h2>{{group}}</h2><span>{{inGroup(group).length}} parametrov</span></header><div class="table-scroll"><table><thead><tr><th>PARAMETER</th><th>VREDNOST</th><th>ENOTA</th><th>VIR / OPOMBA</th>@if(isAdmin){<th></th>}</tr></thead><tbody>@for(row of inGroup(group);track track($index,row)){<tr><td><b>{{row.parameter_name}}</b><small>{{row.parameter_code}}</small></td><td>@if(isAdmin){<input [name]="row.parameter_code" [(ngModel)]="row.value" [attr.aria-label]="row.parameter_name">@if(row.numeric_value===60&&row.unit?.toLowerCase()==='min'){<small class="human-value">1 ura = 60 minut</small>}} @else {<b>{{valueLabel(row)}}</b>}</td><td>{{row.unit||'—'}}</td><td>{{row.source_note||'—'}}</td>@if(isAdmin){<td><button class="secondary-btn" type="button" [disabled]="saving===row.parameter_code" (click)="save(row)">{{saving===row.parameter_code?'Shranjujem…':'Shrani'}}</button></td>}</tr>}</tbody></table></div></section>}@empty{<section class="panel parameter-group">{{loading?'Nalaganje parametrov…':'V bazi ni parametrov.'}}</section>}</div>
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">PREGLED RAČUNSKIH VREDNOSTI</span>
+    <h1>Parametri<span class="heading-period">.</span></h1>
+    <p class="muted">
+      Vrednosti, uvožene iz Excelovega modela, z enoto in virom. Nespremenljivi podatki voznega
+      reda, terminalov in revizij so skriti.
+    </p>
+  </div>
+</div>
+@if (error) {
+  <div class="notice" role="alert">{{ error }}</div>
+}
+@if (message) {
+  <div class="notice success" role="status">{{ message }}</div>
+}
+<div class="parameter-groups">
+  @for (group of groups(); track group) {
+    <section class="panel parameter-group">
+      <header>
+        <h2>{{ group }}</h2>
+        <span>{{ inGroup(group).length }} parametrov</span>
+      </header>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr>
+              <th>PARAMETER</th>
+              <th>VREDNOST</th>
+              <th>ENOTA</th>
+              <th>VIR / OPOMBA</th>
+              @if (isAdmin) {
+                <th></th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (row of inGroup(group); track track($index, row)) {
+              <tr>
+                <td>
+                  <b>{{ row.parameter_name }}</b
+                  ><small>{{ row.parameter_code }}</small>
+                </td>
+                <td>
+                  @if (isAdmin) {
+                    <input
+                      [name]="row.parameter_code"
+                      [(ngModel)]="row.value"
+                      [attr.aria-label]="row.parameter_name"
+                    />
+                    @if (row.numeric_value === 60 && row.unit?.toLowerCase() === 'min') {
+                      <small class="human-value">1 ura = 60 minut</small>
+                    }
+                  } @else {
+                    <b>{{ valueLabel(row) }}</b>
+                  }
+                </td>
+                <td>{{ row.unit || '—' }}</td>
+                <td>{{ row.source_note || '—' }}</td>
+                @if (isAdmin) {
+                  <td>
+                    <button
+                      class="secondary-btn"
+                      type="button"
+                      [disabled]="saving === row.parameter_code"
+                      (click)="save(row)"
+                    >
+                      {{ saving === row.parameter_code ? 'Shranjujem…' : 'Shrani' }}
+                    </button>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  } @empty {
+    <section class="panel parameter-group">
+      {{ loading ? 'Nalaganje parametrov…' : 'V bazi ni parametrov.' }}
+    </section>
+  }
+</div>

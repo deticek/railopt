@@ -40,7 +40,7 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
     );
     return new Map(rows.map((row) => [row.parameter_code, row]));
   }
-  function closestTerminal(place, terminals) {
+  function closestTerminals(place, terminals, limit = 1) {
     const lat = Number(place?.lat);
     const lon = Number(place?.lon);
     if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
@@ -59,14 +59,19 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
         ? { distance, terminal }
         : nearest;
     }, null);
-    if (!closest) return null;
-    const terminal = closest.terminal;
-    return {
+    if (!closest) return [];
+    return terminals.map(terminal => {
+      const terminalLat = Number(terminal.latitude), terminalLon = Number(terminal.longitude);
+      const dLat = ((terminalLat - lat) * Math.PI) / 180;
+      const dLon = ((terminalLon - lon) * Math.PI) / 180;
+      const a = Math.sin(dLat / 2) ** 2 + Math.cos((lat * Math.PI) / 180) * Math.cos((terminalLat * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
+      return { distance:6371 * 2 * Math.asin(Math.sqrt(a)), terminal };
+    }).sort((a,b)=>a.distance-b.distance).slice(0,limit).map(({terminal})=>({
       label: terminal.name,
       lat: Number(terminal.latitude),
       lon: Number(terminal.longitude),
       countryCode: terminal.country_code || null,
-    };
+    }));
   }
   async function useDatabaseTerminals(input) {
     input=normalizeCatalogEquipment(input);
@@ -79,8 +84,10 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
       try{[terminals]=await pool.execute("SELECT CONCAT(name,' (',city,')') AS name,country_code,latitude,longitude FROM unit_terminals WHERE unit_type=? AND active=1 AND latitude IS NOT NULL AND longitude IS NOT NULL",[unitKind]);}
       catch(error){if(error.code!=='ER_NO_SUCH_TABLE')throw error;const rows=await readJson(pool,'app_unit_terminals_catalog')||[];terminals=rows.filter(row=>row.unitType===unitKind&&row.active!==false&&row.latitude!=null&&row.longitude!=null).map(row=>({name:row.name,country_code:row.countryCode,latitude:row.latitude,longitude:row.longitude}));}
     }else [terminals]=await pool.execute("SELECT name,country_code,latitude,longitude FROM terminals WHERE latitude IS NOT NULL AND longitude IS NOT NULL");
-    const terminalOrigin = closestTerminal(input.origin, terminals);
-    const terminalDestination = closestTerminal(input.destination, terminals);
+    const terminalOriginCandidates = closestTerminals(input.origin, terminals, input.transportMode === 'compare' ? 8 : 1);
+    const terminalDestinationCandidates = closestTerminals(input.destination, terminals, input.transportMode === 'compare' ? 8 : 1);
+    const terminalOrigin = terminalOriginCandidates[0] || null;
+    const terminalDestination = terminalDestinationCandidates[0] || null;
     if (
       input.transportMode === "compare" &&
       (!terminalOrigin || !terminalDestination)
@@ -93,6 +100,8 @@ function createDeliveryPlansRouter({ pool, requireSession, crypto }) {
       ...input,
       terminalOrigin,
       terminalDestination,
+      terminalOriginCandidates,
+      terminalDestinationCandidates,
     };
   }
   function validPlan(body) {

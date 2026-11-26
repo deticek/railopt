@@ -1,8 +1,17 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import type { RouteMapPoint, RouteMapSegment } from '../core/api/delivery-plans-api';
 
-interface Tile { url: string; x: number; y: number; }
-interface ScreenPoint { x: number; y: number; label?: string; kind?: string; }
+interface Tile {
+  url: string;
+  x: number;
+  y: number;
+}
+interface ScreenPoint {
+  x: number;
+  y: number;
+  label?: string;
+  kind?: string;
+}
 
 @Component({
   selector: 'app-route-map',
@@ -40,15 +49,15 @@ export class RouteMapComponent implements OnChanges {
 
   private get bounds(): { west: number; east: number; north: number; south: number } {
     const coordinates = [
-      ...this.points.map(point => [point.lat, point.lon] as [number, number]),
-      ...this.segments.flatMap(segment => segment.coordinates || []),
-    ].filter(point => Number.isFinite(Number(point[0])) && Number.isFinite(Number(point[1])));
+      ...this.points.map((point) => [point.lat, point.lon] as [number, number]),
+      ...this.segments.flatMap((segment) => segment.coordinates || []),
+    ].filter((point) => Number.isFinite(Number(point[0])) && Number.isFinite(Number(point[1])));
     if (!coordinates.length) return { west: 13, east: 14, north: 49, south: 48 };
     return {
-      west: Math.min(...coordinates.map(point => point[1])),
-      east: Math.max(...coordinates.map(point => point[1])),
-      north: Math.max(...coordinates.map(point => point[0])),
-      south: Math.min(...coordinates.map(point => point[0])),
+      west: Math.min(...coordinates.map((point) => point[1])),
+      east: Math.max(...coordinates.map((point) => point[1])),
+      north: Math.max(...coordinates.map((point) => point[0])),
+      south: Math.min(...coordinates.map((point) => point[0])),
     };
   }
 
@@ -62,11 +71,17 @@ export class RouteMapComponent implements OnChanges {
     return Math.max(3, Math.min(16, Math.floor(Math.log2(Math.max(1, fit)))));
   }
 
-  private get zoom(): number { return Math.max(3, Math.min(18, this.baseZoom + this.zoomDelta)); }
+  private get zoom(): number {
+    return Math.max(3, Math.min(18, this.baseZoom + this.zoomDelta));
+  }
 
   private get center(): { x: number; y: number } {
     const bounds = this.bounds;
-    const center = this.project((bounds.north + bounds.south) / 2, (bounds.west + bounds.east) / 2, this.zoom);
+    const center = this.project(
+      (bounds.north + bounds.south) / 2,
+      (bounds.west + bounds.east) / 2,
+      this.zoom,
+    );
     return { x: center.x + this.offsetX, y: center.y + this.offsetY };
   }
 
@@ -78,7 +93,12 @@ export class RouteMapComponent implements OnChanges {
 
   panStart(event: PointerEvent): void {
     if ((event.target as HTMLElement).closest('button')) return;
-    this.drag = { x: event.clientX, y: event.clientY, offsetX: this.offsetX, offsetY: this.offsetY };
+    this.drag = {
+      x: event.clientX,
+      y: event.clientY,
+      offsetX: this.offsetX,
+      offsetY: this.offsetY,
+    };
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
   }
 
@@ -88,7 +108,9 @@ export class RouteMapComponent implements OnChanges {
     this.offsetY = this.drag.offsetY - (event.clientY - this.drag.y);
   }
 
-  panEnd(): void { this.drag = null; }
+  panEnd(): void {
+    this.drag = null;
+  }
 
   get tiles(): Tile[] {
     const zoom = this.zoom;
@@ -113,17 +135,19 @@ export class RouteMapComponent implements OnChanges {
 
   line(segment: RouteMapSegment): string {
     const center = this.center;
-    return (segment.coordinates || []).map(([lat, lon], index) => {
-      const point = this.project(Number(lat), Number(lon), this.zoom);
-      const x = point.x - center.x + this.width / 2;
-      const y = point.y - center.y + this.height / 2;
-      return `${index ? 'L' : 'M'} ${x.toFixed(1)} ${y.toFixed(1)}`;
-    }).join(' ');
+    return (segment.coordinates || [])
+      .map(([lat, lon], index) => {
+        const point = this.project(Number(lat), Number(lon), this.zoom);
+        const x = point.x - center.x + this.width / 2;
+        const y = point.y - center.y + this.height / 2;
+        return `${index ? 'L' : 'M'} ${x.toFixed(1)} ${y.toFixed(1)}`;
+      })
+      .join(' ');
   }
 
   get markers(): ScreenPoint[] {
     const center = this.center;
-    return this.points.map(point => {
+    return this.points.map((point) => {
       const projected = this.project(point.lat, point.lon, this.zoom);
       return {
         x: projected.x - center.x + this.width / 2,

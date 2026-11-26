@@ -274,8 +274,7 @@ async function findNearestScheduledRailPath(pool, originPlace, destinationPlace,
   const candidates = origins.flatMap(from => destinations
     .filter(to => to.name !== from.name)
     .map(to => ({ from, to, distanceKm: from.distanceKm + to.distanceKm })))
-    .filter(pair => !excludedPair || pair.from.name !== excludedPair.origin || pair.to.name !== excludedPair.destination)
-    .sort((a, b) => a.distanceKm - b.distanceKm);
+    .filter(pair => !excludedPair || pair.from.name !== excludedPair.origin || pair.to.name !== excludedPair.destination);
   let coordinates;
   try {
     [coordinates] = await pool.query(
@@ -287,6 +286,7 @@ async function findNearestScheduledRailPath(pool, originPlace, destinationPlace,
     coordinates = (stored?.terminals || []).filter(row => row.latitude != null && row.longitude != null);
   }
   const byName = new Map(coordinates.map(row => [row.name, row]));
+  const feasible = [];
   for (const pair of candidates) {
     const path = shortestScheduledPath(network.edges, network.disruptions, pair.from.name, pair.to.name, readyAt);
     if (!path) continue;
@@ -308,7 +308,7 @@ async function findNearestScheduledRailPath(pool, originPlace, destinationPlace,
       const from = byName.get(leg.from), to = byName.get(leg.to);
       railKm += from && to ? haversineKm({ lat: from.latitude, lon: from.longitude }, to) * 1.22 : leg.durationMinutes;
     }
-    return {
+    const resultData = {
       originTerminal: pair.from.name, destinationTerminal: pair.to.name,
       originTerminalCoordinate: [Number(pair.from.latitude), Number(pair.from.longitude)],
       destinationTerminalCoordinate: [Number(pair.to.latitude), Number(pair.to.longitude)],
@@ -326,8 +326,17 @@ async function findNearestScheduledRailPath(pool, originPlace, destinationPlace,
       sourcePeriodStart: networkSnapshot.periodStart, sourcePeriodEnd: networkSnapshot.periodEnd,
       timetableSnapshot: true, usedNearestAlternative: true,
     };
+    const transitMinutes = Math.max(0, (result.arrival - new Date(readyAt)) / minuteMs);
+    // Prefer a close, usable pair; among similarly close terminals choose the
+    // itinerary that actually arrives sooner instead of blindly taking the
+    // first geographically nearby pair.
+    const score = resultData.accessDistanceKm + transitMinutes * 0.15 + resultData.railKm * 0.08;
+    feasible.push({ ...resultData, _score: score });
   }
-  return null;
+  feasible.sort((a, b) => a._score - b._score || new Date(a.arrivalAt) - new Date(b.arrivalAt));
+  if (!feasible.length) return null;
+  const { _score, ...best } = feasible[0];
+  return best;
 }
 
 module.exports = {

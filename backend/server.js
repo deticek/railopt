@@ -261,13 +261,13 @@ async function start() {
   app.use(createAuthRouter({ pool, authPool, sessions, administrator, databaseUsersEnabled, userSchema, userColumn, normalizeRole, getRolePermissions, bcryptRounds, bcrypt, crypto, requireSession, asyncRoute }));
   app.use('/api', (req,res,next) => requireSession(req,res,() => authorizeApiAccess(req,res,next)));
   app.use('/api', auditApiWrites);
-  app.use('/api', createAdminToolsRouter({ pool, authPool, requireSession, requireAdmin, requirePermission, clearRolePermissionCache, crypto }).router);
+  app.use('/api', createAdminToolsRouter({ pool, authPool, requireSession, requireAdmin, requirePermission, clearRolePermissionCache, sessions, crypto }).router);
   app.use('/api', createEmissionsRouter({ requireSession, asyncRoute }));
   app.use('/api', createPlacesRouter({ pool, requireSession, asyncRoute }));
   app.use('/api', createDeliveryPlansRouter({ pool, requireSession, crypto }));
   app.use('/api', createRailNetworkRouter({ pool, requireSession, crypto }));
   app.use('/api', createRoadDisruptionsRouter({ pool, requireSession, crypto }));
-  app.use(createUsersRouter({ pool, authPool, requireSession, requireAdmin, asyncRoute, databaseUsersEnabled, userSchema, userColumn, normalizeRole, bcryptRounds, crypto }));
+  app.use(createUsersRouter({ pool, authPool, requireSession, requireAdmin, asyncRoute, databaseUsersEnabled, userSchema, userColumn, normalizeRole, bcrypt, bcryptRounds, crypto }));
   app.use(createDashboardRouter({ pool, requireSession, asyncRoute, serializeShipment }));
   app.use(createShipmentsRouter({ pool, requireSession, asyncRoute, serializeShipment, validDate }));
   app.use(createTransportRoutesRouter({ pool, requireSession, asyncRoute, serializeRoute, validTime }));

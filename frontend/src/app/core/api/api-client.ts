@@ -7,11 +7,11 @@ export async function apiRequest(path: string, init: RequestInit = {}): Promise<
   return fetch(`${apiBaseUrl}${path}`, {
     ...init,
     headers,
-    signal: init.signal || AbortSignal.timeout(8000)
+    signal: init.signal || AbortSignal.timeout(8000),
   });
 }
 
 export async function readApiError(response: Response, fallback: string): Promise<string> {
-  const body = await response.json().catch(() => ({})) as { error?: string };
+  const body = (await response.json().catch(() => ({}))) as { error?: string };
   return body.error || fallback;
 }

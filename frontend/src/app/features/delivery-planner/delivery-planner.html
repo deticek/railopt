@@ -61,7 +61,11 @@
             [(ngModel)]="deliveryDeadlineAt"
             required
           /><small>Vnesi rok prihoda; planer poišče najpoznejši izvedljiv naklad.</small></label
-        ><p class="field-hint">Začetek iskanja določim samodejno od danes naprej. Rok prihoda ostane točno tak, kot si ga vnesel.</p>
+        >
+        <p class="field-hint">
+          Začetek iskanja določim samodejno od danes naprej. Rok prihoda ostane točno tak, kot si ga
+          vnesel.
+        </p>
       }
       <label
         >Teža tovora (kg)<input
@@ -72,7 +76,9 @@
           [(ngModel)]="weightKg"
           required
       /></label>
-      <small class="field-hint">Največ za izbrano enoto: {{ maxWeightKg | number: '1.0-0' }} kg.</small>
+      <small class="field-hint"
+        >Največ za izbrano enoto: {{ maxWeightKg | number: '1.0-0' }} kg.</small
+      >
       <label
         >Vrsta prevoza / enote
         <select name="unit" [ngModel]="unitType" (ngModelChange)="setUnitType($event)">
@@ -84,13 +90,52 @@
           <option value="Kontejner 40 HC">Kontejner 40 HC</option>
         </select>
       </label>
-      @if(showFullTrailerCatalog){<label>Prikolica iz tehničnega kataloga
-        <select name="catalogTrailer" [ngModel]="equipmentCatalogId" (ngModelChange)="setCatalogEquipment($event)">
-          <option value="">Uporabi osnovno vrsto enote</option>
-          @for(item of equipmentCatalog;track item.id){<option [value]="item.id">{{item.id==='P400'?'▰':item.category==='zabojnik'?'▣':item.category==='posebna'?'⚙':'⇄'}} {{item.name}} · {{item.payload_t}} t</option>}
-        </select><small>Tehnični katalog samodejno preveri nosilnost, ADR, dvigljivost ter omejitve Ro-La.</small>
-      </label>}
-      @if(showFullTrailerCatalog&&selectedCatalogItem){<div class="auto-estimate-note trailer-selection"><b>{{selectedCatalogItem.name}}</b><small>{{selectedCatalogItem.length_m}} × {{selectedCatalogItem.width_m}} × {{selectedCatalogItem.height_m}} m · {{selectedCatalogItem.pallets||'—'}} palet · {{selectedCatalogItem.volume_m3||'—'}} m³ · {{selectedCatalogItem.uct==='da'?'dvigljiva za vlak':selectedCatalogItem.uct==='zamenjava'?'za vlak potrebna dvigljiva zamenjava':'ni dvigljiva'}}</small></div>}
+      @if (showFullTrailerCatalog) {
+        <label
+          >Prikolica iz tehničnega kataloga
+          <select
+            name="catalogTrailer"
+            [ngModel]="equipmentCatalogId"
+            (ngModelChange)="setCatalogEquipment($event)"
+          >
+            <option value="">Uporabi osnovno vrsto enote</option>
+            @for (item of equipmentCatalog; track item.id) {
+              <option [value]="item.id">
+                {{
+                  item.id === 'P400'
+                    ? '▰'
+                    : item.category === 'zabojnik'
+                      ? '▣'
+                      : item.category === 'posebna'
+                        ? '⚙'
+                        : '⇄'
+                }}
+                {{ item.name }} · {{ item.payload_t }} t
+              </option>
+            }</select
+          ><small
+            >Tehnični katalog samodejno preveri nosilnost, ADR, dvigljivost ter omejitve
+            Ro-La.</small
+          >
+        </label>
+      }
+      @if (showFullTrailerCatalog && selectedCatalogItem) {
+        <div class="auto-estimate-note trailer-selection">
+          <b>{{ selectedCatalogItem.name }}</b
+          ><small
+            >{{ selectedCatalogItem.length_m }} × {{ selectedCatalogItem.width_m }} ×
+            {{ selectedCatalogItem.height_m }} m · {{ selectedCatalogItem.pallets || '—' }} palet ·
+            {{ selectedCatalogItem.volume_m3 || '—' }} m³ ·
+            {{
+              selectedCatalogItem.uct === 'da'
+                ? 'dvigljiva za vlak'
+                : selectedCatalogItem.uct === 'zamenjava'
+                  ? 'za vlak potrebna dvigljiva zamenjava'
+                  : 'ni dvigljiva'
+            }}</small
+          >
+        </div>
+      }
     </div>
 
     <h2>Čas poti in primerjava</h2>
@@ -101,36 +146,46 @@
           >Uporabljam ocenjene čase poti za naklad–razklad ali do terminala in od terminala.</small
         >
       </div>
-      <label>Način prevoza<select name="selectedTransportMode" [(ngModel)]="selectedTransportMode">
-        <option value="AUTO">Primerjaj vse možnosti, ki ustrezajo enoti</option>
-        <option value="ROAD">Samo cesta</option>
-        <option value="INTERMODAL" [disabled]="!usesIntermodal">Kombinirani prevoz z vlakom (dvigljiva enota)</option>
-        <option value="RO_LA" [disabled]="!usesRoLa">Ro-La (tovornjak na vlaku)</option>
-      </select><small>Vlak in Ro-La sta ločeni možnosti; izbira je omejena na združljivo vrsto enote.</small></label>
+      <label
+        >Način prevoza<select name="selectedTransportMode" [(ngModel)]="selectedTransportMode">
+          <option value="AUTO">Primerjaj vse možnosti, ki ustrezajo enoti</option>
+          <option value="ROAD">Samo cesta</option>
+          <option value="INTERMODAL" [disabled]="!usesIntermodal">
+            Kombinirani prevoz z vlakom (dvigljiva enota)
+          </option>
+          <option value="RO_LA" [disabled]="!usesRoLa">Ro-La (tovornjak na vlaku)</option></select
+        ><small
+          >Vlak in Ro-La sta ločeni možnosti; izbira je omejena na združljivo vrsto enote.</small
+        ></label
+      >
       <div class="auto-estimate-note">
         <b>Primerjam cestni in železniški prevoz samodejno.</b
         ><small
-          >Pri tovornjaku uporabim obstoječi Ro-La izračun. Za dvigljive enote poiščem pot po lokalnem voznem redu, vključno s prestopi in vnesenimi zaporami.</small
+          >Pri tovornjaku uporabim obstoječi Ro-La izračun. Za dvigljive enote poiščem pot po
+          lokalnem voznem redu, vključno s prestopi in vnesenimi zaporami.</small
         >
       </div>
+      <label
+        >Način priporočila<select name="preference" [(ngModel)]="preference">
+          <option value="cost">Najnižji strošek</option>
+          <option value="emissions">Najmanj emisij</option>
+          <option value="time">Najhitrejša dostava</option>
+        </select></label
+      >
+      @if (usesRoLa) {
         <label
-          >Način priporočila<select name="preference" [(ngModel)]="preference">
-            <option value="cost">Najnižji strošek</option>
-            <option value="emissions">Najmanj emisij</option>
-            <option value="time">Najhitrejša dostava</option>
-          </select></label
+          >Cena vozovnice Ro-La (€)<input
+            type="number"
+            name="rolaTicket"
+            min="0"
+            step="0.01"
+            [(ngModel)]="roLaTicketEur"
+          /><small
+            >0 uporabi cenik Ro-La 2026 in izračuna ceno samodejno; znesek nad 0 prepiše
+            tarifo.</small
+          ></label
         >
-        @if (usesRoLa) {
-          <label
-            >Cena vozovnice Ro-La (€)<input
-              type="number"
-              name="rolaTicket"
-              min="0"
-              step="0.01"
-              [(ngModel)]="roLaTicketEur"
-            /><small>0 uporabi cenik Ro-La 2026 in izračuna ceno samodejno; znesek nad 0 prepiše tarifo.</small></label
-          >
-        }
+      }
     </div>
 
     <h2>Delovni pogoji</h2>
@@ -276,8 +331,14 @@
     }
     @if (scheduleMode === 'latest-loading') {
       <div class="schedule-summary" aria-label="Izračunan naklad in želeni prihod">
-        <div><small>Najkasnejši začetek naklada</small><b>{{ r.actualLoadingAt | date: 'd. MMM yyyy, HH:mm' }}</b></div>
-        <div><small>Želeni rok prihoda (nespremenjen)</small><b>{{ r.deadlineAt | date: 'd. MMM yyyy, HH:mm' }}</b></div>
+        <div>
+          <small>Najkasnejši začetek naklada</small
+          ><b>{{ r.actualLoadingAt | date: 'd. MMM yyyy, HH:mm' }}</b>
+        </div>
+        <div>
+          <small>Želeni rok prihoda (nespremenjen)</small
+          ><b>{{ r.deadlineAt | date: 'd. MMM yyyy, HH:mm' }}</b>
+        </div>
       </div>
     }
     <div class="option-grid">
@@ -329,7 +390,13 @@
           </div>
         </header>
         <app-route-map
-          [title]="chosen.title + ' · ' + (origin?.label || 'Naklad') + ' → ' + (destination?.label || 'Razklad')"
+          [title]="
+            chosen.title +
+            ' · ' +
+            (origin?.label || 'Naklad') +
+            ' → ' +
+            (destination?.label || 'Razklad')
+          "
           [segments]="chosen.routeSegments || []"
           [points]="chosen.routePoints || []"
         />
@@ -373,8 +440,9 @@
         }
         <div class="result-actions">
           <button class="primary-btn" type="button" [disabled]="saving()" (click)="save()">
-            {{ saving() ? 'Shranjujem…' : 'Shrani primerjavo v bazo' }}</button
-          ><span>{{ saveMessage() }}</span>
+            {{ saving() ? 'Shranjujem…' : 'Shrani primerjavo v bazo' }}</button><span>{{
+            saveMessage()
+          }}</span>
         </div>
         <h3>Časovnica dostave</h3>
         <ol class="timeline">
@@ -382,8 +450,7 @@
             <li [class]="item.type">
               <span class="dot"></span>
               <div>
-                <b>{{ item.title }}</b
-                ><small
+                <b>{{ item.title }}</b><small
                   >{{ fmt(item.start) }} – {{ fmt(item.end) }} ·
                   {{ duration(item.durationMinutes) }}
                   @if (item.distanceKm) {

@@ -14,9 +14,33 @@
   <div class="notice success" role="status">{{ message }}</div>
 }
 <section class="panel route-export-panel" style="margin-top: 14px">
-  <div><h3>Izvoz relacij in podatkov</h3><p>Skupni izvoz vključuje relacije iz baze, pošiljke ter shranjene izračune planerja z vsemi podrobnostmi.</p></div>
-  <div class="history-actions"><button class="primary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllRoutes('csv')">Izvozi vse v Excel (CSV)</button><button class="secondary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllRoutes('pdf')">Izvozi vse v PDF</button></div>
-  @if (exportMessage) { <p class="muted" role="status">{{ exportMessage }}</p> }
+  <div>
+    <h3>Izvoz relacij in podatkov</h3>
+    <p>
+      Skupni izvoz vključuje relacije iz baze, pošiljke ter shranjene izračune planerja z vsemi
+      podrobnostmi.
+    </p>
+  </div>
+  <div class="history-actions">
+    <button
+      class="primary-btn"
+      type="button"
+      [disabled]="!!exportBusy || loading"
+      (click)="exportAllRoutes('csv')"
+    >
+      Izvozi vse v Excel (CSV)</button
+    ><button
+      class="secondary-btn"
+      type="button"
+      [disabled]="!!exportBusy || loading"
+      (click)="exportAllRoutes('pdf')"
+    >
+      Izvozi vse v PDF
+    </button>
+  </div>
+  @if (exportMessage) {
+    <p class="muted" role="status">{{ exportMessage }}</p>
+  }
 </section>
 
 <section class="panel full-list" style="margin-top: 14px">
@@ -73,7 +97,23 @@
               </button>
             </td>
             <td>{{ row.cost }}</td>
-            <td class="row-actions"><button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'csv')">CSV</button><button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'pdf')">PDF</button></td>
+            <td class="row-actions">
+              <button
+                class="secondary-btn"
+                type="button"
+                [disabled]="!!exportBusy"
+                (click)="exportShipment(row, 'csv')"
+              >
+                CSV</button
+              ><button
+                class="secondary-btn"
+                type="button"
+                [disabled]="!!exportBusy"
+                (click)="exportShipment(row, 'pdf')"
+              >
+                PDF
+              </button>
+            </td>
           </tr>
         } @empty {
           <tr>
@@ -147,8 +187,12 @@
               <button class="secondary-btn" type="button" (click)="togglePlanDetails(plan.id)">
                 {{ expandedPlanId === plan.id ? 'Skrij' : 'Podrobnosti' }}
               </button>
-              <button class="secondary-btn" type="button" (click)="exportPlan(plan, 'csv')">CSV</button>
-              <button class="secondary-btn" type="button" (click)="exportPlan(plan, 'pdf')">PDF</button>
+              <button class="secondary-btn" type="button" (click)="exportPlan(plan, 'csv')">
+                CSV
+              </button>
+              <button class="secondary-btn" type="button" (click)="exportPlan(plan, 'pdf')">
+                PDF
+              </button>
             </td>
           </tr>
           @if (expandedPlanId === plan.id) {
@@ -233,11 +277,44 @@
           (ngModelChange)="setPlanInputValue('weightKg', $event); refreshPlanComparison()"
           required
       /></label>
-      <label>Vrsta enote<select name="planUnit" [ngModel]="planForm.unitType" (ngModelChange)="setPlanInputValue('unitType', $event); refreshPlanComparison()" required>
-        <option [ngValue]="planForm.unitType">{{planForm.unitType}}</option>
-        @for(unit of ['Tovornjak – samo cesta','P400 – dvigljiva prikolica','Nedvigljiva prikolica s ponjavo','Izmenljivi zaboj','Zabojnik 45′','Kontejner 40 HC'];track unit){@if(unit!==planForm.unitType){<option [ngValue]="unit">{{unit}}</option>}}
-      </select></label>
-      <label>Način prevoza<select name="planMode" [ngModel]="planForm.selectedTransportMode" (ngModelChange)="setPlanInputValue('selectedTransportMode', $event); refreshPlanComparison()"><option value="ROAD">Samo tovornjak</option><option value="INTERMODAL" [disabled]="!planUsesIntermodal">Kombinirani vlak</option><option value="RO_LA" [disabled]="!planUsesRoLa">Ro-La</option></select><small>Možnosti, ki niso združljive z izbrano enoto, so izklopljene.</small></label>
+      <label
+        >Vrsta enote<select
+          name="planUnit"
+          [ngModel]="planForm.unitType"
+          (ngModelChange)="setPlanInputValue('unitType', $event); refreshPlanComparison()"
+          required
+        >
+          <option [ngValue]="planForm.unitType">{{ planForm.unitType }}</option>
+          @for (
+            unit of [
+              'Tovornjak – samo cesta',
+              'P400 – dvigljiva prikolica',
+              'Nedvigljiva prikolica s ponjavo',
+              'Izmenljivi zaboj',
+              'Zabojnik 45′',
+              'Kontejner 40 HC',
+            ];
+            track unit
+          ) {
+            @if (unit !== planForm.unitType) {
+              <option [ngValue]="unit">{{ unit }}</option>
+            }
+          }
+        </select></label
+      >
+      <label
+        >Način prevoza<select
+          name="planMode"
+          [ngModel]="planForm.selectedTransportMode"
+          (ngModelChange)="
+            setPlanInputValue('selectedTransportMode', $event); refreshPlanComparison()
+          "
+        >
+          <option value="ROAD">Samo tovornjak</option>
+          <option value="INTERMODAL" [disabled]="!planUsesIntermodal">Kombinirani vlak</option>
+          <option value="RO_LA" [disabled]="!planUsesRoLa">Ro-La</option></select
+        ><small>Možnosti, ki niso združljive z izbrano enoto, so izklopljene.</small></label
+      >
       <label
         >Dodaten čas – ure<input
           type="number"
@@ -275,7 +352,8 @@
           name="planRolaPrice"
           [ngModel]="planForm.roLaTicketEur"
           (ngModelChange)="setPlanInputValue('roLaTicketEur', $event)"
-      /><small>0 uporabi cenik Ro-La 2026 samodejno; znesek nad 0 prepiše tarifo.</small></label>
+        /><small>0 uporabi cenik Ro-La 2026 samodejno; znesek nad 0 prepiše tarifo.</small></label
+      >
       <label
         >Začetek nakladanja od<input
           type="time"
@@ -502,8 +580,7 @@
         >
           {{
             saving === 'shipment-data' ? 'Shranjujem…' : 'Shrani podatke in izbrani način'
-          }}</button
-        ><button class="secondary-btn" type="button" (click)="editingShipment = null">
+          }}</button><button class="secondary-btn" type="button" (click)="editingShipment = null">
           Prekliči
         </button>
       </div>
@@ -621,8 +698,22 @@
               <button class="secondary-btn" type="button" (click)="editShipment(row)">
                 Uredi podatke
               </button>
-              <button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'csv')">CSV</button>
-              <button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportShipment(row, 'pdf')">PDF</button>
+              <button
+                class="secondary-btn"
+                type="button"
+                [disabled]="!!exportBusy"
+                (click)="exportShipment(row, 'csv')"
+              >
+                CSV
+              </button>
+              <button
+                class="secondary-btn"
+                type="button"
+                [disabled]="!!exportBusy"
+                (click)="exportShipment(row, 'pdf')"
+              >
+                PDF
+              </button>
             </td>
           </tr>
         } @empty {
@@ -784,8 +875,13 @@
       </label>
       <div class="route-editor-actions">
         <button class="primary-btn" [disabled]="saving === 'route'">
-          {{ saving === 'route' ? 'Shranjujem…' : 'Shrani spremembe' }}</button
-        ><button class="secondary-btn" type="button" (click)="editing = null">Prekliči</button>
+          {{ saving === 'route' ? 'Shranjujem…' : 'Shrani spremembe' }}</button><button
+          class="secondary-btn"
+          type="button"
+          (click)="editing = null"
+        >
+          Prekliči
+        </button>
       </div>
     </form>
   </section>
@@ -824,8 +920,12 @@
             <td>{{ row.extraTimeMinutes }} min</td>
             <td class="row-actions">
               <button class="secondary-btn" type="button" (click)="editRoute(row)">Uredi</button>
-              <button class="secondary-btn" type="button" (click)="exportRoute(row, 'csv')">CSV</button>
-              <button class="secondary-btn" type="button" (click)="exportRoute(row, 'pdf')">PDF</button>
+              <button class="secondary-btn" type="button" (click)="exportRoute(row, 'csv')">
+                CSV
+              </button>
+              <button class="secondary-btn" type="button" (click)="exportRoute(row, 'pdf')">
+                PDF
+              </button>
             </td>
           </tr>
         } @empty {

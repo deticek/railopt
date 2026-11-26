@@ -17,7 +17,11 @@ describe('Railopt display helpers', () => {
   });
 
   it('calculates road WTW emissions in ton-kilometres', () => {
-    expect(calculateRoadCo2e(24000, 500)).toEqual({ tkm: 12000, kgCo2e: 1140, kgPerTkm: roadCo2eKgPerTkm });
+    expect(calculateRoadCo2e(24000, 500)).toEqual({
+      tkm: 12000,
+      kgCo2e: 1140,
+      kgPerTkm: roadCo2eKgPerTkm,
+    });
     expect(calculateRoadCo2e(0, 500)).toBeNull();
     expect(roadCo2eKgPerTkm).toBe(0.095);
   });

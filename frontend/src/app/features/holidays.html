@@ -1,23 +1,81 @@
-<div class="page-heading"><div><span class="eyebrow">KOLEDAR DELOVNIH DNI</span><h1>Prazniki in prosti dnevi<span class="heading-period">.</span></h1><p class="muted">Dodaj državne ali regionalne proste dni. Planer jih bo upošteval glede na državo naklada in razklada.</p></div></div>
-@if (error) { <div class="notice" role="alert">{{ error }}</div> }
-@if (message) { <div class="notice success" role="status">{{ message }}</div> }
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">KOLEDAR DELOVNIH DNI</span>
+    <h1>Prazniki in prosti dnevi<span class="heading-period">.</span></h1>
+    <p class="muted">
+      Dodaj državne ali regionalne proste dni. Planer jih bo upošteval glede na državo naklada in
+      razklada.
+    </p>
+  </div>
+</div>
+@if (error) {
+  <div class="notice" role="alert">{{ error }}</div>
+}
+@if (message) {
+  <div class="notice success" role="status">{{ message }}</div>
+}
 <section class="panel holiday-panel">
   <h3>Dodaj prosti dan</h3>
   <form class="holiday-form" (ngSubmit)="add()">
-    <label>Država (dvočrkovna oznaka)<input name="holidayCountry" maxlength="2" [(ngModel)]="countryCode" placeholder="SI" required /></label>
+    <label
+      >Država (dvočrkovna oznaka)<input
+        name="holidayCountry"
+        maxlength="2"
+        [(ngModel)]="countryCode"
+        placeholder="SI"
+        required
+    /></label>
     <label>Datum<input type="date" name="holidayDate" [(ngModel)]="date" required /></label>
-    <label class="holiday-wide">Naziv praznika<input name="holidayName" maxlength="200" [(ngModel)]="name" placeholder="npr. Dan državnosti" required /></label>
-    <label>Regija (neobvezno)<input name="holidayRegion" [(ngModel)]="region" placeholder="npr. Tirol" /></label>
-    <label class="holiday-wide">Opomba (neobvezno)<input name="holidayNote" [(ngModel)]="note" placeholder="Dodatne informacije" /></label>
-    <button class="primary-btn" [disabled]="saving">{{ saving ? 'Shranjujem…' : 'Shrani prosti dan' }}</button>
+    <label class="holiday-wide"
+      >Naziv praznika<input
+        name="holidayName"
+        maxlength="200"
+        [(ngModel)]="name"
+        placeholder="npr. Dan državnosti"
+        required
+    /></label>
+    <label
+      >Regija (neobvezno)<input name="holidayRegion" [(ngModel)]="region" placeholder="npr. Tirol"
+    /></label>
+    <label class="holiday-wide"
+      >Opomba (neobvezno)<input
+        name="holidayNote"
+        [(ngModel)]="note"
+        placeholder="Dodatne informacije"
+    /></label>
+    <button class="primary-btn" [disabled]="saving">
+      {{ saving ? 'Shranjujem…' : 'Shrani prosti dan' }}
+    </button>
   </form>
-  <p class="holiday-help">Za državni praznik pusti regijo prazno. Regionalni praznik se upošteva, kadar kraj prevoza vrne isto regijo.</p>
+  <p class="holiday-help">
+    Za državni praznik pusti regijo prazno. Regionalni praznik se upošteva, kadar kraj prevoza vrne
+    isto regijo.
+  </p>
 </section>
 <section class="panel holiday-panel">
-  <div class="holiday-list-heading"><div><h3>Vnešeni prosti dnevi</h3><p>{{ rows.length }} zapisov v lokalni bazi</p></div><button class="secondary-btn" type="button" (click)="reload()" [disabled]="loading">Osveži</button></div>
+  <div class="holiday-list-heading">
+    <div>
+      <h3>Vnešeni prosti dnevi</h3>
+      <p>{{ rows.length }} zapisov v lokalni bazi</p>
+    </div>
+    <button class="secondary-btn" type="button" (click)="reload()" [disabled]="loading">
+      Osveži
+    </button>
+  </div>
   <div class="holiday-list">
     @for (row of rows; track row.country_code + row.holiday_date) {
-      <article><div><b>{{ row.holiday_name }}</b><span>{{ row.country_code }} · {{ row.holiday_date | date: 'd. MMMM yyyy' }} {{ regionName(row) ? '· ' + regionName(row) : '' }}</span></div><button class="secondary-btn" type="button" (click)="remove(row)">Odstrani</button></article>
-    } @empty { <p class="muted">{{ loading ? 'Nalaganje koledarja…' : 'V koledarju še ni prostih dni.' }}</p> }
+      <article>
+        <div>
+          <b>{{ row.holiday_name }}</b
+          ><span
+            >{{ row.country_code }} · {{ row.holiday_date | date: 'd. MMMM yyyy' }}
+            {{ regionName(row) ? '· ' + regionName(row) : '' }}</span
+          >
+        </div>
+        <button class="secondary-btn" type="button" (click)="remove(row)">Odstrani</button>
+      </article>
+    } @empty {
+      <p class="muted">{{ loading ? 'Nalaganje koledarja…' : 'V koledarju še ni prostih dni.' }}</p>
+    }
   </div>
 </section>

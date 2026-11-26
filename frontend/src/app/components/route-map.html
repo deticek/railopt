@@ -1,30 +1,76 @@
 <section class="route-map-panel">
-  <header><b>{{ title }}</b><span>Prikaz poti</span></header>
-  <div class="route-map-canvas" (wheel)="zoomBy($event.deltaY < 0 ? 1 : -1, $event)" (pointerdown)="panStart($event)" (pointermove)="panMove($event)" (pointerup)="panEnd()" (pointercancel)="panEnd()" (lostpointercapture)="panEnd()">
+  <header>
+    <b>{{ title }}</b
+    ><span>Prikaz poti</span>
+  </header>
+  <div
+    class="route-map-canvas"
+    (wheel)="zoomBy($event.deltaY < 0 ? 1 : -1, $event)"
+    (pointerdown)="panStart($event)"
+    (pointermove)="panMove($event)"
+    (pointerup)="panEnd()"
+    (pointercancel)="panEnd()"
+    (lostpointercapture)="panEnd()"
+  >
     <svg viewBox="0 0 1000 460" role="img" [attr.aria-label]="title">
       @for (tile of tiles; track tile.url) {
-        <image [attr.href]="tile.url" [attr.x]="tile.x" [attr.y]="tile.y" width="256" height="256" />
+        <image
+          [attr.href]="tile.url"
+          [attr.x]="tile.x"
+          [attr.y]="tile.y"
+          width="256"
+          height="256"
+        />
       }
       @for (segment of segments; track $index) {
-        <path [attr.d]="line(segment)" [class.road-line]="segment.mode === 'road'" [class.rail-line]="segment.mode === 'rail' && segment.status !== 'blocked'" [class.blocked-line]="segment.status === 'blocked'" [class.detour-line]="segment.status === 'detour'">
+        <path
+          [attr.d]="line(segment)"
+          [class.road-line]="segment.mode === 'road'"
+          [class.rail-line]="segment.mode === 'rail' && segment.status !== 'blocked'"
+          [class.blocked-line]="segment.status === 'blocked'"
+          [class.detour-line]="segment.status === 'detour'"
+        >
           <title>{{ segment.label }}</title>
         </path>
       }
       @for (point of markers; track $index) {
-        <g [class.origin-point]="point.kind === 'origin'" [class.destination-point]="point.kind === 'destination'" [class.terminal-point]="point.kind === 'terminal'" [class.disruption-point]="point.kind === 'disruption'">
-          <circle [attr.cx]="point.x" [attr.cy]="point.y" [attr.r]="point.kind === 'disruption' ? 9 : 7" />
-          @if (point.kind === 'disruption') { <text class="disruption-mark" [attr.x]="point.x - 4" [attr.y]="point.y + 4">×</text> }
+        <g
+          [class.origin-point]="point.kind === 'origin'"
+          [class.destination-point]="point.kind === 'destination'"
+          [class.terminal-point]="point.kind === 'terminal'"
+          [class.disruption-point]="point.kind === 'disruption'"
+        >
+          <circle
+            [attr.cx]="point.x"
+            [attr.cy]="point.y"
+            [attr.r]="point.kind === 'disruption' ? 9 : 7"
+          />
+          @if (point.kind === 'disruption') {
+            <text class="disruption-mark" [attr.x]="point.x - 4" [attr.y]="point.y + 4">×</text>
+          }
           <text [attr.x]="point.x + 10" [attr.y]="point.y - 9">{{ point.label }}</text>
         </g>
       }
     </svg>
-    <div class="route-map-zoom"><button type="button" aria-label="Povečaj zemljevid" (click)="zoomBy(1, $event)">+</button><button type="button" aria-label="Pomanjšaj zemljevid" (click)="zoomBy(-1, $event)">−</button></div>
-    <small class="route-map-attribution"><a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a></small>
+    <div class="route-map-zoom">
+      <button type="button" aria-label="Povečaj zemljevid" (click)="zoomBy(1, $event)">+</button
+      ><button type="button" aria-label="Pomanjšaj zemljevid" (click)="zoomBy(-1, $event)">
+        −
+      </button>
+    </div>
+    <small class="route-map-attribution"
+      ><a href="https://www.openstreetmap.org/copyright" target="_blank"
+        >© OpenStreetMap contributors</a
+      ></small
+    >
   </div>
   <footer>
     <span><i class="legend-road"></i>Tovornjak</span>
     <span><i class="legend-rail"></i>Izbrana vlakovna etapa</span>
     <span><i class="legend-blocked"></i>Zaprt odsek</span>
-    <small>Postaje prikazujejo terminale iz voznega reda. Črte povezujejo terminale; vir nima geometrije dejanskih tirov.</small>
+    <small
+      >Postaje prikazujejo terminale iz voznega reda. Črte povezujejo terminale; vir nima geometrije
+      dejanskih tirov.</small
+    >
   </footer>
 </section>

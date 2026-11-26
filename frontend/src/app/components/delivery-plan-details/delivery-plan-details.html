@@ -65,10 +65,31 @@
             [(ngModel)]="draft.weightKg"
             required
         /></label>
-        <label>Vrsta enote<select name="editUnitType" [ngModel]="draft.unitType" (ngModelChange)="setUnitType($event)" required>
-          <option [ngValue]="draft.unitType">{{draft.unitType}}</option>
-          @for(unit of ['Tovornjak – samo cesta','P400 – dvigljiva prikolica','Nedvigljiva prikolica s ponjavo','Izmenljivi zaboj','Zabojnik 45′','Kontejner 40 HC'];track unit){@if(unit!==draft.unitType){<option [ngValue]="unit">{{unit}}</option>}}
-        </select></label>
+        <label
+          >Vrsta enote<select
+            name="editUnitType"
+            [ngModel]="draft.unitType"
+            (ngModelChange)="setUnitType($event)"
+            required
+          >
+            <option [ngValue]="draft.unitType">{{ draft.unitType }}</option>
+            @for (
+              unit of [
+                'Tovornjak – samo cesta',
+                'P400 – dvigljiva prikolica',
+                'Nedvigljiva prikolica s ponjavo',
+                'Izmenljivi zaboj',
+                'Zabojnik 45′',
+                'Kontejner 40 HC',
+              ];
+              track unit
+            ) {
+              @if (unit !== draft.unitType) {
+                <option [ngValue]="unit">{{ unit }}</option>
+              }
+            }
+          </select></label
+        >
         <label
           >Dodaten čas (min)<input
             type="number"
@@ -89,7 +110,11 @@
               />
               <span><b>Samo tovornjak</b><small>Celotna pot po cesti</small></span>
             </label>
-            <label class="transport-choice" [class.active]="draft.selectedTransportMode === 'INTERMODAL'" [class.unavailable]="!intermodalAvailable">
+            <label
+              class="transport-choice"
+              [class.active]="draft.selectedTransportMode === 'INTERMODAL'"
+              [class.unavailable]="!intermodalAvailable"
+            >
               <input
                 type="radio"
                 name="editTransportMode"
@@ -97,14 +122,38 @@
                 [disabled]="!intermodalAvailable"
                 (change)="setTransportMode('INTERMODAL')"
               />
-              <span><b>Kombinirani vlak</b><small>{{intermodalAvailable?'Za dvigljivo enoto':'Ni združljivo z izbrano enoto'}}</small></span>
+              <span
+                ><b>Kombinirani vlak</b
+                ><small>{{
+                  intermodalAvailable ? 'Za dvigljivo enoto' : 'Ni združljivo z izbrano enoto'
+                }}</small></span
+              >
             </label>
-            <label class="transport-choice" [class.active]="draft.selectedTransportMode === 'RO_LA'" [class.unavailable]="!rolaAvailable">
-              <input type="radio" name="editTransportMode" [checked]="draft.selectedTransportMode === 'RO_LA'" [disabled]="!rolaAvailable" (change)="setTransportMode('RO_LA')" />
-              <span><b>Ro-La</b><small>{{rolaAvailable?'Tovornjak na vlaku':'Ni združljivo z izbrano enoto'}}</small></span>
+            <label
+              class="transport-choice"
+              [class.active]="draft.selectedTransportMode === 'RO_LA'"
+              [class.unavailable]="!rolaAvailable"
+            >
+              <input
+                type="radio"
+                name="editTransportMode"
+                [checked]="draft.selectedTransportMode === 'RO_LA'"
+                [disabled]="!rolaAvailable"
+                (change)="setTransportMode('RO_LA')"
+              />
+              <span
+                ><b>Ro-La</b
+                ><small>{{
+                  rolaAvailable ? 'Tovornjak na vlaku' : 'Ni združljivo z izbrano enoto'
+                }}</small></span
+              >
             </label>
           </div>
-          @if(recalculating){<small class="mode-calculating" role="status">Preračunavam izbrani način prevoza…</small>}
+          @if (recalculating) {
+            <small class="mode-calculating" role="status"
+              >Preračunavam izbrani način prevoza…</small
+            >
+          }
         </fieldset>
         <label
           >Prednost priporočila<select name="editPreference" [(ngModel)]="draft.preference">
@@ -120,7 +169,8 @@
             step="0.01"
             name="editRolaPrice"
             [(ngModel)]="draft.roLaTicketEur"
-        /><small>0 uporabi cenik Ro-La 2026 samodejno; znesek nad 0 prepiše tarifo.</small></label>
+          /><small>0 uporabi cenik Ro-La 2026 samodejno; znesek nad 0 prepiše tarifo.</small></label
+        >
         <label
           >Naklad možen od<input
             type="time"
@@ -400,8 +450,7 @@
                 <li [class]="item.type">
                   <span class="dot"></span>
                   <div>
-                    <b>{{ item.title }}</b
-                    ><small
+                    <b>{{ item.title }}</b><small
                       >{{ item.start | date: 'd. MMM yyyy, HH:mm' }} –
                       {{ item.end | date: 'd. MMM yyyy, HH:mm' }} ·
                       {{ duration(item.durationMinutes) }}

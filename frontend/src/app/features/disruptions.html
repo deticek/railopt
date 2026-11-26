@@ -1,55 +1,212 @@
-<div class="page-heading"><div><span class="eyebrow">CESTNI IN ŽELEZNIŠKI PROMET</span><h1>Motnje in zapore<span class="heading-period">.</span></h1><p class="muted">Vnesi časovno omejene zapore. Planer jih upošteva pri naslednjem izračunu in poišče možen obvoz.</p></div></div>
-@if (error) { <div class="notice" role="alert">{{ error }}</div> }
-@if (message) { <div class="notice success" role="status">{{ message }}</div> }
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">CESTNI IN ŽELEZNIŠKI PROMET</span>
+    <h1>Motnje in zapore<span class="heading-period">.</span></h1>
+    <p class="muted">
+      Vnesi časovno omejene zapore. Planer jih upošteva pri naslednjem izračunu in poišče možen
+      obvoz.
+    </p>
+  </div>
+</div>
+@if (error) {
+  <div class="notice" role="alert">{{ error }}</div>
+}
+@if (message) {
+  <div class="notice success" role="status">{{ message }}</div>
+}
 <nav class="disruption-tabs" aria-label="Vrsta motnje">
-  <button type="button" [class.active]="tab === 'road'" (click)="tab = 'road'">Cestne motnje <span>{{ roadDisruptions.length }}</span></button>
-  <button type="button" [class.active]="tab === 'rail'" (click)="tab = 'rail'">Železniške motnje <span>{{ railDisruptions.length }}</span></button>
+  <button type="button" [class.active]="tab === 'road'" (click)="tab = 'road'">
+    Cestne motnje <span>{{ roadDisruptions.length }}</span>
+  </button>
+  <button type="button" [class.active]="tab === 'rail'" (click)="tab = 'rail'">
+    Železniške motnje <span>{{ railDisruptions.length }}</span>
+  </button>
 </nav>
 
 @if (tab === 'road') {
   <section class="panel disruption-panel">
     <h3>Dodaj cestno zaporo ali obvoz</h3>
-    <p>Izberi lokacijo na cesti, ki se ji je treba izogniti, in točko obvoza. Če načrtovana cestna pot poteka znotraj izbranega radija, jo bo usmerjevalnik poskusil speljati skozi obvozno točko.</p>
+    <p>
+      Izberi lokacijo na cesti, ki se ji je treba izogniti, in točko obvoza. Če načrtovana cestna
+      pot poteka znotraj izbranega radija, jo bo usmerjevalnik poskusil speljati skozi obvozno
+      točko.
+    </p>
     <form class="disruption-form road-form" (ngSubmit)="addRoad()">
-      <label class="wide">Naziv motnje<input name="roadName" [(ngModel)]="roadName" maxlength="200" placeholder="npr. Zapora predora pod Turami" required /></label>
-      <label>Lokacija zapore<app-place-picker title="Izberi lokacijo cestne zapore" [initial]="roadLocation" (selected)="roadLocation = $event" /></label>
-      <label>Točka obvoza<app-place-picker title="Izberi točko obvoza" [initial]="roadBypass" (selected)="roadBypass = $event" /></label>
-      <label>Območje zapore (km)<input type="number" name="roadRadius" min="0.1" max="50" step="0.1" [(ngModel)]="roadRadiusKm" required /></label>
-      <label>Zapora od<input type="datetime-local" name="roadStart" [(ngModel)]="roadStartsAt" required /></label>
-      <label>Zapora do<input type="datetime-local" name="roadEnd" [(ngModel)]="roadEndsAt" required /></label>
-      <label class="wide">Opomba<input name="roadNote" [(ngModel)]="roadNote" maxlength="500" placeholder="Dodatne informacije" /></label>
-      <button class="primary-btn" [disabled]="saving">{{ saving ? 'Shranjujem…' : 'Shrani cestno motnjo' }}</button>
+      <label class="wide"
+        >Naziv motnje<input
+          name="roadName"
+          [(ngModel)]="roadName"
+          maxlength="200"
+          placeholder="npr. Zapora predora pod Turami"
+          required
+      /></label>
+      <label
+        >Lokacija zapore<app-place-picker
+          title="Izberi lokacijo cestne zapore"
+          [initial]="roadLocation"
+          (selected)="roadLocation = $event"
+      /></label>
+      <label
+        >Točka obvoza<app-place-picker
+          title="Izberi točko obvoza"
+          [initial]="roadBypass"
+          (selected)="roadBypass = $event"
+      /></label>
+      <label
+        >Območje zapore (km)<input
+          type="number"
+          name="roadRadius"
+          min="0.1"
+          max="50"
+          step="0.1"
+          [(ngModel)]="roadRadiusKm"
+          required
+      /></label>
+      <label
+        >Zapora od<input type="datetime-local" name="roadStart" [(ngModel)]="roadStartsAt" required
+      /></label>
+      <label
+        >Zapora do<input type="datetime-local" name="roadEnd" [(ngModel)]="roadEndsAt" required
+      /></label>
+      <label class="wide"
+        >Opomba<input
+          name="roadNote"
+          [(ngModel)]="roadNote"
+          maxlength="500"
+          placeholder="Dodatne informacije"
+      /></label>
+      <button class="primary-btn" [disabled]="saving">
+        {{ saving ? 'Shranjujem…' : 'Shrani cestno motnjo' }}
+      </button>
     </form>
   </section>
   <section class="panel disruption-panel">
-    <div class="disruption-list-heading"><div><h3>Vnesene cestne motnje</h3><p>{{ roadDisruptions.length }} zapisov v lokalni bazi</p></div><button class="secondary-btn" type="button" (click)="reload()" [disabled]="loading">Osveži</button></div>
+    <div class="disruption-list-heading">
+      <div>
+        <h3>Vnesene cestne motnje</h3>
+        <p>{{ roadDisruptions.length }} zapisov v lokalni bazi</p>
+      </div>
+      <button class="secondary-btn" type="button" (click)="reload()" [disabled]="loading">
+        Osveži
+      </button>
+    </div>
     <div class="disruption-list">
       @for (item of roadDisruptions; track item.id) {
-        <article><div><b>{{ item.name }}</b><span>Zapora: {{ item.location.label }} · obvoz preko {{ item.bypass.label }}</span><small>{{ item.startsAt | date: 'd. MMM yyyy, HH:mm' }} – {{ item.endsAt | date: 'd. MMM yyyy, HH:mm' }} · radij {{ item.radiusKm }} km@if (item.note) { · {{ item.note }}}</small></div><button class="secondary-btn" type="button" (click)="removeRoad(item.id)">Odstrani</button></article>
-      } @empty { <p class="muted">{{ loading ? 'Nalaganje…' : 'Cestnih motenj še ni.' }}</p> }
+        <article>
+          <div>
+            <b>{{ item.name }}</b
+            ><span>Zapora: {{ item.location.label }} · obvoz preko {{ item.bypass.label }}</span
+            ><small
+              >{{ item.startsAt | date: 'd. MMM yyyy, HH:mm' }} –
+              {{ item.endsAt | date: 'd. MMM yyyy, HH:mm' }} · radij {{ item.radiusKm }} km
+              @if (item.note) {
+                · {{ item.note }}
+              }
+            </small>
+          </div>
+          <button class="secondary-btn" type="button" (click)="removeRoad(item.id)">
+            Odstrani
+          </button>
+        </article>
+      } @empty {
+        <p class="muted">{{ loading ? 'Nalaganje…' : 'Cestnih motenj še ni.' }}</p>
+      }
     </div>
   </section>
 } @else {
   <section class="panel disruption-panel">
     <h3>Dodaj železniško zaporo</h3>
-    <p>Izberi povezavo med terminaloma, ki je zaprta. Planer bo to povezavo izločil in po voznem redu poiskal drugo pot. Za predor izberi terminalski par, katerega vlakovna povezava pelje skozenj; PDF ne opisuje vmesne trase.</p>
+    <p>
+      Izberi povezavo med terminaloma, ki je zaprta. Planer bo to povezavo izločil in po voznem redu
+      poiskal drugo pot. Za predor izberi terminalski par, katerega vlakovna povezava pelje skozenj;
+      PDF ne opisuje vmesne trase.
+    </p>
     <form class="disruption-form" (ngSubmit)="addRail()">
-      <label>Država – od<select name="railCountryA" [(ngModel)]="railCountryA" (ngModelChange)="selectRailCountry('a', $event)" required>@for (country of railCountries; track country.code) { <option [value]="country.code">{{ country.label }}</option> }</select></label>
-      <label>Zaprt odsek – od<select name="railA" [(ngModel)]="railA" required>@for (terminal of terminalsFor('a'); track terminal.id) { <option [value]="terminal.id">{{ terminal.name }}</option> }</select></label>
-      <label>Država – do<select name="railCountryB" [(ngModel)]="railCountryB" (ngModelChange)="selectRailCountry('b', $event)" required>@for (country of railCountries; track country.code) { <option [value]="country.code">{{ country.label }}</option> }</select></label>
-      <label>Zaprt odsek – do<select name="railB" [(ngModel)]="railB" required>@for (terminal of terminalsFor('b'); track terminal.id) { <option [value]="terminal.id">{{ terminal.name }}</option> }</select></label>
-      <label>Zapora od<input type="datetime-local" name="railStart" [(ngModel)]="railStartsAt" required /></label>
-      <label>Zapora do<input type="datetime-local" name="railEnd" [(ngModel)]="railEndsAt" required /></label>
-      <label class="wide">Razlog<input name="railNote" [(ngModel)]="railNote" maxlength="500" placeholder="npr. prenova predora pod Turami" required /></label>
-      <button class="primary-btn" [disabled]="saving || !railTerminals.length">{{ saving ? 'Shranjujem…' : 'Shrani železniško motnjo' }}</button>
+      <label
+        >Država – od<select
+          name="railCountryA"
+          [(ngModel)]="railCountryA"
+          (ngModelChange)="selectRailCountry('a', $event)"
+          required
+        >
+          @for (country of railCountries; track country.code) {
+            <option [value]="country.code">{{ country.label }}</option>
+          }
+        </select></label
+      >
+      <label
+        >Zaprt odsek – od<select name="railA" [(ngModel)]="railA" required>
+          @for (terminal of terminalsFor('a'); track terminal.id) {
+            <option [value]="terminal.id">{{ terminal.name }}</option>
+          }
+        </select></label
+      >
+      <label
+        >Država – do<select
+          name="railCountryB"
+          [(ngModel)]="railCountryB"
+          (ngModelChange)="selectRailCountry('b', $event)"
+          required
+        >
+          @for (country of railCountries; track country.code) {
+            <option [value]="country.code">{{ country.label }}</option>
+          }
+        </select></label
+      >
+      <label
+        >Zaprt odsek – do<select name="railB" [(ngModel)]="railB" required>
+          @for (terminal of terminalsFor('b'); track terminal.id) {
+            <option [value]="terminal.id">{{ terminal.name }}</option>
+          }
+        </select></label
+      >
+      <label
+        >Zapora od<input type="datetime-local" name="railStart" [(ngModel)]="railStartsAt" required
+      /></label>
+      <label
+        >Zapora do<input type="datetime-local" name="railEnd" [(ngModel)]="railEndsAt" required
+      /></label>
+      <label class="wide"
+        >Razlog<input
+          name="railNote"
+          [(ngModel)]="railNote"
+          maxlength="500"
+          placeholder="npr. prenova predora pod Turami"
+          required
+      /></label>
+      <button class="primary-btn" [disabled]="saving || !railTerminals.length">
+        {{ saving ? 'Shranjujem…' : 'Shrani železniško motnjo' }}
+      </button>
     </form>
   </section>
   <section class="panel disruption-panel">
-    <div class="disruption-list-heading"><div><h3>Vnesene železniške motnje</h3><p>{{ railDisruptions.length }} aktivnih zapor</p></div><button class="secondary-btn" type="button" (click)="reload()" [disabled]="loading">Osveži</button></div>
+    <div class="disruption-list-heading">
+      <div>
+        <h3>Vnesene železniške motnje</h3>
+        <p>{{ railDisruptions.length }} aktivnih zapor</p>
+      </div>
+      <button class="secondary-btn" type="button" (click)="reload()" [disabled]="loading">
+        Osveži
+      </button>
+    </div>
     <div class="disruption-list">
       @for (item of railDisruptions; track item.id) {
-        <article><div><b>{{ item.terminalA }} ↔ {{ item.terminalB }}</b><span>{{ item.note }}</span><small>{{ item.startsAt | date: 'd. MMM yyyy, HH:mm' }} – {{ item.endsAt | date: 'd. MMM yyyy, HH:mm' }}</small></div><button class="secondary-btn" type="button" (click)="removeRail(item.id)">Odstrani</button></article>
-      } @empty { <p class="muted">{{ loading ? 'Nalaganje…' : 'Železniških motenj še ni.' }}</p> }
+        <article>
+          <div>
+            <b>{{ item.terminalA }} ↔ {{ item.terminalB }}</b
+            ><span>{{ item.note }}</span
+            ><small
+              >{{ item.startsAt | date: 'd. MMM yyyy, HH:mm' }} –
+              {{ item.endsAt | date: 'd. MMM yyyy, HH:mm' }}</small
+            >
+          </div>
+          <button class="secondary-btn" type="button" (click)="removeRail(item.id)">
+            Odstrani
+          </button>
+        </article>
+      } @empty {
+        <p class="muted">{{ loading ? 'Nalaganje…' : 'Železniških motenj še ni.' }}</p>
+      }
     </div>
   </section>
 }

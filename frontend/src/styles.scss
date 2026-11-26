@@ -1,201 +1,990 @@
-*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f6f7fb}button,input,select{font-family:inherit}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #596de65c;outline-offset:2px}::selection{background:#dce2ff;color:#202a43}
-
-html[data-theme="dark"],html[data-theme="dark"] body{background:#11151d;color:#e5e9f2;color-scheme:dark}
-html[data-theme="dark"] .app-shell,html[data-theme="dark"] .main-area{background:#11151d;color:#e5e9f2}
-html[data-theme="dark"] .sidebar,html[data-theme="dark"] .topbar,html[data-theme="dark"] .panel,html[data-theme="dark"] .metric-card,html[data-theme="dark"] .login-panel{background:#191f2a;color:#e5e9f2;border-color:#2b3443}
-html[data-theme="dark"] .brand,html[data-theme="dark"] .workspace-card b,html[data-theme="dark"] .profile-name b,html[data-theme="dark"] .metric-value,html[data-theme="dark"] .panel-heading h3,html[data-theme="dark"] .list-toolbar h3,html[data-theme="dark"] .settings-panel h3,html[data-theme="dark"] .page-heading h1,html[data-theme="dark"] .results h2,html[data-theme="dark"] .results h3,html[data-theme="dark"] .chosen-option h3,html[data-theme="dark"] .metrics b,html[data-theme="dark"] .timeline b,html[data-theme="dark"] .history>div b,html[data-theme="dark"] .history>div strong,html[data-theme="dark"] .option-card strong{color:#e5e9f2}
-html[data-theme="dark"] .workspace-card,html[data-theme="dark"] .help-card,html[data-theme="dark"] .mode-row,html[data-theme="dark"] .terminal-fields,html[data-theme="dark"] .metrics>div,html[data-theme="dark"] .option-card,html[data-theme="dark"] .option-card.recommended,html[data-theme="dark"] .secondary-btn,html[data-theme="dark"] .panel-heading select,html[data-theme="dark"] .filters select{background:#202735;color:#d8deea;border-color:#354052}
-html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),html[data-theme="dark"] select,html[data-theme="dark"] textarea,html[data-theme="dark"] .search-input{background:#151b25;color:#e5e9f2;border-color:#3a4557}
-html[data-theme="dark"] input::placeholder,html[data-theme="dark"] .muted,html[data-theme="dark"] .page-heading p,html[data-theme="dark"] .breadcrumb,html[data-theme="dark"] .system-status,html[data-theme="dark"] .option-card,html[data-theme="dark"] .timeline small,html[data-theme="dark"] .cost-note,html[data-theme="dark"] .history>div span,html[data-theme="dark"] .panel-heading p{color:#a6b0c2}
-html[data-theme="dark"] .sidebar nav button,html[data-theme="dark"] .settings-link{color:#aeb8c9}
-html[data-theme="dark"] .sidebar nav button.active{background:#292f4e;color:#aab6ff}
-html[data-theme="dark"] .theme-toggle{border-color:#354052;background:#202735;color:#d8deea}
-html[data-theme="dark"] .shipment-heading,html[data-theme="dark"] thead{background:#202735}
-html[data-theme="dark"] th,html[data-theme="dark"] td{color:#aeb8c9;border-color:#303949}
-html[data-theme="dark"] .metrics>div{background:#202735;border-color:#303949}
-html[data-theme="dark"] .notice,html[data-theme="dark"] .comparison-notice{background:#252c45;border-color:#363f62;color:#bdc6ff}
-html[data-theme="dark"] .warnings{background:#302b21;border-color:#51452c}
-html[data-theme="dark"] .warnings b,html[data-theme="dark"] .warnings p{color:#d5c497}
-html[data-theme="dark"] .option-card.selected{border-color:#7888f5;box-shadow:0 0 0 2px #7888f533}
-html[data-theme="dark"] .results>header p,html[data-theme="dark"] .mode-row label,html[data-theme="dark"] .terminal-fields h3,html[data-theme="dark"] .terminal-fields>p,html[data-theme="dark"] .option-label{color:#d3dbea}
-html[data-theme="dark"] .form-panel h2,html[data-theme="dark"] .history h2,html[data-theme="dark"] .form-grid label,html[data-theme="dark"] .places label,html[data-theme="dark"] .checks label,html[data-theme="dark"] .cost-mode label,html[data-theme="dark"] .terminal-picks,html[data-theme="dark"] .terminal-picks b,html[data-theme="dark"] .auto-estimate-note,html[data-theme="dark"] .auto-estimate-note small,html[data-theme="dark"] .chosen-option h3,html[data-theme="dark"] .metrics b,html[data-theme="dark"] .timeline b,html[data-theme="dark"] .history>div b,html[data-theme="dark"] .history>div strong{color:#d3dbea}
-html[data-theme="dark"] .auto-estimate-note{background:#202735;border-color:#354052}
-html[data-theme="dark"] .login-form-wrap h2,html[data-theme="dark"] .login-form-wrap form label{color:#e5e9f2}
-html[data-theme="dark"] .login-help{border-color:#303949}
-/* Dark mode also covers the newer business, catalog and parameter screens. */
-html[data-theme="dark"] .nav-link{color:#aeb8c9}
-html[data-theme="dark"] .sidebar nav .nav-link.active{background:#292f4e;color:#aab6ff}
-html[data-theme="dark"] .nav-label,html[data-theme="dark"] .workspace-label,html[data-theme="dark"] .eyebrow{color:#9ba8bc}
-html[data-theme="dark"] .business-grid label,html[data-theme="dark"] .equipment-controls label{color:#cbd5e1}
-html[data-theme="dark"] .business-grid input,html[data-theme="dark"] .business-grid select,html[data-theme="dark"] .parameter-group input,html[data-theme="dark"] .equipment-controls input,html[data-theme="dark"] .equipment-controls select{background:#151b25;color:#e5e9f2;border-color:#3a4557}
-html[data-theme="dark"] .business-card header,html[data-theme="dark"] .business-card footer{border-color:#303949}
-html[data-theme="dark"] .business-card header p,html[data-theme="dark"] .business-toolbar p,html[data-theme="dark"] .trailer-card header small,html[data-theme="dark"] .trailer-source,html[data-theme="dark"] .registered-grid small,html[data-theme="dark"] .terminal-information dt,html[data-theme="dark"] .terminal-list small{color:#a6b0c2}
-html[data-theme="dark"] .equipment-tabs button,html[data-theme="dark"] .registered-grid article,html[data-theme="dark"] .terminal-list button{background:#202735;color:#d8deea;border-color:#354052}
-html[data-theme="dark"] .trailer-specs div{background:#202735}
-html[data-theme="dark"] .compatibility span:not(.good){background:#45292a;color:#ffb4aa}
-html[data-theme="dark"] .compatibility span.good{background:#153b35;color:#8ee3cc}
-html[data-theme="dark"] .page-footer,html[data-theme="dark"] .nav-label{color:#8995a9}
-html[data-theme="dark"] .table-scroll table,html[data-theme="dark"] .parameter-group table{background:#191f2a}
-html[data-theme="dark"] .settings-link,html[data-theme="dark"] .logout{color:#cbd5e1}
-html[data-theme="dark"] .notice.success{background:#17372f;border-color:#255444;color:#8ee3bb}
-html[data-theme="dark"] .equipment-map-layout .terminal-information{background:#191f2a}
-html[data-theme="dark"] .catalog-setting{color:#d2d9e5}
-html[data-theme="dark"] .catalog-setting small{color:#a6b0c2}
-/* Neutral gray dark theme, native option menus and resilient narrow layouts. */
-html[data-theme="dark"]{color-scheme:dark}
-html[data-theme="dark"] body,html[data-theme="dark"] .app-shell,html[data-theme="dark"] .main-area{background:#1c1c1e;color:#ededee}
-html[data-theme="dark"] .sidebar,html[data-theme="dark"] .topbar,html[data-theme="dark"] .panel,html[data-theme="dark"] .metric-card,html[data-theme="dark"] .login-panel{background:#252527;color:#ededee;border-color:#3b3b3e}
-html[data-theme="dark"] .workspace-card,html[data-theme="dark"] .help-card,html[data-theme="dark"] .mode-row,html[data-theme="dark"] .terminal-fields,html[data-theme="dark"] .metrics>div,html[data-theme="dark"] .option-card,html[data-theme="dark"] .option-card.recommended,html[data-theme="dark"] .secondary-btn,html[data-theme="dark"] .panel-heading select,html[data-theme="dark"] .filters select,html[data-theme="dark"] .equipment-tabs button,html[data-theme="dark"] .registered-grid article,html[data-theme="dark"] .terminal-list button{background:#303033;color:#e5e5e7;border-color:#48484b}
-html[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]),html[data-theme="dark"] select,html[data-theme="dark"] textarea,html[data-theme="dark"] .search-input,html[data-theme="dark"] .form-grid input,html[data-theme="dark"] .form-grid select,html[data-theme="dark"] .duration-inputs input,html[data-theme="dark"] .equipment-controls input,html[data-theme="dark"] .equipment-controls select,html[data-theme="dark"] .terminal-filter input,html[data-theme="dark"] .terminal-filter select{background:#303033!important;color:#f0f0f1!important;border-color:#515154!important;color-scheme:dark}
-html[data-theme="dark"] select option,html[data-theme="dark"] select optgroup{background:#303033;color:#f0f0f1}
-html[data-theme="dark"] .trailer-specs div,html[data-theme="dark"] .auto-estimate-note,html[data-theme="dark"] .schedule-summary,html[data-theme="dark"] .equipment-map-layout .terminal-information{background:#303033;border-color:#48484b;color:#ededee}
-html[data-theme="dark"] .terminal-list button:hover,html[data-theme="dark"] .terminal-list button.selected{background:#3b3b3f}
-html[data-theme="dark"] .shipment-heading,html[data-theme="dark"] thead{background:#303033}
-html[data-theme="dark"] th,html[data-theme="dark"] td{color:#d0d0d2;border-color:#424245}
-html[data-theme="dark"] .nav-link,html[data-theme="dark"] .sidebar nav button,html[data-theme="dark"] .settings-link,html[data-theme="dark"] .logout{color:#c7c7ca}
-html[data-theme="dark"] .sidebar nav .nav-link.active{background:#3a3a3e;color:#d1d1ff}
-html[data-theme="dark"] .workspace-card b,html[data-theme="dark"] .profile-name b,html[data-theme="dark"] .metric-value,html[data-theme="dark"] .panel-heading h3,html[data-theme="dark"] .list-toolbar h3,html[data-theme="dark"] .settings-panel h3,html[data-theme="dark"] .page-heading h1,html[data-theme="dark"] .results h2,html[data-theme="dark"] .results h3,html[data-theme="dark"] .chosen-option h3,html[data-theme="dark"] .metrics b,html[data-theme="dark"] .timeline b,html[data-theme="dark"] .history>div b,html[data-theme="dark"] .history>div strong,html[data-theme="dark"] .option-card strong,html[data-theme="dark"] .trailer-specs b{color:#ededee}
-html[data-theme="dark"] .muted,html[data-theme="dark"] .page-heading p,html[data-theme="dark"] .breadcrumb,html[data-theme="dark"] .system-status,html[data-theme="dark"] .timeline small,html[data-theme="dark"] .cost-note,html[data-theme="dark"] .history>div span,html[data-theme="dark"] .panel-heading p,html[data-theme="dark"] .trailer-specs small{color:#b5b5b8}
-html,body{max-width:100%;overflow-x:hidden}img,svg,video,canvas{max-width:100%}.panel,.page-heading,.form-grid,.form-grid>*{min-width:0}button,a,td,th,label{overflow-wrap:anywhere}
-@media(max-width:760px){.sidebar{position:sticky;top:0;height:100dvh;max-height:100dvh;overflow:auto;flex:none}.content-area{min-width:0;width:100%;padding-inline:clamp(10px,3vw,18px)}.dashboard-charts,.choice-labels.three{grid-template-columns:1fr}.choice-labels>div{min-width:0}.chart-panel,.panel{max-width:100%}.page-heading{align-items:flex-start;flex-wrap:wrap}.page-heading h1{overflow-wrap:anywhere}.metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:480px){.metrics-grid{grid-template-columns:1fr}.choice-labels>div{grid-template-columns:auto minmax(0,1fr) auto}.topbar{min-width:0}.table-scroll{max-width:100%;overflow-x:auto}}
-html[data-theme="dark"] .human-value{display:block;color:#c3c3c6;margin-top:.35rem}
-/* Fix component-scoped legacy colors which otherwise override the gray theme. */
-html[data-theme="dark"] app-parameters .parameter-group,
-html[data-theme="dark"] app-parameters .parameter-group table,
-html[data-theme="dark"] app-parameters .parameter-group tbody,
-html[data-theme="dark"] app-parameters .parameter-group tr{background:#29292b!important}
-html[data-theme="dark"] app-parameters .parameter-group th,
-html[data-theme="dark"] app-parameters .parameter-group td,
-html[data-theme="dark"] app-parameters .parameter-group h2{color:#ededee!important;border-color:#444447!important}
-html[data-theme="dark"] app-equipment .trailer-specs>div{background:#353538!important;border:1px solid #4b4b4f;color:#f0f0f1}
-html[data-theme="dark"] app-equipment .trailer-specs small{color:#c5c5c8!important}
-html[data-theme="dark"] app-equipment .trailer-specs b{color:#f1f1f2!important}
-html[data-theme="dark"] app-business .business-grid label{color:#f0f0f1!important}
-html[data-theme="dark"] app-business .business-card header p,
-html[data-theme="dark"] app-business .business-toolbar p,
-html[data-theme="dark"] app-business .business-card small{color:#c6c6c9!important}
-html[data-theme="dark"] app-business .status-pill{color:#f1f1f2!important}
-html[data-theme="dark"] .full-list table,
-html[data-theme="dark"] .table-scroll table,
-html[data-theme="dark"] .parameter-group table{background:#29292b!important}
-html[data-theme="dark"] .full-list tbody tr,
-html[data-theme="dark"] .table-scroll tbody tr{background:#29292b!important}
-html[data-theme="dark"] .full-list tbody tr:nth-child(even),
-html[data-theme="dark"] .table-scroll tbody tr:nth-child(even){background:#303033!important}
-html[data-theme="dark"] .full-list td,
-html[data-theme="dark"] .table-scroll td{color:#d7d7da!important;border-color:#464649!important}
-html[data-theme="dark"] .full-list .list-toolbar{background:#252527;border-color:#444447}
-html[data-theme="dark"] app-routes .route-editor-panel,
-html[data-theme="dark"] app-routes .shipment-preview,
-html[data-theme="dark"] app-routes .shipment-comparison,
-html[data-theme="dark"] app-routes .plan-editor-summary{background:#29292b!important;border-color:#48484b!important}
-html[data-theme="dark"] app-routes .route-editor>label,
-html[data-theme="dark"] app-routes .plan-editor-panel .route-editor label,
-html[data-theme="dark"] app-routes .shipment-preview h4,
-html[data-theme="dark"] app-routes .shipment-preview p,
-html[data-theme="dark"] app-routes .shipment-comparison h4,
-html[data-theme="dark"] app-routes .shipment-comparison p{color:#dedee0!important}
-html[data-theme="dark"] app-routes .shipment-option{background:#353538!important;border-color:#4b4b4f!important;color:#f0f0f1!important}
-html[data-theme="dark"] app-routes .shipment-option.selected{background:#424246!important;border-color:#9292e7!important}
-html[data-theme="dark"] app-routes .shipment-option small{color:#ceced1!important}
-html[data-theme="dark"] app-routes .plan-editor-summary b{color:#f0f0f1!important}
-html[data-theme="dark"] app-routes .plan-editor-summary span{color:#c7c7ca!important}
-html[data-theme="dark"] .suggestions{background:#303033!important;border-color:#515154!important}
-html[data-theme="dark"] .suggestions button{background:#303033!important;color:#f0f0f1!important}
-html[data-theme="dark"] .suggestions button:hover{background:#424246!important}
-html[data-theme="dark"] .suggestions b{color:#f0f0f1!important}
-html[data-theme="dark"] .suggestions small{color:#c5c5c8!important}
-html[data-theme="dark"] select option,html[data-theme="dark"] select optgroup{background-color:#303033!important;color:#f0f0f1!important}
-.row-actions{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;min-width:220px;white-space:normal}
-.row-actions .secondary-btn{margin:0;min-width:58px}
-.full-list tbody td:last-child:not([colspan]){display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;min-width:220px;white-space:normal}
-.full-list tbody td:last-child:not([colspan]) .secondary-btn{margin:0;min-width:58px}
-@media(max-width:600px){html[data-theme="dark"] .row-actions{min-width:190px;gap:.35rem}.row-actions .secondary-btn{padding:7px 9px}}
-/* Keep the navigation rail pinned while the document content scrolls. */
-@media(min-width:761px){
-  .app-shell{display:block!important}
-  .app-shell app-navbar .sidebar{position:fixed;top:0;left:0;z-index:1000;flex:none;width:245px;height:100vh;height:100dvh;max-height:100vh;max-height:100dvh;overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain}
-  .app-shell .main-area{margin-left:245px}
-  .app-shell app-navbar .theme-toggle{position:sticky;bottom:61px;flex-shrink:0;background:#fff}
+* {
+  box-sizing: border-box;
 }
-html[data-theme="dark"] .sidebar .theme-toggle{background:#303033!important;border-color:#48484b!important;color:#ededee!important}
-html[data-theme="dark"] app-settings .settings-tabs{background:#303033!important;border:1px solid #48484b}
-html[data-theme="dark"] app-settings .settings-tabs button{color:#d0d0d2!important}
-html[data-theme="dark"] app-settings .settings-tabs button.active{background:#48484b!important;color:#fff!important;box-shadow:none}
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif;
+  background: #f6f7fb;
+}
+button,
+input,
+select {
+  font-family: inherit;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 3px solid #596de65c;
+  outline-offset: 2px;
+}
+::selection {
+  background: #dce2ff;
+  color: #202a43;
+}
+
+html[data-theme='dark'],
+html[data-theme='dark'] body {
+  background: #11151d;
+  color: #e5e9f2;
+  color-scheme: dark;
+}
+html[data-theme='dark'] .app-shell,
+html[data-theme='dark'] .main-area {
+  background: #11151d;
+  color: #e5e9f2;
+}
+html[data-theme='dark'] .sidebar,
+html[data-theme='dark'] .topbar,
+html[data-theme='dark'] .panel,
+html[data-theme='dark'] .metric-card,
+html[data-theme='dark'] .login-panel {
+  background: #191f2a;
+  color: #e5e9f2;
+  border-color: #2b3443;
+}
+html[data-theme='dark'] .brand,
+html[data-theme='dark'] .workspace-card b,
+html[data-theme='dark'] .profile-name b,
+html[data-theme='dark'] .metric-value,
+html[data-theme='dark'] .panel-heading h3,
+html[data-theme='dark'] .list-toolbar h3,
+html[data-theme='dark'] .settings-panel h3,
+html[data-theme='dark'] .page-heading h1,
+html[data-theme='dark'] .results h2,
+html[data-theme='dark'] .results h3,
+html[data-theme='dark'] .chosen-option h3,
+html[data-theme='dark'] .metrics b,
+html[data-theme='dark'] .timeline b,
+html[data-theme='dark'] .history > div b,
+html[data-theme='dark'] .history > div strong,
+html[data-theme='dark'] .option-card strong {
+  color: #e5e9f2;
+}
+html[data-theme='dark'] .workspace-card,
+html[data-theme='dark'] .help-card,
+html[data-theme='dark'] .mode-row,
+html[data-theme='dark'] .terminal-fields,
+html[data-theme='dark'] .metrics > div,
+html[data-theme='dark'] .option-card,
+html[data-theme='dark'] .option-card.recommended,
+html[data-theme='dark'] .secondary-btn,
+html[data-theme='dark'] .panel-heading select,
+html[data-theme='dark'] .filters select {
+  background: #202735;
+  color: #d8deea;
+  border-color: #354052;
+}
+html[data-theme='dark'] input:not([type='checkbox']):not([type='radio']),
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea,
+html[data-theme='dark'] .search-input {
+  background: #151b25;
+  color: #e5e9f2;
+  border-color: #3a4557;
+}
+html[data-theme='dark'] input::placeholder,
+html[data-theme='dark'] .muted,
+html[data-theme='dark'] .page-heading p,
+html[data-theme='dark'] .breadcrumb,
+html[data-theme='dark'] .system-status,
+html[data-theme='dark'] .option-card,
+html[data-theme='dark'] .timeline small,
+html[data-theme='dark'] .cost-note,
+html[data-theme='dark'] .history > div span,
+html[data-theme='dark'] .panel-heading p {
+  color: #a6b0c2;
+}
+html[data-theme='dark'] .sidebar nav button,
+html[data-theme='dark'] .settings-link {
+  color: #aeb8c9;
+}
+html[data-theme='dark'] .sidebar nav button.active {
+  background: #292f4e;
+  color: #aab6ff;
+}
+html[data-theme='dark'] .theme-toggle {
+  border-color: #354052;
+  background: #202735;
+  color: #d8deea;
+}
+html[data-theme='dark'] .shipment-heading,
+html[data-theme='dark'] thead {
+  background: #202735;
+}
+html[data-theme='dark'] th,
+html[data-theme='dark'] td {
+  color: #aeb8c9;
+  border-color: #303949;
+}
+html[data-theme='dark'] .metrics > div {
+  background: #202735;
+  border-color: #303949;
+}
+html[data-theme='dark'] .notice,
+html[data-theme='dark'] .comparison-notice {
+  background: #252c45;
+  border-color: #363f62;
+  color: #bdc6ff;
+}
+html[data-theme='dark'] .warnings {
+  background: #302b21;
+  border-color: #51452c;
+}
+html[data-theme='dark'] .warnings b,
+html[data-theme='dark'] .warnings p {
+  color: #d5c497;
+}
+html[data-theme='dark'] .option-card.selected {
+  border-color: #7888f5;
+  box-shadow: 0 0 0 2px #7888f533;
+}
+html[data-theme='dark'] .results > header p,
+html[data-theme='dark'] .mode-row label,
+html[data-theme='dark'] .terminal-fields h3,
+html[data-theme='dark'] .terminal-fields > p,
+html[data-theme='dark'] .option-label {
+  color: #d3dbea;
+}
+html[data-theme='dark'] .form-panel h2,
+html[data-theme='dark'] .history h2,
+html[data-theme='dark'] .form-grid label,
+html[data-theme='dark'] .places label,
+html[data-theme='dark'] .checks label,
+html[data-theme='dark'] .cost-mode label,
+html[data-theme='dark'] .terminal-picks,
+html[data-theme='dark'] .terminal-picks b,
+html[data-theme='dark'] .auto-estimate-note,
+html[data-theme='dark'] .auto-estimate-note small,
+html[data-theme='dark'] .chosen-option h3,
+html[data-theme='dark'] .metrics b,
+html[data-theme='dark'] .timeline b,
+html[data-theme='dark'] .history > div b,
+html[data-theme='dark'] .history > div strong {
+  color: #d3dbea;
+}
+html[data-theme='dark'] .auto-estimate-note {
+  background: #202735;
+  border-color: #354052;
+}
+html[data-theme='dark'] .login-form-wrap h2,
+html[data-theme='dark'] .login-form-wrap form label {
+  color: #e5e9f2;
+}
+html[data-theme='dark'] .login-help {
+  border-color: #303949;
+}
+/* Dark mode also covers the newer business, catalog and parameter screens. */
+html[data-theme='dark'] .nav-link {
+  color: #aeb8c9;
+}
+html[data-theme='dark'] .sidebar nav .nav-link.active {
+  background: #292f4e;
+  color: #aab6ff;
+}
+html[data-theme='dark'] .nav-label,
+html[data-theme='dark'] .workspace-label,
+html[data-theme='dark'] .eyebrow {
+  color: #9ba8bc;
+}
+html[data-theme='dark'] .business-grid label,
+html[data-theme='dark'] .equipment-controls label {
+  color: #cbd5e1;
+}
+html[data-theme='dark'] .business-grid input,
+html[data-theme='dark'] .business-grid select,
+html[data-theme='dark'] .parameter-group input,
+html[data-theme='dark'] .equipment-controls input,
+html[data-theme='dark'] .equipment-controls select {
+  background: #151b25;
+  color: #e5e9f2;
+  border-color: #3a4557;
+}
+html[data-theme='dark'] .business-card header,
+html[data-theme='dark'] .business-card footer {
+  border-color: #303949;
+}
+html[data-theme='dark'] .business-card header p,
+html[data-theme='dark'] .business-toolbar p,
+html[data-theme='dark'] .trailer-card header small,
+html[data-theme='dark'] .trailer-source,
+html[data-theme='dark'] .registered-grid small,
+html[data-theme='dark'] .terminal-information dt,
+html[data-theme='dark'] .terminal-list small {
+  color: #a6b0c2;
+}
+html[data-theme='dark'] .equipment-tabs button,
+html[data-theme='dark'] .registered-grid article,
+html[data-theme='dark'] .terminal-list button {
+  background: #202735;
+  color: #d8deea;
+  border-color: #354052;
+}
+html[data-theme='dark'] .trailer-specs div {
+  background: #202735;
+}
+html[data-theme='dark'] .compatibility span:not(.good) {
+  background: #45292a;
+  color: #ffb4aa;
+}
+html[data-theme='dark'] .compatibility span.good {
+  background: #153b35;
+  color: #8ee3cc;
+}
+html[data-theme='dark'] .page-footer,
+html[data-theme='dark'] .nav-label {
+  color: #8995a9;
+}
+html[data-theme='dark'] .table-scroll table,
+html[data-theme='dark'] .parameter-group table {
+  background: #191f2a;
+}
+html[data-theme='dark'] .settings-link,
+html[data-theme='dark'] .logout {
+  color: #cbd5e1;
+}
+html[data-theme='dark'] .notice.success {
+  background: #17372f;
+  border-color: #255444;
+  color: #8ee3bb;
+}
+html[data-theme='dark'] .equipment-map-layout .terminal-information {
+  background: #191f2a;
+}
+html[data-theme='dark'] .catalog-setting {
+  color: #d2d9e5;
+}
+html[data-theme='dark'] .catalog-setting small {
+  color: #a6b0c2;
+}
+/* Neutral gray dark theme, native option menus and resilient narrow layouts. */
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+html[data-theme='dark'] body,
+html[data-theme='dark'] .app-shell,
+html[data-theme='dark'] .main-area {
+  background: #1c1c1e;
+  color: #ededee;
+}
+html[data-theme='dark'] .sidebar,
+html[data-theme='dark'] .topbar,
+html[data-theme='dark'] .panel,
+html[data-theme='dark'] .metric-card,
+html[data-theme='dark'] .login-panel {
+  background: #252527;
+  color: #ededee;
+  border-color: #3b3b3e;
+}
+html[data-theme='dark'] .workspace-card,
+html[data-theme='dark'] .help-card,
+html[data-theme='dark'] .mode-row,
+html[data-theme='dark'] .terminal-fields,
+html[data-theme='dark'] .metrics > div,
+html[data-theme='dark'] .option-card,
+html[data-theme='dark'] .option-card.recommended,
+html[data-theme='dark'] .secondary-btn,
+html[data-theme='dark'] .panel-heading select,
+html[data-theme='dark'] .filters select,
+html[data-theme='dark'] .equipment-tabs button,
+html[data-theme='dark'] .registered-grid article,
+html[data-theme='dark'] .terminal-list button {
+  background: #303033;
+  color: #e5e5e7;
+  border-color: #48484b;
+}
+html[data-theme='dark'] input:not([type='checkbox']):not([type='radio']),
+html[data-theme='dark'] select,
+html[data-theme='dark'] textarea,
+html[data-theme='dark'] .search-input,
+html[data-theme='dark'] .form-grid input,
+html[data-theme='dark'] .form-grid select,
+html[data-theme='dark'] .duration-inputs input,
+html[data-theme='dark'] .equipment-controls input,
+html[data-theme='dark'] .equipment-controls select,
+html[data-theme='dark'] .terminal-filter input,
+html[data-theme='dark'] .terminal-filter select {
+  background: #303033 !important;
+  color: #f0f0f1 !important;
+  border-color: #515154 !important;
+  color-scheme: dark;
+}
+html[data-theme='dark'] select option,
+html[data-theme='dark'] select optgroup {
+  background: #303033;
+  color: #f0f0f1;
+}
+html[data-theme='dark'] .trailer-specs div,
+html[data-theme='dark'] .auto-estimate-note,
+html[data-theme='dark'] .schedule-summary,
+html[data-theme='dark'] .equipment-map-layout .terminal-information {
+  background: #303033;
+  border-color: #48484b;
+  color: #ededee;
+}
+html[data-theme='dark'] .terminal-list button:hover,
+html[data-theme='dark'] .terminal-list button.selected {
+  background: #3b3b3f;
+}
+html[data-theme='dark'] .shipment-heading,
+html[data-theme='dark'] thead {
+  background: #303033;
+}
+html[data-theme='dark'] th,
+html[data-theme='dark'] td {
+  color: #d0d0d2;
+  border-color: #424245;
+}
+html[data-theme='dark'] .nav-link,
+html[data-theme='dark'] .sidebar nav button,
+html[data-theme='dark'] .settings-link,
+html[data-theme='dark'] .logout {
+  color: #c7c7ca;
+}
+html[data-theme='dark'] .sidebar nav .nav-link.active {
+  background: #3a3a3e;
+  color: #d1d1ff;
+}
+html[data-theme='dark'] .workspace-card b,
+html[data-theme='dark'] .profile-name b,
+html[data-theme='dark'] .metric-value,
+html[data-theme='dark'] .panel-heading h3,
+html[data-theme='dark'] .list-toolbar h3,
+html[data-theme='dark'] .settings-panel h3,
+html[data-theme='dark'] .page-heading h1,
+html[data-theme='dark'] .results h2,
+html[data-theme='dark'] .results h3,
+html[data-theme='dark'] .chosen-option h3,
+html[data-theme='dark'] .metrics b,
+html[data-theme='dark'] .timeline b,
+html[data-theme='dark'] .history > div b,
+html[data-theme='dark'] .history > div strong,
+html[data-theme='dark'] .option-card strong,
+html[data-theme='dark'] .trailer-specs b {
+  color: #ededee;
+}
+html[data-theme='dark'] .muted,
+html[data-theme='dark'] .page-heading p,
+html[data-theme='dark'] .breadcrumb,
+html[data-theme='dark'] .system-status,
+html[data-theme='dark'] .timeline small,
+html[data-theme='dark'] .cost-note,
+html[data-theme='dark'] .history > div span,
+html[data-theme='dark'] .panel-heading p,
+html[data-theme='dark'] .trailer-specs small {
+  color: #b5b5b8;
+}
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+.panel,
+.page-heading,
+.form-grid,
+.form-grid > * {
+  min-width: 0;
+}
+button,
+a,
+td,
+th,
+label {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: auto;
+    flex: none;
+  }
+  .content-area {
+    min-width: 0;
+    width: 100%;
+    padding-inline: clamp(10px, 3vw, 18px);
+  }
+  .dashboard-charts,
+  .choice-labels.three {
+    grid-template-columns: 1fr;
+  }
+  .choice-labels > div {
+    min-width: 0;
+  }
+  .chart-panel,
+  .panel {
+    max-width: 100%;
+  }
+  .page-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .page-heading h1 {
+    overflow-wrap: anywhere;
+  }
+  .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 480px) {
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  .choice-labels > div {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+  .topbar {
+    min-width: 0;
+  }
+  .table-scroll {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+}
+html[data-theme='dark'] .human-value {
+  display: block;
+  color: #c3c3c6;
+  margin-top: 0.35rem;
+}
+/* Fix component-scoped legacy colors which otherwise override the gray theme. */
+html[data-theme='dark'] app-parameters .parameter-group,
+html[data-theme='dark'] app-parameters .parameter-group table,
+html[data-theme='dark'] app-parameters .parameter-group tbody,
+html[data-theme='dark'] app-parameters .parameter-group tr {
+  background: #29292b !important;
+}
+html[data-theme='dark'] app-parameters .parameter-group th,
+html[data-theme='dark'] app-parameters .parameter-group td,
+html[data-theme='dark'] app-parameters .parameter-group h2 {
+  color: #ededee !important;
+  border-color: #444447 !important;
+}
+html[data-theme='dark'] app-equipment .trailer-specs > div {
+  background: #353538 !important;
+  border: 1px solid #4b4b4f;
+  color: #f0f0f1;
+}
+html[data-theme='dark'] app-equipment .trailer-specs small {
+  color: #c5c5c8 !important;
+}
+html[data-theme='dark'] app-equipment .trailer-specs b {
+  color: #f1f1f2 !important;
+}
+html[data-theme='dark'] app-business .business-grid label {
+  color: #f0f0f1 !important;
+}
+html[data-theme='dark'] app-business .business-card header p,
+html[data-theme='dark'] app-business .business-toolbar p,
+html[data-theme='dark'] app-business .business-card small {
+  color: #c6c6c9 !important;
+}
+html[data-theme='dark'] app-business .status-pill {
+  color: #f1f1f2 !important;
+}
+html[data-theme='dark'] .full-list table,
+html[data-theme='dark'] .table-scroll table,
+html[data-theme='dark'] .parameter-group table {
+  background: #29292b !important;
+}
+html[data-theme='dark'] .full-list tbody tr,
+html[data-theme='dark'] .table-scroll tbody tr {
+  background: #29292b !important;
+}
+html[data-theme='dark'] .full-list tbody tr:nth-child(even),
+html[data-theme='dark'] .table-scroll tbody tr:nth-child(even) {
+  background: #303033 !important;
+}
+html[data-theme='dark'] .full-list td,
+html[data-theme='dark'] .table-scroll td {
+  color: #d7d7da !important;
+  border-color: #464649 !important;
+}
+html[data-theme='dark'] .full-list .list-toolbar {
+  background: #252527;
+  border-color: #444447;
+}
+html[data-theme='dark'] app-routes .route-editor-panel,
+html[data-theme='dark'] app-routes .shipment-preview,
+html[data-theme='dark'] app-routes .shipment-comparison,
+html[data-theme='dark'] app-routes .plan-editor-summary {
+  background: #29292b !important;
+  border-color: #48484b !important;
+}
+html[data-theme='dark'] app-routes .route-editor > label,
+html[data-theme='dark'] app-routes .plan-editor-panel .route-editor label,
+html[data-theme='dark'] app-routes .shipment-preview h4,
+html[data-theme='dark'] app-routes .shipment-preview p,
+html[data-theme='dark'] app-routes .shipment-comparison h4,
+html[data-theme='dark'] app-routes .shipment-comparison p {
+  color: #dedee0 !important;
+}
+html[data-theme='dark'] app-routes .shipment-option {
+  background: #353538 !important;
+  border-color: #4b4b4f !important;
+  color: #f0f0f1 !important;
+}
+html[data-theme='dark'] app-routes .shipment-option.selected {
+  background: #424246 !important;
+  border-color: #9292e7 !important;
+}
+html[data-theme='dark'] app-routes .shipment-option small {
+  color: #ceced1 !important;
+}
+html[data-theme='dark'] app-routes .plan-editor-summary b {
+  color: #f0f0f1 !important;
+}
+html[data-theme='dark'] app-routes .plan-editor-summary span {
+  color: #c7c7ca !important;
+}
+html[data-theme='dark'] .suggestions {
+  background: #303033 !important;
+  border-color: #515154 !important;
+}
+html[data-theme='dark'] .suggestions button {
+  background: #303033 !important;
+  color: #f0f0f1 !important;
+}
+html[data-theme='dark'] .suggestions button:hover {
+  background: #424246 !important;
+}
+html[data-theme='dark'] .suggestions b {
+  color: #f0f0f1 !important;
+}
+html[data-theme='dark'] .suggestions small {
+  color: #c5c5c8 !important;
+}
+html[data-theme='dark'] select option,
+html[data-theme='dark'] select optgroup {
+  background-color: #303033 !important;
+  color: #f0f0f1 !important;
+}
+.row-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 220px;
+  white-space: normal;
+}
+.row-actions .secondary-btn {
+  margin: 0;
+  min-width: 58px;
+}
+.full-list tbody td:last-child:not([colspan]) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 220px;
+  white-space: normal;
+}
+.full-list tbody td:last-child:not([colspan]) .secondary-btn {
+  margin: 0;
+  min-width: 58px;
+}
+@media (max-width: 600px) {
+  html[data-theme='dark'] .row-actions {
+    min-width: 190px;
+    gap: 0.35rem;
+  }
+  .row-actions .secondary-btn {
+    padding: 7px 9px;
+  }
+}
+/* Keep the navigation rail pinned while the document content scrolls. */
+@media (min-width: 761px) {
+  .app-shell {
+    display: block !important;
+  }
+  .app-shell app-navbar .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    flex: none;
+    width: 245px;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .app-shell .main-area {
+    margin-left: 245px;
+  }
+  .app-shell app-navbar .theme-toggle {
+    position: sticky;
+    bottom: 61px;
+    flex-shrink: 0;
+    background: #fff;
+  }
+}
+html[data-theme='dark'] .sidebar .theme-toggle {
+  background: #303033 !important;
+  border-color: #48484b !important;
+  color: #ededee !important;
+}
+html[data-theme='dark'] app-settings .settings-tabs {
+  background: #303033 !important;
+  border: 1px solid #48484b;
+}
+html[data-theme='dark'] app-settings .settings-tabs button {
+  color: #d0d0d2 !important;
+}
+html[data-theme='dark'] app-settings .settings-tabs button.active {
+  background: #48484b !important;
+  color: #fff !important;
+  box-shadow: none;
+}
 /* Shared detail panel is used by Routes and History; Angular view encapsulation
    prevents the page component's legacy white styles from being overridden otherwise. */
-html[data-theme="dark"] app-delivery-plan-details .plan-details{background:#29292b!important;border-color:#48484b!important;color:#ededee!important}
-html[data-theme="dark"] app-delivery-plan-details .plan-heading{border-color:#48484b!important}
-html[data-theme="dark"] app-delivery-plan-details .plan-heading h3,
-html[data-theme="dark"] app-delivery-plan-details .option-title,
-html[data-theme="dark"] app-delivery-plan-details .option-summary>b,
-html[data-theme="dark"] app-delivery-plan-details .input-summary b,
-html[data-theme="dark"] app-delivery-plan-details .metrics b,
-html[data-theme="dark"] app-delivery-plan-details .timeline b,
-html[data-theme="dark"] app-delivery-plan-details .option-unavailable{color:#f0f0f1!important}
-html[data-theme="dark"] app-delivery-plan-details .plan-heading p,
-html[data-theme="dark"] app-delivery-plan-details .plan-details h4,
-html[data-theme="dark"] app-delivery-plan-details .option-content h5,
-html[data-theme="dark"] app-delivery-plan-details .option-summary,
-html[data-theme="dark"] app-delivery-plan-details .option-summary small,
-html[data-theme="dark"] app-delivery-plan-details .cost-note,
-html[data-theme="dark"] app-delivery-plan-details .terminal-info,
-html[data-theme="dark"] app-delivery-plan-details .input-summary small,
-html[data-theme="dark"] app-delivery-plan-details .metrics small,
-html[data-theme="dark"] app-delivery-plan-details .timeline small,
-html[data-theme="dark"] app-delivery-plan-details .option-unavailable p,
-html[data-theme="dark"] app-delivery-plan-details .edit-fields label,
-html[data-theme="dark"] app-delivery-plan-details .transport-mode-choice legend,
-html[data-theme="dark"] app-delivery-plan-details .transport-mode-choice label{color:#c9c9cc!important}
-html[data-theme="dark"] app-delivery-plan-details .input-summary>div,
-html[data-theme="dark"] app-delivery-plan-details .metrics>div,
-html[data-theme="dark"] app-delivery-plan-details .option-detail,
-html[data-theme="dark"] app-delivery-plan-details .calculation-summary>div,
-html[data-theme="dark"] app-delivery-plan-details .transport-mode-choice,
-html[data-theme="dark"] app-delivery-plan-details .transport-choice,
-html[data-theme="dark"] app-delivery-plan-details .edit-fields input,
-html[data-theme="dark"] app-delivery-plan-details .edit-fields select,
-html[data-theme="dark"] app-delivery-plan-details .edit-fields textarea{background:#353538!important;border-color:#4b4b4f!important;color:#f0f0f1!important;color-scheme:dark}
-html[data-theme="dark"] app-delivery-plan-details .transport-choice.active{background:#45454a!important;border-color:#8585d9!important}
-html[data-theme="dark"] app-delivery-plan-details .selected-label{background:#45454a;color:#dfdfff}
-html[data-theme="dark"] app-delivery-plan-details .recommended-label{background:#24483b;color:#a8ebc8}
-html[data-theme="dark"] app-delivery-plan-details .timeline li:not(:last-child):before{background:#5a5a5e}
-html[data-theme="dark"] app-delivery-plan-details .timeline .dot{background:#29292b}
-html[data-theme="dark"] app-delivery-plan-details .warnings{background:#40392b;border-color:#62583d;color:#e3d4a9}
+html[data-theme='dark'] app-delivery-plan-details .plan-details {
+  background: #29292b !important;
+  border-color: #48484b !important;
+  color: #ededee !important;
+}
+html[data-theme='dark'] app-delivery-plan-details .plan-heading {
+  border-color: #48484b !important;
+}
+html[data-theme='dark'] app-delivery-plan-details .plan-heading h3,
+html[data-theme='dark'] app-delivery-plan-details .option-title,
+html[data-theme='dark'] app-delivery-plan-details .option-summary > b,
+html[data-theme='dark'] app-delivery-plan-details .input-summary b,
+html[data-theme='dark'] app-delivery-plan-details .metrics b,
+html[data-theme='dark'] app-delivery-plan-details .timeline b,
+html[data-theme='dark'] app-delivery-plan-details .option-unavailable {
+  color: #f0f0f1 !important;
+}
+html[data-theme='dark'] app-delivery-plan-details .plan-heading p,
+html[data-theme='dark'] app-delivery-plan-details .plan-details h4,
+html[data-theme='dark'] app-delivery-plan-details .option-content h5,
+html[data-theme='dark'] app-delivery-plan-details .option-summary,
+html[data-theme='dark'] app-delivery-plan-details .option-summary small,
+html[data-theme='dark'] app-delivery-plan-details .cost-note,
+html[data-theme='dark'] app-delivery-plan-details .terminal-info,
+html[data-theme='dark'] app-delivery-plan-details .input-summary small,
+html[data-theme='dark'] app-delivery-plan-details .metrics small,
+html[data-theme='dark'] app-delivery-plan-details .timeline small,
+html[data-theme='dark'] app-delivery-plan-details .option-unavailable p,
+html[data-theme='dark'] app-delivery-plan-details .edit-fields label,
+html[data-theme='dark'] app-delivery-plan-details .transport-mode-choice legend,
+html[data-theme='dark'] app-delivery-plan-details .transport-mode-choice label {
+  color: #c9c9cc !important;
+}
+html[data-theme='dark'] app-delivery-plan-details .input-summary > div,
+html[data-theme='dark'] app-delivery-plan-details .metrics > div,
+html[data-theme='dark'] app-delivery-plan-details .option-detail,
+html[data-theme='dark'] app-delivery-plan-details .calculation-summary > div,
+html[data-theme='dark'] app-delivery-plan-details .transport-mode-choice,
+html[data-theme='dark'] app-delivery-plan-details .transport-choice,
+html[data-theme='dark'] app-delivery-plan-details .edit-fields input,
+html[data-theme='dark'] app-delivery-plan-details .edit-fields select,
+html[data-theme='dark'] app-delivery-plan-details .edit-fields textarea {
+  background: #353538 !important;
+  border-color: #4b4b4f !important;
+  color: #f0f0f1 !important;
+  color-scheme: dark;
+}
+html[data-theme='dark'] app-delivery-plan-details .transport-choice.active {
+  background: #45454a !important;
+  border-color: #8585d9 !important;
+}
+html[data-theme='dark'] app-delivery-plan-details .selected-label {
+  background: #45454a;
+  color: #dfdfff;
+}
+html[data-theme='dark'] app-delivery-plan-details .recommended-label {
+  background: #24483b;
+  color: #a8ebc8;
+}
+html[data-theme='dark'] app-delivery-plan-details .timeline li:not(:last-child):before {
+  background: #5a5a5e;
+}
+html[data-theme='dark'] app-delivery-plan-details .timeline .dot {
+  background: #29292b;
+}
+html[data-theme='dark'] app-delivery-plan-details .warnings {
+  background: #40392b;
+  border-color: #62583d;
+  color: #e3d4a9;
+}
 /* History file import controls and action row. */
-.history-import-panel .excel-file{display:inline-flex;align-items:center;gap:.65rem;min-height:40px;padding:7px 12px;border:1px solid #d8deea;border-radius:8px;background:#f4f5f8;color:#344057;font-size:12px;font-weight:650;cursor:pointer}
-.history-import-panel .excel-file input[type=file]{max-width:min(420px,60vw);font-size:11px}
-.history-import-panel .excel-file input[type=file]::file-selector-button{margin-right:9px;padding:7px 10px;border:1px solid #cfd5df;border-radius:6px;background:#fff;color:#344057;font:inherit;cursor:pointer}
-.history-import-panel .primary-btn{margin:0}
-.history-import-panel .import-status{flex-basis:100%;margin:.35rem 0 0}
-.history-import-panel,.history-export-panel{display:flex;align-items:center;flex-wrap:wrap;gap:12px}
-.history-import-panel>div,.history-export-panel>div:first-child{flex:1 1 320px;min-width:0}
-.history-import-panel h3,.history-export-panel h3{margin:0 0 5px}
-.history-import-panel p,.history-export-panel p{margin:0;color:#69748a;font-size:11px}
-html[data-theme="dark"] .history-import-panel .excel-file{background:#353538;color:#ededee;border-color:#4b4b4f}
-html[data-theme="dark"] .history-import-panel .excel-file input[type=file]::file-selector-button{background:#48484b;color:#f0f0f1;border-color:#5b5b5f}
-html[data-theme="dark"] .history-import-panel p,html[data-theme="dark"] .history-export-panel p{color:#c5c5c8}
-html[data-theme="dark"] app-history .full-list tbody tr td[colspan] app-delivery-plan-details{display:block;margin:.3rem 0}
-html[data-theme="dark"] app-history .full-list tbody tr:has(app-delivery-plan-details){background:#252527!important}
-html[data-theme="dark"] app-history .history-import-panel .primary-btn,html[data-theme="dark"] app-history .history-export-panel .primary-btn{color:#fff}
-@media(max-width:760px){.app-shell app-navbar .sidebar{flex-basis:62px;width:62px}.history-import-panel .excel-file{max-width:100%;flex-wrap:wrap}.history-import-panel .excel-file input[type=file]{max-width:100%}}
-@media(max-width:760px){.app-shell{display:block!important}.app-shell app-navbar .sidebar{position:fixed;top:0;left:0;z-index:1000;width:62px;height:100vh;height:100dvh;max-height:100vh;max-height:100dvh;overflow-y:auto}.app-shell .main-area{margin-left:62px}}
-html[data-theme="dark"] app-delivery-plan-details .option-summary>b,
-html[data-theme="dark"] app-delivery-plan-details .option-title>b,
-html[data-theme="dark"] app-delivery-plan-details .metrics b,
-html[data-theme="dark"] app-delivery-plan-details .timeline li b,
-html[data-theme="dark"] app-delivery-plan-details .cost-breakdown b{color:#f4f4f5!important}
-html[data-theme="dark"] app-delivery-plan-details .plan-details h4,
-html[data-theme="dark"] app-delivery-plan-details .option-content h5{color:#e8e8ea!important}
-html[data-theme="dark"] app-delivery-plan-details .option-summary>span,
-html[data-theme="dark"] app-delivery-plan-details .cost-breakdown span,
-html[data-theme="dark"] app-delivery-plan-details .metrics small,
-html[data-theme="dark"] app-delivery-plan-details .timeline li small{color:#c5c5c8!important}
-app-terminal-map .map-pin .cluster-count{font:700 9px system-ui,sans-serif;fill:#fff;stroke:none;pointer-events:none}
-app-terminal-map .map-pin .cluster-label{font:600 11px system-ui,sans-serif;fill:#142334;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round;pointer-events:none}
-app-terminal-map .co-located-terminals{display:grid;gap:5px;margin-top:10px}
-app-terminal-map .co-located-terminals button{padding:6px 9px;border:1px solid #d8deea;border-radius:6px;background:#f4f5f8;color:#344057;text-align:left;cursor:pointer}
-app-terminal-map .co-located-terminals button.selected{border-color:#6377e8;background:#eceeff}
-html[data-theme="dark"] app-terminal-map .co-located-terminals button{background:#353538;border-color:#4b4b4f;color:#ededee}
-html[data-theme="dark"] app-terminal-map .co-located-terminals button.selected{background:#45454a;border-color:#8585d9}
+.history-import-panel .excel-file {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 40px;
+  padding: 7px 12px;
+  border: 1px solid #d8deea;
+  border-radius: 8px;
+  background: #f4f5f8;
+  color: #344057;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+.history-import-panel .excel-file input[type='file'] {
+  max-width: min(420px, 60vw);
+  font-size: 11px;
+}
+.history-import-panel .excel-file input[type='file']::file-selector-button {
+  margin-right: 9px;
+  padding: 7px 10px;
+  border: 1px solid #cfd5df;
+  border-radius: 6px;
+  background: #fff;
+  color: #344057;
+  font: inherit;
+  cursor: pointer;
+}
+.history-import-panel .primary-btn {
+  margin: 0;
+}
+.history-import-panel .import-status {
+  flex-basis: 100%;
+  margin: 0.35rem 0 0;
+}
+.history-import-panel,
+.history-export-panel {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.history-import-panel > div,
+.history-export-panel > div:first-child {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+.history-import-panel h3,
+.history-export-panel h3 {
+  margin: 0 0 5px;
+}
+.history-import-panel p,
+.history-export-panel p {
+  margin: 0;
+  color: #69748a;
+  font-size: 11px;
+}
+html[data-theme='dark'] .history-import-panel .excel-file {
+  background: #353538;
+  color: #ededee;
+  border-color: #4b4b4f;
+}
+html[data-theme='dark'] .history-import-panel .excel-file input[type='file']::file-selector-button {
+  background: #48484b;
+  color: #f0f0f1;
+  border-color: #5b5b5f;
+}
+html[data-theme='dark'] .history-import-panel p,
+html[data-theme='dark'] .history-export-panel p {
+  color: #c5c5c8;
+}
+html[data-theme='dark'] app-history .full-list tbody tr td[colspan] app-delivery-plan-details {
+  display: block;
+  margin: 0.3rem 0;
+}
+html[data-theme='dark'] app-history .full-list tbody tr:has(app-delivery-plan-details) {
+  background: #252527 !important;
+}
+html[data-theme='dark'] app-history .history-import-panel .primary-btn,
+html[data-theme='dark'] app-history .history-export-panel .primary-btn {
+  color: #fff;
+}
+@media (max-width: 760px) {
+  .app-shell app-navbar .sidebar {
+    flex-basis: 62px;
+    width: 62px;
+  }
+  .history-import-panel .excel-file {
+    max-width: 100%;
+    flex-wrap: wrap;
+  }
+  .history-import-panel .excel-file input[type='file'] {
+    max-width: 100%;
+  }
+}
+@media (max-width: 760px) {
+  .app-shell {
+    display: block !important;
+  }
+  .app-shell app-navbar .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    width: 62px;
+    height: 100vh;
+    height: 100dvh;
+    max-height: 100vh;
+    max-height: 100dvh;
+    overflow-y: auto;
+  }
+  .app-shell .main-area {
+    margin-left: 62px;
+  }
+}
+html[data-theme='dark'] app-delivery-plan-details .option-summary > b,
+html[data-theme='dark'] app-delivery-plan-details .option-title > b,
+html[data-theme='dark'] app-delivery-plan-details .metrics b,
+html[data-theme='dark'] app-delivery-plan-details .timeline li b,
+html[data-theme='dark'] app-delivery-plan-details .cost-breakdown b {
+  color: #f4f4f5 !important;
+}
+html[data-theme='dark'] app-delivery-plan-details .plan-details h4,
+html[data-theme='dark'] app-delivery-plan-details .option-content h5 {
+  color: #e8e8ea !important;
+}
+html[data-theme='dark'] app-delivery-plan-details .option-summary > span,
+html[data-theme='dark'] app-delivery-plan-details .cost-breakdown span,
+html[data-theme='dark'] app-delivery-plan-details .metrics small,
+html[data-theme='dark'] app-delivery-plan-details .timeline li small {
+  color: #c5c5c8 !important;
+}
+html[data-theme='dark'] app-delivery-plan-details .option-summary,
+html[data-theme='dark'] app-delivery-plan-details .option-content,
+html[data-theme='dark'] app-delivery-plan-details .option-content * {
+  color: #dedee0;
+}
+html[data-theme='dark'] app-delivery-plan-details .option-summary > b,
+html[data-theme='dark'] app-delivery-plan-details .option-title > b,
+html[data-theme='dark'] app-delivery-plan-details .option-content h5,
+html[data-theme='dark'] app-delivery-plan-details .timeline li b,
+html[data-theme='dark'] app-delivery-plan-details .metrics b,
+html[data-theme='dark'] app-delivery-plan-details .cost-breakdown b,
+html[data-theme='dark'] app-delivery-plan-details .plan-details h4 {
+  color: #f4f4f5 !important;
+}
+html[data-theme='dark'] app-delivery-plan-details .timeline li small,
+html[data-theme='dark'] app-delivery-plan-details .metrics small,
+html[data-theme='dark'] app-delivery-plan-details .cost-breakdown span,
+html[data-theme='dark'] app-delivery-plan-details .option-summary > span {
+  color: #d1d1d3 !important;
+}
+app-terminal-map .map-pin .cluster-count {
+  font:
+    700 9px system-ui,
+    sans-serif;
+  fill: #fff;
+  stroke: none;
+  pointer-events: none;
+}
+app-terminal-map .map-pin .cluster-label {
+  font:
+    600 11px system-ui,
+    sans-serif;
+  fill: #142334;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+app-terminal-map .co-located-terminals {
+  display: grid;
+  gap: 5px;
+  margin-top: 10px;
+}
+app-terminal-map .co-located-terminals button {
+  padding: 6px 9px;
+  border: 1px solid #d8deea;
+  border-radius: 6px;
+  background: #f4f5f8;
+  color: #344057;
+  text-align: left;
+  cursor: pointer;
+}
+app-terminal-map .co-located-terminals button.selected {
+  border-color: #6377e8;
+  background: #eceeff;
+}
+html[data-theme='dark'] app-terminal-map .co-located-terminals button {
+  background: #353538;
+  border-color: #4b4b4f;
+  color: #ededee;
+}
+html[data-theme='dark'] app-terminal-map .co-located-terminals button.selected {
+  background: #45454a;
+  border-color: #8585d9;
+}
+
+/* Consistent export controls across routes, history, and database shipments. */
+.route-export-panel .history-actions,
+.history-export-panel .history-actions,
+app-history .list-toolbar .history-actions,
+app-business .business-toolbar > div:last-child {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.route-export-panel .history-actions > button,
+.history-export-panel .history-actions > button:nth-child(-n + 2),
+app-history .list-toolbar .history-actions > button:nth-child(n + 2),
+app-business .business-toolbar > div:last-child > button {
+  min-height: 40px;
+  margin: 0;
+  border: 1px solid #d8dce4;
+  border-radius: 7px;
+  background: #fff;
+  box-shadow: none;
+  color: #4f5b70;
+}
+.route-export-panel .history-actions > button:hover,
+.history-export-panel .history-actions > button:nth-child(-n + 2):hover,
+app-history .list-toolbar .history-actions > button:nth-child(n + 2):hover,
+app-business .business-toolbar > div:last-child > button:hover {
+  background: #f1f3f6;
+  transform: translateY(-1px);
+}
+html[data-theme='dark'] .route-export-panel .history-actions > button,
+html[data-theme='dark'] .history-export-panel .history-actions > button:nth-child(-n + 2),
+html[data-theme='dark'] app-history .list-toolbar .history-actions > button:nth-child(n + 2),
+html[data-theme='dark'] app-business .business-toolbar > div:last-child > button {
+  border-color: #48484b;
+  background: #303033;
+  color: #ededee;
+}
+html[data-theme='dark'] .route-export-panel .history-actions > button:hover,
+html[data-theme='dark'] .history-export-panel .history-actions > button:nth-child(-n + 2):hover,
+html[data-theme='dark'] app-history .list-toolbar .history-actions > button:nth-child(n + 2):hover,
+html[data-theme='dark'] app-business .business-toolbar > div:last-child > button:hover {
+  background: #3a3a3e;
+}
+
+/* Equal-size CSV/PDF/JSON export buttons in history. */
+.history-export-panel .history-actions > button {
+  display: inline-flex;
+  flex: 1 1 220px;
+  align-items: center;
+  justify-content: center;
+  min-width: 220px;
+  height: 40px;
+  white-space: nowrap;
+}
+app-history .full-list .list-toolbar .history-actions > button:nth-child(n + 2) {
+  display: inline-flex;
+  flex: 1 1 185px;
+  align-items: center;
+  justify-content: center;
+  min-width: 185px;
+  height: 40px;
+  white-space: nowrap;
+}

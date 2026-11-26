@@ -1,7 +1,12 @@
 import '@angular/compiler';
 import { describe, expect, it } from 'vitest';
 import { DeliveryPlanDetailsComponent } from './delivery-plan-details';
-import type { DeliveryOption, DeliveryPlanInput, DeliveryPlanResult, SavedDeliveryPlan } from '../../core/api/delivery-plans-api';
+import type {
+  DeliveryOption,
+  DeliveryPlanInput,
+  DeliveryPlanResult,
+  SavedDeliveryPlan,
+} from '../../core/api/delivery-plans-api';
 
 describe('DeliveryPlanDetailsComponent inline editor', () => {
   it('prefills editable controls with the saved planner values', () => {
@@ -34,8 +39,8 @@ describe('DeliveryPlanDetailsComponent inline editor', () => {
         driverCostPerHour: 24,
         tollsEur: 125,
         customsEur: 12,
-        otherVehicleEur: 18
-      }
+        otherVehicleEur: 18,
+      },
     };
     const result = {
       origin,
@@ -45,7 +50,7 @@ describe('DeliveryPlanDetailsComponent inline editor', () => {
       extraTimeMinutes: input.extraTimeMinutes,
       adr: input.adr,
       options: [makeOption('road'), makeOption('rail')],
-      selectedOptionId: 'road'
+      selectedOptionId: 'road',
     } as DeliveryPlanResult;
     const plan = {
       id: 'plan-id',
@@ -56,7 +61,7 @@ describe('DeliveryPlanDetailsComponent inline editor', () => {
       weightKg: input.weightKg,
       unitType: input.unitType,
       input,
-      result
+      result,
     } as SavedDeliveryPlan;
     const component = new DeliveryPlanDetailsComponent();
     component.plan = plan;
@@ -81,13 +86,13 @@ describe('DeliveryPlanDetailsComponent inline editor', () => {
       adr: true,
       weekendBan: false,
       costMode: 'detailed',
-      costs: input.costs
+      costs: input.costs,
     });
   });
   it('detects when a saved plan is missing the combined option', () => {
     const component = new DeliveryPlanDetailsComponent();
     component.plan = {
-      result: { options: [makeOption('road')] }
+      result: { options: [makeOption('road')] },
     } as SavedDeliveryPlan;
 
     expect(component.hasCombinedOption).toBe(false);
@@ -107,8 +112,8 @@ describe('DeliveryPlanDetailsComponent inline editor', () => {
         selectedOptionId: 'road',
         recommendedOptionId: 'road',
         onTime: false,
-        options: [road, rail]
-      }
+        options: [road, rail],
+      },
     } as SavedDeliveryPlan;
     component.preferFastest = true;
 
@@ -144,7 +149,7 @@ describe('DeliveryPlanDetailsComponent inline editor', () => {
         deliveryDeadlineAt: '2026-12-03T16:00',
         weightKg: 12500,
         unitType: 'P400 – dvigljiva prikolica',
-        transportMode: 'compare'
+        transportMode: 'compare',
       },
       result: {
         origin,
@@ -155,8 +160,8 @@ describe('DeliveryPlanDetailsComponent inline editor', () => {
         adr: false,
         selectedOptionId: 'rail',
         recommendedOptionId: 'rail',
-        options: [makeOption('rail')]
-      }
+        options: [makeOption('rail')],
+      },
     } as SavedDeliveryPlan;
     component.beginEdit();
 
@@ -196,6 +201,6 @@ function makeOption(id: string): DeliveryOption {
     onTime: true,
     feasible: true,
     warnings: [],
-    timeline: []
+    timeline: [],
   };
 }

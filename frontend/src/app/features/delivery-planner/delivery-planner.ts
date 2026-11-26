@@ -37,12 +37,29 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
   extraTimeRemainderMinutes = 0;
   weightKg = 24000;
   unitType = 'P400 – dvigljiva prikolica';
-  equipmentCatalog: Array<{id:string;name:string;category:string;uct:'da'|'zamenjava'|'ne';length_m:number;width_m:number;height_m:number;tare_t:number;tractor_t:number;payload_t:number;pallets:number;volume_m3:number;adr:boolean;temp:boolean;note:string;source:string}> = [];
+  equipmentCatalog: Array<{
+    id: string;
+    name: string;
+    category: string;
+    uct: 'da' | 'zamenjava' | 'ne';
+    length_m: number;
+    width_m: number;
+    height_m: number;
+    tare_t: number;
+    tractor_t: number;
+    payload_t: number;
+    pallets: number;
+    volume_m3: number;
+    adr: boolean;
+    temp: boolean;
+    note: string;
+    source: string;
+  }> = [];
   equipmentCatalogId = '';
-  showFullTrailerCatalog=localStorage.getItem('railopt-all-trailers')==='true';
+  showFullTrailerCatalog = localStorage.getItem('railopt-all-trailers') === 'true';
   globalExtraTimeMinutes = 0;
   readonly transportMode = 'compare' as const;
-  selectedTransportMode: 'AUTO'|'ROAD'|'INTERMODAL'|'RO_LA' = 'AUTO';
+  selectedTransportMode: 'AUTO' | 'ROAD' | 'INTERMODAL' | 'RO_LA' = 'AUTO';
   preference: 'cost' | 'emissions' | 'time' = 'cost';
   roLaTicketEur = 0;
   adr = false;
@@ -71,7 +88,14 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
   private timer?: ReturnType<typeof setInterval>;
   ngOnInit(): void {
     void this.refreshSaved();
-    if(this.showFullTrailerCatalog)void fetch(new URL('assets/trailer-catalog.json',document.baseURI)).then(r=>r.ok?r.json():[]).then(rows=>{this.equipmentCatalog=rows;this.changeDetector.markForCheck();}).catch(()=>{});
+    if (this.showFullTrailerCatalog)
+      void fetch(new URL('assets/trailer-catalog.json', document.baseURI))
+        .then((r) => (r.ok ? r.json() : []))
+        .then((rows) => {
+          this.equipmentCatalog = rows;
+          this.changeDetector.markForCheck();
+        })
+        .catch(() => {});
     void getGlobalExtraTime()
       .then((value) => {
         this.globalExtraTimeMinutes = value;
@@ -90,11 +114,29 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
     this.equipmentCatalogId = '';
     this.keepTransportModeCompatible();
   }
-  setCatalogEquipment(id:string):void{this.equipmentCatalogId=id;const item=this.equipmentCatalog.find(x=>x.id===id);if(!item)return;if(item.id==='P400')this.unitType='P400 – dvigljiva prikolica';else if(item.id==='ZABOJ1360')this.unitType='Izmenljivi zaboj';else if(item.id==='Z40HC')this.unitType='Kontejner 40 HC';else if(item.id==='Z45PW')this.unitType='Zabojnik 45′';else if(item.uct==='ne')this.unitType='Nedvigljiva prikolica s ponjavo';else this.unitType='P400 – dvigljiva prikolica';this.keepTransportModeCompatible();}
-  private keepTransportModeCompatible():void{if(this.selectedTransportMode==='INTERMODAL'&&!this.usesIntermodal)this.selectedTransportMode=this.usesRoLa?'RO_LA':'ROAD';else if(this.selectedTransportMode==='RO_LA'&&!this.usesRoLa)this.selectedTransportMode=this.usesIntermodal?'INTERMODAL':'ROAD';}
-  get selectedCatalogItem(){return this.equipmentCatalog.find(x=>x.id===this.equipmentCatalogId)||null;}
+  setCatalogEquipment(id: string): void {
+    this.equipmentCatalogId = id;
+    const item = this.equipmentCatalog.find((x) => x.id === id);
+    if (!item) return;
+    if (item.id === 'P400') this.unitType = 'P400 – dvigljiva prikolica';
+    else if (item.id === 'ZABOJ1360') this.unitType = 'Izmenljivi zaboj';
+    else if (item.id === 'Z40HC') this.unitType = 'Kontejner 40 HC';
+    else if (item.id === 'Z45PW') this.unitType = 'Zabojnik 45′';
+    else if (item.uct === 'ne') this.unitType = 'Nedvigljiva prikolica s ponjavo';
+    else this.unitType = 'P400 – dvigljiva prikolica';
+    this.keepTransportModeCompatible();
+  }
+  private keepTransportModeCompatible(): void {
+    if (this.selectedTransportMode === 'INTERMODAL' && !this.usesIntermodal)
+      this.selectedTransportMode = this.usesRoLa ? 'RO_LA' : 'ROAD';
+    else if (this.selectedTransportMode === 'RO_LA' && !this.usesRoLa)
+      this.selectedTransportMode = this.usesIntermodal ? 'INTERMODAL' : 'ROAD';
+  }
+  get selectedCatalogItem() {
+    return this.equipmentCatalog.find((x) => x.id === this.equipmentCatalogId) || null;
+  }
   get maxWeightKg(): number {
-    if(this.selectedCatalogItem)return Math.floor(this.selectedCatalogItem.payload_t*1000);
+    if (this.selectedCatalogItem) return Math.floor(this.selectedCatalogItem.payload_t * 1000);
     const unit = this.unitType.toLocaleLowerCase('sl-SI');
     if (unit.includes('zabojnik 45') || /zaboj\s*45/.test(unit)) return 22000;
     if (unit.includes('izmenljivi zaboj')) return 23000;
@@ -123,7 +165,8 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
     const weight = Number(this.weightKg);
     if (weight > this.maxWeightKg) {
       this.error.set(
-        (this.unitType.toLocaleLowerCase('sl-SI').includes('zabojnik 45') || /zaboj\s*45/.test(this.unitType.toLocaleLowerCase('sl-SI')))
+        this.unitType.toLocaleLowerCase('sl-SI').includes('zabojnik 45') ||
+          /zaboj\s*45/.test(this.unitType.toLocaleLowerCase('sl-SI'))
           ? 'Za zabojnik 45′ je največja teža tovora 22.000 kg.'
           : this.unitType.toLocaleLowerCase('sl-SI').includes('izmenljivi zaboj')
             ? 'Za izmenljivi zaboj je največja teža tovora 23.000 kg.'
@@ -141,7 +184,8 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
       const requestedDeadline = new Date(this.deliveryDeadlineAt);
       const now = new Date();
       const earliestSearch = new Date(requestedDeadline.getTime() - 90 * 24 * 60 * 60 * 1000);
-      if (Number.isFinite(earliestSearch.getTime()) && now < earliestSearch) now.setTime(earliestSearch.getTime());
+      if (Number.isFinite(earliestSearch.getTime()) && now < earliestSearch)
+        now.setTime(earliestSearch.getTime());
       loadingAt = localInputDate(now);
     }
     this.error.set('');
@@ -166,7 +210,12 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
       unloadingWindowEnd: this.unloadingWindowEnd,
       weightKg: Number(this.weightKg),
       unitType: this.unitType,
-      ...(this.selectedCatalogItem?{equipmentCatalogId:this.selectedCatalogItem.id,equipmentName:this.selectedCatalogItem.name}:{}),
+      ...(this.selectedCatalogItem
+        ? {
+            equipmentCatalogId: this.selectedCatalogItem.id,
+            equipmentName: this.selectedCatalogItem.name,
+          }
+        : {}),
       extraTimeMinutes: extra + this.globalExtraTimeMinutes,
       globalExtraTimeMinutes: this.globalExtraTimeMinutes,
       transportMode: this.selectedTransportMode === 'ROAD' ? 'road' : this.transportMode,
@@ -250,11 +299,22 @@ export class DeliveryPlannerComponent implements OnInit, OnDestroy {
     this.selectedOptionId.set(id);
   }
   get usesRoLa(): boolean {
-    if(this.selectedCatalogItem){const item=this.selectedCatalogItem,gross=item.tare_t+item.tractor_t+Number(this.weightKg)/1000;return item.length_m<=18.8&&item.width_m<=2.6&&item.height_m<=4&&gross<=(item.category==='zabojnik'?44:40)&&(!this.adr||item.adr);}
+    if (this.selectedCatalogItem) {
+      const item = this.selectedCatalogItem,
+        gross = item.tare_t + item.tractor_t + Number(this.weightKg) / 1000;
+      return (
+        item.length_m <= 18.8 &&
+        item.width_m <= 2.6 &&
+        item.height_m <= 4 &&
+        gross <= (item.category === 'zabojnik' ? 44 : 40) &&
+        (!this.adr || item.adr)
+      );
+    }
     return /nedvigljiv|ponjav|tovornjak/i.test(this.unitType);
   }
   get usesIntermodal(): boolean {
-    if(this.selectedCatalogItem)return this.selectedCatalogItem.uct!=='ne'&&(!this.adr||this.selectedCatalogItem.adr);
+    if (this.selectedCatalogItem)
+      return this.selectedCatalogItem.uct !== 'ne' && (!this.adr || this.selectedCatalogItem.adr);
     return /p400|izmenljivi zaboj|zabojnik 45|zaboj\s*45/i.test(this.unitType);
   }
   fmt(date: string): string {

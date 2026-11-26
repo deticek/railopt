@@ -1,16 +1,57 @@
 :host {
   display: block;
 }
-html[data-theme="dark"] .plan-details{background:#252527;border-color:#444447}
-html[data-theme="dark"] .plan-heading h3,html[data-theme="dark"] .option-title,html[data-theme="dark"] .input-summary b,html[data-theme="dark"] .metrics b{color:#f0f0f1}
-html[data-theme="dark"] .plan-heading p,html[data-theme="dark"] .plan-details h4,html[data-theme="dark"] .option-content h5,html[data-theme="dark"] .cost-note,html[data-theme="dark"] .terminal-info,html[data-theme="dark"] .option-summary{color:#c5c5c8}
-html[data-theme="dark"] .input-summary>div,html[data-theme="dark"] .metrics>div,html[data-theme="dark"] .option-detail,html[data-theme="dark"] .edit-fields input,html[data-theme="dark"] .edit-fields select,html[data-theme="dark"] .edit-fields textarea{background:#343437;border-color:#4a4a4e;color:#f0f0f1}
-html[data-theme="dark"] .transport-mode-choice{background:#303033;border-color:#48484b;color:#ededee}
-html[data-theme="dark"] .transport-choice{background:#353538;border-color:#4b4b4f;color:#ededee}
-html[data-theme="dark"] .transport-mode-choice .transport-choice b{color:#f0f0f1}
-html[data-theme="dark"] .transport-mode-choice .transport-choice small{color:#c5c5c8}
-html[data-theme="dark"] .transport-mode-choice .transport-choice.active{background:#414145;border-color:#8585d9}
-html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
+html[data-theme='dark'] .plan-details {
+  background: #252527;
+  border-color: #444447;
+}
+html[data-theme='dark'] .plan-heading h3,
+html[data-theme='dark'] .option-title,
+html[data-theme='dark'] .input-summary b,
+html[data-theme='dark'] .metrics b {
+  color: #f0f0f1;
+}
+html[data-theme='dark'] .plan-heading p,
+html[data-theme='dark'] .plan-details h4,
+html[data-theme='dark'] .option-content h5,
+html[data-theme='dark'] .cost-note,
+html[data-theme='dark'] .terminal-info,
+html[data-theme='dark'] .option-summary {
+  color: #c5c5c8;
+}
+html[data-theme='dark'] .input-summary > div,
+html[data-theme='dark'] .metrics > div,
+html[data-theme='dark'] .option-detail,
+html[data-theme='dark'] .edit-fields input,
+html[data-theme='dark'] .edit-fields select,
+html[data-theme='dark'] .edit-fields textarea {
+  background: #343437;
+  border-color: #4a4a4e;
+  color: #f0f0f1;
+}
+html[data-theme='dark'] .transport-mode-choice {
+  background: #303033;
+  border-color: #48484b;
+  color: #ededee;
+}
+html[data-theme='dark'] .transport-choice {
+  background: #353538;
+  border-color: #4b4b4f;
+  color: #ededee;
+}
+html[data-theme='dark'] .transport-mode-choice .transport-choice b {
+  color: #f0f0f1;
+}
+html[data-theme='dark'] .transport-mode-choice .transport-choice small {
+  color: #c5c5c8;
+}
+html[data-theme='dark'] .transport-mode-choice .transport-choice.active {
+  background: #414145;
+  border-color: #8585d9;
+}
+html[data-theme='dark'] .timeline li:not(:last-child):before {
+  background: #555558;
+}
 .plan-details {
   display: grid;
   gap: 12px;
@@ -27,7 +68,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
 }
 .plan-heading h3 {
   margin: 4px 0;
-  color: #303b54;
+  color: #fff;
   font-size: 15px;
 }
 .plan-heading p,
@@ -80,7 +121,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
 }
 .input-summary b,
 .metrics b {
-  color: #303b54;
+  color: #fff;
   font-size: 10px;
 }
 .option-list {
@@ -110,7 +151,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #303b54;
+  color: #fff;
   font-size: 11px;
 }
 .selected-label,
@@ -134,7 +175,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
   font-size: 10px;
 }
 .option-summary > b {
-  color: #303b54;
+  color: #fff;
 }
 .option-content {
   display: grid;
@@ -192,7 +233,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
   gap: 3px;
 }
 .timeline li b {
-  color: #303b54;
+  color: #fff;
   font-size: 10px;
 }
 .timeline li small {
@@ -247,7 +288,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
 }
 .calculation-summary b,
 .cost-breakdown b {
-  color: #303b54;
+  color: #fff;
   font-size: 10px;
 }
 .cost-breakdown {
@@ -291,7 +332,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
   border: 1px solid #dfe4ed;
   border-radius: 7px;
   background: #fff;
-  color: #303b54;
+  color: #fff;
   font: inherit;
   font-weight: 450;
 }
@@ -341,7 +382,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #303b54;
+  color: #fff;
   font-size: 10px;
   font-weight: 500;
 }
@@ -413,7 +454,10 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
   opacity: 0.48;
   cursor: not-allowed;
 }
-.transport-mode-choice .transport-choice.unavailable{opacity:.45;cursor:not-allowed}
+.transport-mode-choice .transport-choice.unavailable {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
 .transport-mode-choice .transport-choice input {
   position: absolute;
   width: 1px;
@@ -425,7 +469,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
   gap: 4px;
 }
 .transport-mode-choice .transport-choice b {
-  color: #303b54;
+  color: #fff;
   font-size: 11px;
 }
 .transport-mode-choice .transport-choice small {
@@ -466,7 +510,7 @@ html[data-theme="dark"] .timeline li:not(:last-child):before{background:#555558}
   display: grid;
   gap: 6px;
   padding: 14px;
-  color: #303b54;
+  color: #fff;
   font-size: 11px;
 }
 .option-unavailable p {

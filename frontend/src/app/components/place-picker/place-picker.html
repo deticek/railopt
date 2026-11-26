@@ -22,8 +22,9 @@
           <div class="suggestions">
             @for (place of candidates(); track place.lat + ',' + place.lon) {
               <button type="button" (click)="selectCandidate(place)">
-                <b>{{ place.label }}</b
-                ><small>{{ place.country || place.city || 'Izberi rezultat' }}</small>
+                <b>{{ place.label }}</b><small>{{
+                  place.country || place.city || 'Izberi rezultat'
+                }}</small>
               </button>
             }
           </div>

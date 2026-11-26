@@ -8,27 +8,112 @@
 @if (error) {
   <div class="notice" role="alert">{{ error }}</div>
 }
-@if(isAdmin){<section class="panel history-import-panel"><div><h3>Uvoz Excelovega delovnega zvezka</h3><p>Uvozi relacije, pošiljke, Excelove parametre in praznike. Ujemajoče se relacije in pošiljke se posodobijo; obstoječi zapisi, ki jih datoteka ne vsebuje, ostanejo v bazi.</p></div><label class="excel-file">Izberi .xlsx<input type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" (change)="selectExcel($event)"></label><button class="primary-btn" type="button" [disabled]="!excelFile||importingExcel" (click)="importWorkbook()">{{importingExcel?'Uvažam…':'Uvozi Excel'}}</button>@if(importMessage){<p class="import-status" role="status">{{importMessage}}</p>}</section>}
+@if (isAdmin) {
+  <section class="panel history-import-panel">
+    <div>
+      <h3>Uvoz Excelovega delovnega zvezka</h3>
+      <p>
+        Uvozi relacije, pošiljke, Excelove parametre in praznike. Ujemajoče se relacije in pošiljke
+        se posodobijo; obstoječi zapisi, ki jih datoteka ne vsebuje, ostanejo v bazi.
+      </p>
+    </div>
+    <label class="excel-file"
+      >Izberi .xlsx<input
+        type="file"
+        accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        (change)="selectExcel($event)" /></label
+    ><button
+      class="primary-btn"
+      type="button"
+      [disabled]="!excelFile || importingExcel"
+      (click)="importWorkbook()"
+    >
+      {{ importingExcel ? 'Uvažam…' : 'Uvozi Excel' }}
+    </button>
+    @if (importMessage) {
+      <p class="import-status" role="status">{{ importMessage }}</p>
+    }
+  </section>
+}
 <section class="panel history-export-panel">
-  <div><h3>Izvoz zgodovine</h3><p>Izvozi pošiljke in shranjene izračune skupaj z vsemi vhodnimi podatki, možnostmi, časovnicami in rezultati.</p></div>
-  <div class="history-actions"><button class="primary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllHistory('csv')">Izvozi celotno zgodovino v Excel (CSV)</button><button class="secondary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportAllHistory('pdf')">Izvozi celotno zgodovino v PDF</button><button class="secondary-btn" type="button" [disabled]="!!exportBusy || loading" (click)="exportCompleteArchive()">{{exportBusy==='archive'?'Pripravljam arhiv…':'Izvozi popoln arhiv JSON'}}</button></div>
+  <div>
+    <h3>Izvoz zgodovine</h3>
+    <p>
+      Izvozi pošiljke in shranjene izračune skupaj z vsemi vhodnimi podatki, možnostmi, časovnicami
+      in rezultati.
+    </p>
+  </div>
+  <div class="history-actions">
+    <button
+      class="primary-btn"
+      type="button"
+      [disabled]="!!exportBusy || loading"
+      (click)="exportAllHistory('csv')"
+    >
+      Izvozi celotno zgodovino v Excel (CSV)</button
+    ><button
+      class="secondary-btn"
+      type="button"
+      [disabled]="!!exportBusy || loading"
+      (click)="exportAllHistory('pdf')"
+    >
+      Izvozi celotno zgodovino v PDF</button
+    ><button
+      class="secondary-btn"
+      type="button"
+      [disabled]="!!exportBusy || loading"
+      (click)="exportCompleteArchive()"
+    >
+      {{ exportBusy === 'archive' ? 'Pripravljam arhiv…' : 'Izvozi popoln arhiv JSON' }}
+    </button>
+  </div>
 </section>
 <section class="panel full-list">
   <div class="list-toolbar">
     <div>
       <h3>Pošiljke iz baze</h3>
-      <p>{{ historyShipments.length }} shranjenih pošiljk · ponovno računanje uporabi trenutno Excelovo bazo in terminale</p>
+      <p>
+        {{ historyShipments.length }} shranjenih pošiljk · ponovno računanje uporabi trenutno
+        Excelovo bazo in terminale
+      </p>
     </div>
     <div class="history-actions">
-      <button class="primary-btn" type="button" [disabled]="recalculatingShipments" (click)="recalculateAllShipments()">
-        {{ recalculatingShipments ? 'Preračunavam ' + recalcProgress.completed + '/' + recalcProgress.total + '…' : 'Preračunaj vse pošiljke' }}
+      <button
+        class="primary-btn"
+        type="button"
+        [disabled]="recalculatingShipments"
+        (click)="recalculateAllShipments()"
+      >
+        {{
+          recalculatingShipments
+            ? 'Preračunavam ' + recalcProgress.completed + '/' + recalcProgress.total + '…'
+            : 'Preračunaj vse pošiljke'
+        }}
       </button>
-      <button class="secondary-btn" type="button" [disabled]="!!exportBusy || !historyShipments.length" (click)="exportAllHistory('csv', 'shipments')">Izvozi pošiljke v CSV</button>
-      <button class="secondary-btn" type="button" [disabled]="!!exportBusy || !historyShipments.length" (click)="exportAllHistory('pdf', 'shipments')">Izvozi pošiljke v PDF</button>
+      <button
+        class="secondary-btn"
+        type="button"
+        [disabled]="!!exportBusy || !historyShipments.length"
+        (click)="exportAllHistory('csv', 'shipments')"
+      >
+        Izvozi pošiljke v CSV
+      </button>
+      <button
+        class="secondary-btn"
+        type="button"
+        [disabled]="!!exportBusy || !historyShipments.length"
+        (click)="exportAllHistory('pdf', 'shipments')"
+      >
+        Izvozi pošiljke v PDF
+      </button>
     </div>
   </div>
-  @if (recalcMessage) { <div class="notice success" role="status">{{ recalcMessage }}</div> }
-  @if (exportMessage) { <div class="notice" role="status">{{ exportMessage }}</div> }
+  @if (recalcMessage) {
+    <div class="notice success" role="status">{{ recalcMessage }}</div>
+  }
+  @if (exportMessage) {
+    <div class="notice" role="status">{{ exportMessage }}</div>
+  }
   <div class="table-scroll">
     <table>
       <thead>
@@ -61,8 +146,22 @@
               <button class="secondary-btn" type="button" (click)="toggleShipmentDetails(row)">
                 {{ isShipmentExpanded(row) ? 'Skrij' : 'Podrobnosti' }}
               </button>
-              <button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportOneShipment(row, 'csv')">CSV</button>
-              <button class="secondary-btn" type="button" [disabled]="!!exportBusy" (click)="exportOneShipment(row, 'pdf')">PDF</button>
+              <button
+                class="secondary-btn"
+                type="button"
+                [disabled]="!!exportBusy"
+                (click)="exportOneShipment(row, 'csv')"
+              >
+                CSV
+              </button>
+              <button
+                class="secondary-btn"
+                type="button"
+                [disabled]="!!exportBusy"
+                (click)="exportOneShipment(row, 'pdf')"
+              >
+                PDF
+              </button>
             </td>
           </tr>
           @if (isShipmentExpanded(row)) {
@@ -97,14 +196,40 @@
   <div class="list-toolbar">
     <div>
       <h3>Shranjene relacije planerja</h3>
-      <p>{{ historyPlans.length }} shranjenih izračunov · posodobitev uporabi nove terminale in vozne rede</p>
+      <p>
+        {{ historyPlans.length }} shranjenih izračunov · posodobitev uporabi nove terminale in vozne
+        rede
+      </p>
     </div>
     <div class="history-actions">
-      <button class="primary-btn" type="button" [disabled]="recalculatingPlans || !historyPlans.length" (click)="recalculateAllPlans()">
-        {{ recalculatingPlans ? 'Preračunavam ' + planRecalcProgress.completed + '/' + planRecalcProgress.total + '…' : 'Preračunaj relacije planerja' }}
+      <button
+        class="primary-btn"
+        type="button"
+        [disabled]="recalculatingPlans || !historyPlans.length"
+        (click)="recalculateAllPlans()"
+      >
+        {{
+          recalculatingPlans
+            ? 'Preračunavam ' + planRecalcProgress.completed + '/' + planRecalcProgress.total + '…'
+            : 'Preračunaj relacije planerja'
+        }}
       </button>
-      <button class="secondary-btn" type="button" [disabled]="!!exportBusy || !historyPlans.length" (click)="exportAllHistory('csv', 'plans')">Izvozi relacije v CSV</button>
-      <button class="secondary-btn" type="button" [disabled]="!!exportBusy || !historyPlans.length" (click)="exportAllHistory('pdf', 'plans')">Izvozi relacije v PDF</button>
+      <button
+        class="secondary-btn"
+        type="button"
+        [disabled]="!!exportBusy || !historyPlans.length"
+        (click)="exportAllHistory('csv', 'plans')"
+      >
+        Izvozi relacije v CSV
+      </button>
+      <button
+        class="secondary-btn"
+        type="button"
+        [disabled]="!!exportBusy || !historyPlans.length"
+        (click)="exportAllHistory('pdf', 'plans')"
+      >
+        Izvozi relacije v PDF
+      </button>
     </div>
   </div>
   <div class="table-scroll">
@@ -138,8 +263,12 @@
               <button class="secondary-btn" type="button" (click)="togglePlanDetails(plan.id)">
                 {{ expandedPlanId === plan.id ? 'Skrij' : 'Podrobnosti' }}
               </button>
-              <button class="secondary-btn" type="button" (click)="exportOnePlan(plan, 'csv')">CSV</button>
-              <button class="secondary-btn" type="button" (click)="exportOnePlan(plan, 'pdf')">PDF</button>
+              <button class="secondary-btn" type="button" (click)="exportOnePlan(plan, 'csv')">
+                CSV
+              </button>
+              <button class="secondary-btn" type="button" (click)="exportOnePlan(plan, 'pdf')">
+                PDF
+              </button>
             </td>
           </tr>
           @if (expandedPlanId === plan.id) {
